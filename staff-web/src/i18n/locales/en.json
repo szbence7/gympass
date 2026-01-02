@@ -1,0 +1,52 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "language": "Language"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "email": "Email",
+    "password": "Password",
+    "wrongCredentials": "Wrong credentials. {{remaining}} attempt(s) remaining.",
+    "tooManyAttempts": "Too many failed attempts. Redirecting...",
+    "fillAllFields": "Please fill in all fields"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "activePassesTitle": "Active Passes",
+    "activePasses": "Active Pass",
+    "totalUsersTitle": "Total Users",
+    "totalUsers": "User",
+    "todayScansTitle": "Today's Check-ins",
+    "todayScans": "Check-in Today",
+    "quickActions": "Quick Actions",
+    "scanPass": "Scan Pass",
+    "createPass": "New Pass",
+    "viewUsers": "Users",
+    "viewHistory": "History",
+    "gymInfo": "Gym Info"
+  },
+  "landing": {
+    "title": "{{gymName}} Fitness",
+    "tagline": "Your fitness journey starts here",
+    "downloadApp": "Download the App",
+    "availableOn": "Available on iOS and Android",
+    "flexiblePasses": "Flexible Passes",
+    "flexiblePassesDesc": "Weekly, monthly, or entry-based options",
+    "digitalWallet": "Digital Wallet",
+    "digitalWalletDesc": "Add passes to Apple Wallet",
+    "quickCheckin": "Quick Check-in",
+    "quickCheckinDesc": "Fast QR code scanning"
+  },
+  "admin": {
+    "title": "Platform Administration",
+    "login": "Admin Login",
+    "dashboard": "Dashboard",
+    "gyms": "Gyms",
+    "backToGyms": "Back to Gyms"
+  }
+}
+
+
+

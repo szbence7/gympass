@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Cancelled - GymPass</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>⚠️ Payment Cancelled</h1>
+      <p class="subtitle">Your gym registration was not completed</p>
+      
+      <div class="info-box warning">
+        <p>Your gym has been created but is not yet active. To activate it, you need to complete the payment process.</p>
+      </div>
+
+      <div id="retrySection"></div>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const gymId = urlParams.get('gym_id');
+    const pendingData = sessionStorage.getItem('pendingGymData');
+
+    if (pendingData) {
+      const data = JSON.parse(pendingData);
+      
+      document.getElementById('retrySection').innerHTML = `
+        <div class="next-steps">
+          <h3>What now?</h3>
+          <p>You can retry the payment process to activate your gym:</p>
+          
+          <div style="margin-top: 20px;">
+            <button id="retryBtn" class="btn-primary">Retry Payment</button>
+            <a href="/" class="btn-secondary" style="margin-left: 10px;">Return to Home</a>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('retryBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('retryBtn');
+        btn.disabled = true;
+        btn.textContent = 'Creating checkout session...';
+
+        try {
+          const apiUrl = `${config.apiBaseUrl}/api/stripe/create-checkout-session`;
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              gymId: data.gym.id,
+              gymSlug: data.gym.slug,
+              gymName: data.gym.name,
+              adminEmail: data.adminEmail,
+            }),
+          });
+
+          const checkoutData = await response.json();
+          
+          if (response.ok) {
+            window.location.href = checkoutData.url;
+          } else {
+            alert('Failed to create checkout session: ' + (checkoutData.error?.message || 'Unknown error'));
+            btn.disabled = false;
+            btn.textContent = 'Retry Payment';
+          }
+        } catch (error) {
+          alert('Error: ' + error.message);
+          btn.disabled = false;
+          btn.textContent = 'Retry Payment';
+        }
+      });
+    } else {
+      document.getElementById('retrySection').innerHTML = `
+        <div class="next-steps">
+          <p>Session expired. Please start the registration process again.</p>
+          <a href="/" class="btn-primary">Return to Home</a>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Successful - GymPass</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🎉 Registration Successful!</h1>
+      <p class="subtitle">Your gym has been activated and is ready to use</p>
+      
+      <div id="gymDetails" class="success-details"></div>
+    </div>
+  </div>
+
+  <script>
+    // Get session ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    const registrationSessionId = urlParams.get('registration_session_id');
+    
+    // Fetch gym details from backend
+    async function loadGymDetails() {
+      const apiUrl = config.apiBaseUrl || 'http://localhost:4000';
+      let fetchUrl = `${apiUrl}/api/registration/success-data?`;
+      
+      if (sessionId) {
+        fetchUrl += `session_id=${sessionId}`;
+      }
+      if (registrationSessionId) {
+        fetchUrl += registrationSessionId ? `&registration_session_id=${registrationSessionId}` : '';
+      }
+      
+      try {
+        const response = await fetch(fetchUrl);
+        const data = await response.json();
+        
+        if (response.status === 202) {
+          // Still processing, retry after 2 seconds
+          document.getElementById('gymDetails').innerHTML = `
+            <p>⏳ Creating your gym... Please wait a moment.</p>
+          `;
+          setTimeout(loadGymDetails, 2000);
+          return;
+        }
+        
+        if (!response.ok) {
+          throw new Error(data.error?.message || 'Failed to load gym details');
+        }
+        
+        if (data.success && data.gym) {
+          const publicUrl = config.buildGymUrl(data.gym.slug);
+          const staffLoginUrl = config.buildStaffUrl(data.gym.slug, data.gym.staffLoginPath);
+          
+          document.getElementById('gymDetails').innerHTML = `
+            <div class="info-box">
+              <h3>Gym Information</h3>
+              <p><strong>Gym Name:</strong> ${data.gym.name}</p>
+              <p><strong>Public URL:</strong> <a href="${publicUrl}" target="_blank">${publicUrl}</a></p>
+            </div>
+
+            <div class="credentials">
+              <h3>🔐 Admin Credentials</h3>
+              <p><strong>Email:</strong> <code>${data.adminEmail || 'Check your email'}</code></p>
+              <p class="warning">⚠️ Admin password was sent to your email. Check your inbox!</p>
+              <p><strong>Staff Login URL:</strong> <code>${staffLoginUrl}</code></p>
+            </div>
+
+            <div class="next-steps">
+              <h3>Next Steps:</h3>
+              <ol>
+                <li>Check your email for admin credentials</li>
+                ${config.tenantBaseDomain.includes('local') ? `<li>Add to <code>/etc/hosts</code>: <code>127.0.0.1  ${data.gym.slug}.${config.tenantBaseDomain}</code></li>` : ''}
+                <li>Bookmark staff login: <a href="${staffLoginUrl}" target="_blank">${staffLoginUrl}</a></li>
+                <li>Configure mobile app to use: <code>${publicUrl}</code></li>
+              </ol>
+            </div>
+
+            <div style="margin-top: 30px;">
+              <a href="${staffLoginUrl}" class="btn-primary">Go to Staff Portal</a>
+              <a href="/" class="btn-secondary" style="margin-left: 10px;">Register Another Gym</a>
+            </div>
+          `;
+        }
+      } catch (error) {
+        document.getElementById('gymDetails').innerHTML = `
+          <p class="warning">⚠️ ${error.message}</p>
+          <p>Please check your email for gym details.</p>
+          <a href="/" class="btn-primary">Return to Home</a>
+        `;
+      }
+    }
+    
+    if (sessionId || registrationSessionId) {
+      loadGymDetails();
+    } else {
+      document.getElementById('gymDetails').innerHTML = `
+        <p class="warning">⚠️ No session ID found. Please check your email for gym details.</p>
+        <a href="/" class="btn-primary">Return to Home</a>
+      `;
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,17 @@
+{
+  "name": "gympass-monorepo",
+  "version": "1.0.0",
+  "description": "Gym Pass System - Monorepo",
+  "private": true,
+  "scripts": {
+    "gym": "concurrently --names \"BACKEND,MOBILE,STAFF\" --prefix-colors \"blue,green,yellow\" \"npm run dev --prefix backend\" \"npm start --prefix mobile\" \"npm run dev --prefix staff-web\"",
+    "gym:api": "concurrently --names \"BACKEND,STAFF\" --prefix-colors \"blue,yellow\" \"npm run dev --prefix backend\" \"npm run dev --prefix staff-web\"",
+    "gym:mobile": "npm start --prefix mobile",
+    "gym:backend": "npm run dev --prefix backend",
+    "gym:staff": "npm run dev --prefix staff-web"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+

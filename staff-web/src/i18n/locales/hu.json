@@ -1,0 +1,52 @@
+{
+  "common": {
+    "loading": "Betöltés...",
+    "language": "Nyelv"
+  },
+  "auth": {
+    "signIn": "Bejelentkezés",
+    "signingIn": "Bejelentkezés...",
+    "email": "E-mail",
+    "password": "Jelszó",
+    "wrongCredentials": "Hibás bejelentkezési adatok. {{remaining}} próbálkozás maradt.",
+    "tooManyAttempts": "Túl sok sikertelen próbálkozás. Átirányítás...",
+    "fillAllFields": "Kérjük, töltse ki az összes mezőt"
+  },
+  "dashboard": {
+    "title": "Irányítópult",
+    "activePassesTitle": "Aktív bérletek",
+    "activePasses": "Aktív bérlet",
+    "totalUsersTitle": "Összes felhasználó",
+    "totalUsers": "Felhasználó",
+    "todayScansTitle": "Mai beléptések",
+    "todayScans": "Beléptés ma",
+    "quickActions": "Gyors műveletek",
+    "scanPass": "Bérlet beolvasása",
+    "createPass": "Új bérlet",
+    "viewUsers": "Felhasználók",
+    "viewHistory": "Előzmények",
+    "gymInfo": "Edzőterem információk"
+  },
+  "landing": {
+    "title": "{{gymName}} Fitness",
+    "tagline": "Az Ön fitnesz útja itt kezdődik",
+    "downloadApp": "Alkalmazás letöltése",
+    "availableOn": "Elérhető iOS és Android rendszeren",
+    "flexiblePasses": "Rugalmas bérletek",
+    "flexiblePassesDesc": "Heti, havi vagy alkalomjegyek",
+    "digitalWallet": "Digitális tárca",
+    "digitalWalletDesc": "Bérletek hozzáadása az Apple Wallet-hez",
+    "quickCheckin": "Gyors beléptés",
+    "quickCheckinDesc": "Gyors QR kód beolvasás"
+  },
+  "admin": {
+    "title": "Platform adminisztráció",
+    "login": "Admin bejelentkezés",
+    "dashboard": "Irányítópult",
+    "gyms": "Edzőtermek",
+    "backToGyms": "Vissza az edzőtermekhez"
+  }
+}
+
+
+

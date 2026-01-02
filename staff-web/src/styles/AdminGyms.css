@@ -1,0 +1,156 @@
+.admin-gyms {
+  padding: 30px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.btn-secondary {
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.status-filter {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 150px;
+}
+
+.gyms-table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.gyms-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gyms-table thead {
+  background-color: #f8f9fa;
+}
+
+.gyms-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.gyms-table td {
+  padding: 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.gyms-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.gym-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.gym-slug {
+  color: #666;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.sub-status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.no-sub {
+  background-color: #e2e3e5;
+  color: #6c757d;
+}
+
+.sub-active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.sub-trialing {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.sub-past_due {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.sub-canceled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.btn-view {
+  padding: 6px 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-view:hover {
+  background-color: #0056b3;
+}
+
+.no-results {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+}
+
+.loading,
+.error {
+  padding: 40px;
+  text-align: center;
+}
+
+.error button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+

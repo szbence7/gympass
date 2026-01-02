@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GymPass SaaS - Register Your Gym</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🏋️ GymPass SaaS</h1>
+      <p class="tagline">Complete gym management system with mobile app, staff portal, and Apple Wallet integration</p>
+    </header>
+
+    <main>
+      <div class="form-card">
+        <h2>Register Your Gym</h2>
+        <p class="subtitle">Complete the steps below to create your gym</p>
+
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+          <div class="step active" data-step="1">
+            <div class="step-number">1</div>
+            <div class="step-label">Gym Info</div>
+          </div>
+          <div class="step" data-step="2">
+            <div class="step-number">2</div>
+            <div class="step-label">Business</div>
+          </div>
+          <div class="step" data-step="3">
+            <div class="step-number">3</div>
+            <div class="step-label">Contact & Payment</div>
+          </div>
+        </div>
+
+        <form id="registrationForm">
+          <!-- Step 1: Gym Basic Info -->
+          <div class="form-step active" data-step="1">
+            <h3>Gym Information</h3>
+            
+            <div class="form-group">
+              <label for="gymName">Gym Name *</label>
+              <input 
+                type="text" 
+                id="gymName" 
+                name="name" 
+                required 
+                placeholder="Acme Fitness Center"
+                maxlength="100"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="gymSlug">Subdomain (Slug) *</label>
+              <input 
+                type="text" 
+                id="gymSlug" 
+                name="slug" 
+                required 
+                placeholder="acmegym"
+                pattern="[a-z0-9-]{3,30}"
+                maxlength="30"
+              >
+              <small>3-30 characters, lowercase letters, numbers, and hyphens only</small>
+              <div class="url-preview">
+                Your gym URL: <strong><span id="gymUrlPreview"></span></strong>
+              </div>
+              <script>
+                // Update URL preview dynamically
+                document.getElementById('gymSlug').addEventListener('input', (e) => {
+                  const slug = e.target.value || 'yourslug';
+                  document.getElementById('slugPreview').textContent = slug;
+                  document.getElementById('gymUrlPreview').textContent = config.buildGymUrl(slug);
+                });
+                // Set initial preview
+                document.getElementById('gymUrlPreview').textContent = config.buildGymUrl('yourslug');
+              </script>
+            </div>
+
+            <div class="form-group">
+              <label for="adminEmail">Admin Email Address *</label>
+              <input 
+                type="email" 
+                id="adminEmail" 
+                name="adminEmail" 
+                required 
+                placeholder="admin@yourgym.com"
+              >
+              <small>This will be your login email for the staff portal</small>
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn-next">Next Step →</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Business Information -->
+          <div class="form-step" data-step="2">
+            <h3>Business Information</h3>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="companyName">Company Name *</label>
+                <input type="text" id="companyName" name="companyName" required placeholder="Acme Fitness Kft.">
+              </div>
+
+              <div class="form-group">
+                <label for="taxNumber">Tax Number *</label>
+                <input type="text" id="taxNumber" name="taxNumber" required placeholder="12345678-1-42">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="addressLine1">Address Line 1 *</label>
+              <input type="text" id="addressLine1" name="addressLine1" required placeholder="Street 123">
+            </div>
+
+            <div class="form-group">
+              <label for="addressLine2">Address Line 2</label>
+              <input type="text" id="addressLine2" name="addressLine2" placeholder="Floor 2, Suite 5 (optional)">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City *</label>
+                <input type="text" id="city" name="city" required placeholder="Budapest">
+              </div>
+
+              <div class="form-group">
+                <label for="postalCode">Postal Code *</label>
+                <input type="text" id="postalCode" name="postalCode" required placeholder="1000">
+              </div>
+
+              <div class="form-group">
+                <label for="country">Country *</label>
+                <input type="text" id="country" name="country" required value="HU" placeholder="HU">
+              </div>
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn-prev">← Previous</button>
+              <button type="button" class="btn-next">Next Step →</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Contact Person & Submit -->
+          <div class="form-step" data-step="3">
+            <h3>Contact Person</h3>
+
+            <div class="form-group">
+              <label for="contactName">Contact Name *</label>
+              <input type="text" id="contactName" name="contactName" required placeholder="John Doe">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contactEmail">Contact Email *</label>
+                <input type="email" id="contactEmail" name="contactEmail" required placeholder="contact@yourgym.com">
+              </div>
+
+              <div class="form-group">
+                <label for="contactPhone">Contact Phone *</label>
+                <input type="tel" id="contactPhone" name="contactPhone" required placeholder="+36 30 123 4567">
+              </div>
+            </div>
+
+            <div class="payment-info">
+              <h4>💳 Next: Payment</h4>
+              <p>After submitting, you'll be redirected to secure Stripe payment to complete your subscription.</p>
+              <div class="price-box">
+                <span class="price">49,990 HUF</span>
+                <span class="price-label">/ month</span>
+              </div>
+              <p class="secure-note">🔒 Secure payment powered by Stripe</p>
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn-prev">← Previous</button>
+              <button type="submit" id="submitBtn" class="btn-submit">Create Gym & Pay →</button>
+            </div>
+          </div>
+        </form>
+
+        <div id="result" class="result hidden"></div>
+      </div>
+
+      <div class="info-card">
+        <h3>What You Get</h3>
+        <ul>
+          <li>✅ Isolated SQLite database for your gym</li>
+          <li>✅ Staff web portal for QR scanning & management</li>
+          <li>✅ Mobile app (iOS/Android) for your members</li>
+          <li>✅ Apple Wallet pass integration</li>
+          <li>✅ Pass types: Weekly, Monthly, 10-Entry</li>
+          <li>✅ Admin account created automatically</li>
+        </ul>
+
+        <h3>Development Setup</h3>
+        <p>Add to your <code>/etc/hosts</code>:</p>
+        <pre id="hostsPreview"></pre>
+        <script>
+          // Show dev setup hint only if in dev mode
+          if (config.tenantBaseDomain === 'gym.local' || config.tenantBaseDomain.includes('local')) {
+            document.getElementById('hostsPreview').textContent = `127.0.0.1  <yourslug>.${config.tenantBaseDomain}`;
+          } else {
+            document.querySelector('.info-card h3').textContent = 'Production Deployment';
+            document.querySelector('.info-card p').textContent = 'DNS records will be configured automatically.';
+            document.getElementById('hostsPreview').textContent = 'No manual DNS setup needed in production.';
+          }
+        </script>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+

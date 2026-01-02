@@ -1,0 +1,6 @@
+# Tenant database files are stored here
+# Each gym gets its own SQLite database: <slug>.db
+
+
+
+
