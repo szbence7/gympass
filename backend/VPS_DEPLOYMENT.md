@@ -55,14 +55,14 @@ DATABASE_URL=postgresql://gympass:your_password@localhost:5432/gympass
 PORT=4000
 NODE_ENV=production
 JWT_SECRET=your-secret-key
-PUBLIC_BASE_URL=https://gympass.hu
-TENANT_BASE_DOMAIN=gympass.hu
+PUBLIC_BASE_URL=https://gymgo.hu
+TENANT_BASE_DOMAIN=gymgo.hu
 TENANT_PROTOCOL=https
 TENANT_PORT=
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_PRICE_ID=price_...
-CORS_ALLOWED_ORIGINS=https://gympass.hu,https://staff.gympass.hu
+CORS_ALLOWED_ORIGINS=https://gymgo.hu,https://staff.gymgo.hu
 ```
 
 ## Step 4: Run Migrations

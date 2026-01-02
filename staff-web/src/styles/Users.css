@@ -1,6 +1,6 @@
 .users-container {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #0B0F14;
   padding: 20px;
 }
 
@@ -15,7 +15,7 @@
 
 .users-header h1 {
   font-size: 28px;
-  color: #333;
+  color: #EAF0FF;
   font-weight: 600;
 }
 
@@ -27,26 +27,27 @@
 
 .nav-button {
   padding: 10px 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #121824;
+  border: 1px solid #243047;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: #EAF0FF;
   transition: all 0.2s;
 }
 
 .nav-button:hover {
-  background-color: #f9f9f9;
-  border-color: #bbb;
+  background-color: #182235;
+  border-color: #33FF8A;
 }
 
 .users-controls {
-  background: white;
+  background: #121824;
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .search-form {
@@ -58,15 +59,21 @@
 .search-input {
   flex: 1;
   padding: 10px 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #243047;
   border-radius: 6px;
   font-size: 14px;
+  background-color: #182235;
+  color: #EAF0FF;
+}
+
+.search-input::placeholder {
+  color: #7683A5;
 }
 
 .search-button {
   padding: 10px 24px;
-  background-color: #667eea;
-  color: white;
+  background-color: #33FF8A;
+  color: #0B0F14;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -75,7 +82,7 @@
 }
 
 .search-button:hover {
-  background-color: #5568d3;
+  background-color: #20D86E;
 }
 
 .filter-options {
@@ -90,6 +97,7 @@
   gap: 8px;
   font-size: 14px;
   cursor: pointer;
+  color: #A8B3CF;
 }
 
 .filter-checkbox input[type="checkbox"] {
@@ -98,8 +106,8 @@
 
 .refresh-button {
   padding: 8px 16px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: #2EE59D;
+  color: #0B0F14;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -108,58 +116,62 @@
 }
 
 .refresh-button:hover {
-  background-color: #45a049;
+  background-color: #20D86E;
 }
 
 .users-stats {
   display: flex;
   gap: 30px;
   padding: 15px 20px;
-  background: white;
+  background: #121824;
   border-radius: 8px;
   margin-bottom: 15px;
   font-size: 14px;
-  color: #666;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  color: #A8B3CF;
+  border: 1px solid #243047;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .users-stats strong {
-  color: #333;
+  color: #EAF0FF;
   font-weight: 600;
 }
 
 .loading-state {
   text-align: center;
   padding: 40px;
-  background: white;
+  background: #121824;
   border-radius: 8px;
+  border: 1px solid #243047;
   font-size: 16px;
-  color: #666;
+  color: #A8B3CF;
 }
 
 .error-message {
   padding: 15px 20px;
-  background-color: #fee;
-  border: 1px solid #fcc;
+  background-color: rgba(255, 77, 77, 0.15);
+  border: 1px solid #FF4D4D;
   border-radius: 6px;
-  color: #c33;
+  color: #FF4D4D;
   margin-bottom: 20px;
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  background: white;
+  background: #121824;
   border-radius: 8px;
+  border: 1px solid #243047;
   font-size: 16px;
-  color: #999;
+  color: #7683A5;
 }
 
 .users-content {
-  background: white;
+  background: #121824;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .users-table {
@@ -168,7 +180,7 @@
 }
 
 .users-table thead {
-  background-color: #f8f9fa;
+  background-color: #182235;
 }
 
 .users-table th {
@@ -176,8 +188,8 @@
   text-align: left;
   font-size: 13px;
   font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #dee2e6;
+  color: #EAF0FF;
+  border-bottom: 2px solid #243047;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -185,20 +197,20 @@
 .users-table td {
   padding: 14px;
   font-size: 14px;
-  color: #666;
-  border-bottom: 1px solid #f0f0f0;
+  color: #A8B3CF;
+  border-bottom: 1px solid #243047;
 }
 
 .users-table tbody tr:hover {
-  background-color: #f8f9fa;
+  background-color: #182235;
 }
 
 .users-table tbody tr.blocked-row {
-  background-color: #fff3f3;
+  background-color: rgba(255, 77, 77, 0.1);
 }
 
 .users-table tbody tr.blocked-row:hover {
-  background-color: #ffe6e6;
+  background-color: rgba(255, 77, 77, 0.15);
 }
 
 .pass-badge {
@@ -210,13 +222,15 @@
 }
 
 .pass-badge.active {
-  background-color: #d1e7dd;
-  color: #0f5132;
+  background-color: rgba(46, 229, 157, 0.2);
+  color: #2EE59D;
+  border: 1px solid rgba(46, 229, 157, 0.3);
 }
 
 .pass-badge.inactive {
-  background-color: #f8d7da;
-  color: #842029;
+  background-color: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 .pass-summary {
@@ -227,11 +241,11 @@
 
 .pass-info {
   font-size: 12px;
-  color: #666;
+  color: #A8B3CF;
 }
 
 .pass-detail {
-  color: #888;
+  color: #7683A5;
 }
 
 .status-badge {
@@ -244,13 +258,15 @@
 }
 
 .status-badge.active {
-  background-color: #d1e7dd;
-  color: #0f5132;
+  background-color: rgba(46, 229, 157, 0.2);
+  color: #2EE59D;
+  border: 1px solid rgba(46, 229, 157, 0.3);
 }
 
 .status-badge.blocked {
-  background-color: #f8d7da;
-  color: #842029;
+  background-color: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 .action-button {
@@ -264,43 +280,44 @@
 }
 
 .action-button.view {
-  background-color: #667eea;
-  color: white;
+  background-color: #3CD6FF;
+  color: #0B0F14;
 }
 
 .action-button.view:hover {
-  background-color: #5568d3;
+  background-color: #24B7E6;
 }
 
 .action-button.warning {
-  background-color: #ff9800;
-  color: white;
+  background-color: #FFB020;
+  color: #0B0F14;
 }
 
 .action-button.warning:hover {
-  background-color: #f57c00;
+  background-color: #E6A01C;
 }
 
 .action-button.success {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #2EE59D;
+  color: #0B0F14;
 }
 
 .action-button.success:hover {
-  background-color: #45a049;
+  background-color: #20D86E;
 }
 
 .action-button.danger {
-  background-color: #f44336;
-  color: white;
+  background-color: #FF4D4D;
+  color: #EAF0FF;
 }
 
 .action-button.danger:hover {
-  background-color: #d32f2f;
+  background-color: #E63946;
 }
 
 .action-button:disabled {
-  background-color: #ccc;
+  background-color: #243047;
+  color: #7683A5;
   cursor: not-allowed;
 }
 
@@ -324,18 +341,19 @@
 }
 
 .detail-card {
-  background: white;
+  background: #121824;
   border-radius: 8px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .detail-card h2 {
   font-size: 20px;
-  color: #333;
+  color: #EAF0FF;
   margin-bottom: 20px;
   font-weight: 600;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #243047;
   padding-bottom: 10px;
 }
 
@@ -351,25 +369,26 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px;
-  background-color: #f9f9f9;
+  background-color: #182235;
   border-radius: 6px;
+  border: 1px solid #243047;
 }
 
 .detail-row .label {
   font-weight: 600;
-  color: #666;
+  color: #A8B3CF;
   font-size: 14px;
 }
 
 .detail-row .value {
   font-size: 14px;
-  color: #333;
+  color: #EAF0FF;
 }
 
 .detail-row .value.code {
   font-family: monospace;
   font-size: 12px;
-  color: #666;
+  color: #A8B3CF;
 }
 
 .action-buttons {
@@ -391,9 +410,9 @@
 
 .pass-item {
   padding: 16px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #243047;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #182235;
 }
 
 .pass-item-header {
@@ -405,7 +424,7 @@
 
 .pass-item-header h3 {
   font-size: 16px;
-  color: #333;
+  color: #EAF0FF;
   font-weight: 600;
 }
 
@@ -418,23 +437,27 @@
 }
 
 .pass-status.active {
-  background-color: #d1e7dd;
-  color: #0f5132;
+  background-color: rgba(46, 229, 157, 0.2);
+  color: #2EE59D;
+  border: 1px solid rgba(46, 229, 157, 0.3);
 }
 
 .pass-status.expired {
-  background-color: #f8d7da;
-  color: #842029;
+  background-color: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 .pass-status.depleted {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: rgba(255, 176, 32, 0.2);
+  color: #FFB020;
+  border: 1px solid rgba(255, 176, 32, 0.3);
 }
 
 .pass-status.revoked {
-  background-color: #e2e3e5;
-  color: #41464b;
+  background-color: #182235;
+  color: #7683A5;
+  border: 1px solid #243047;
 }
 
 .pass-item-details {
@@ -451,14 +474,14 @@
 }
 
 .pass-item-row .label {
-  color: #666;
+  color: #A8B3CF;
   font-weight: 500;
 }
 
 .pass-item-row .code {
   font-family: monospace;
   font-size: 11px;
-  color: #888;
+  color: #7683A5;
 }
 
 @media (max-width: 768px) {
@@ -520,7 +543,3 @@
     width: 100%;
   }
 }
-
-
-
-

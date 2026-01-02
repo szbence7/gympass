@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 import { env } from '../utils/env';
 import { updateGymSubscription, getGymById } from '../db/registry';
+import { buildPublicBaseUrl } from '../utils/urlBuilder';
 
 if (!env.STRIPE_SECRET_KEY) {
   console.warn('⚠️ STRIPE_SECRET_KEY not set. Stripe integration will not work.');
@@ -56,7 +57,7 @@ export async function createCheckoutSession(params: CreateCheckoutSessionParams)
       }, 1000);
       
       // Return a dev-mode URL that simulates successful payment
-      return `${env.PUBLIC_BASE_URL}/registration/success?session_id=dev-mode-checkout&registration_session_id=${params.registrationSessionId}`;
+      return `${buildPublicBaseUrl()}/registration/success?session_id=dev-mode-checkout&registration_session_id=${params.registrationSessionId}`;
     }
   }
   
@@ -85,8 +86,8 @@ export async function createCheckoutSession(params: CreateCheckoutSessionParams)
       },
     },
     // Redirect back to our hosted success/cancel pages (served by backend, proxied in prod)
-    success_url: `${env.PUBLIC_BASE_URL}/registration/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${env.PUBLIC_BASE_URL}/registration/cancel?session_id=${registrationSessionId}`,
+    success_url: `${buildPublicBaseUrl()}/registration/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${buildPublicBaseUrl()}/registration/cancel?session_id=${registrationSessionId}`,
   });
   
   // Store Stripe checkout session ID in registration session

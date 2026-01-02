@@ -2,6 +2,8 @@
   padding: 30px;
   max-width: 1400px;
   margin: 0 auto;
+  background-color: #0B0F14;
+  min-height: 100vh;
 }
 
 .admin-header {
@@ -13,7 +15,7 @@
 
 .admin-header h1 {
   font-size: 2em;
-  color: #333;
+  color: #EAF0FF;
   margin: 0;
 }
 
@@ -24,8 +26,8 @@
 
 .btn-primary {
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: #3CD6FF;
+  color: #0B0F14;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -34,13 +36,13 @@
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #24B7E6;
 }
 
 .btn-logout {
   padding: 10px 20px;
-  background-color: #dc3545;
-  color: white;
+  background-color: #FF4D4D;
+  color: #EAF0FF;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -48,7 +50,7 @@
 }
 
 .btn-logout:hover {
-  background-color: #c82333;
+  background-color: #E63946;
 }
 
 .stats-grid {
@@ -59,41 +61,44 @@
 }
 
 .stat-card {
-  background: white;
+  background: #121824;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
 
 .stat-icon {
   font-size: 2.5em;
   margin-bottom: 10px;
+  color: #33FF8A;
 }
 
 .stat-value {
   font-size: 2.5em;
   font-weight: bold;
-  color: #333;
+  color: #EAF0FF;
   margin-bottom: 5px;
 }
 
 .stat-label {
-  color: #666;
+  color: #A8B3CF;
   font-size: 0.9em;
 }
 
 .recent-gyms {
-  background: white;
+  background: #121824;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .recent-gyms h2 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: #EAF0FF;
 }
 
 .gyms-list {
@@ -107,24 +112,25 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #243047;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  background-color: #182235;
 }
 
 .gym-card:hover {
-  border-color: #007bff;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+  border-color: #33FF8A;
+  box-shadow: 0 2px 8px rgba(51, 255, 138, 0.2);
 }
 
 .gym-info h3 {
   margin: 0 0 5px 0;
-  color: #333;
+  color: #EAF0FF;
 }
 
 .gym-slug {
-  color: #666;
+  color: #A8B3CF;
   font-size: 0.9em;
   margin: 0;
 }
@@ -137,31 +143,35 @@
 }
 
 .status-active {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: rgba(46, 229, 157, 0.2);
+  color: #2EE59D;
+  border: 1px solid rgba(46, 229, 157, 0.3);
 }
 
 .status-blocked {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 .status-deleted {
-  background-color: #e2e3e5;
-  color: #383d41;
+  background-color: #182235;
+  color: #7683A5;
+  border: 1px solid #243047;
 }
 
 .admin-loading,
 .admin-error {
   padding: 40px;
   text-align: center;
+  color: #A8B3CF;
 }
 
 .admin-error button {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: #3CD6FF;
+  color: #0B0F14;
   border: none;
   border-radius: 6px;
   cursor: pointer;

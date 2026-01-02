@@ -1,6 +1,6 @@
 .history-container {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #0B0F14;
   padding: 20px;
 }
 
@@ -9,15 +9,16 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  background: white;
+  background: #121824;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .history-header h1 {
   font-size: 28px;
-  color: #333;
+  color: #EAF0FF;
   margin: 0;
 }
 
@@ -28,8 +29,8 @@
 
 .nav-button {
   padding: 10px 20px;
-  background-color: #667eea;
-  color: white;
+  background-color: #33FF8A;
+  color: #0B0F14;
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -38,30 +39,32 @@
 }
 
 .nav-button:hover {
-  background-color: #5568d3;
+  background-color: #20D86E;
 }
 
 .loading {
   text-align: center;
   padding: 40px;
   font-size: 18px;
-  color: #666;
+  color: #A8B3CF;
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  background: white;
+  background: #121824;
   border-radius: 12px;
+  border: 1px solid #243047;
   font-size: 18px;
-  color: #666;
+  color: #7683A5;
 }
 
 .history-content {
-  background: white;
+  background: #121824;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   overflow-x: auto;
 }
 
@@ -71,7 +74,7 @@
 }
 
 .history-table thead {
-  background-color: #f8f9fa;
+  background-color: #182235;
 }
 
 .history-table th {
@@ -79,19 +82,19 @@
   text-align: left;
   font-size: 14px;
   font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #dee2e6;
+  color: #EAF0FF;
+  border-bottom: 2px solid #243047;
 }
 
 .history-table td {
   padding: 14px;
   font-size: 14px;
-  color: #666;
-  border-bottom: 1px solid #f0f0f0;
+  color: #A8B3CF;
+  border-bottom: 1px solid #243047;
 }
 
 .history-table tbody tr:hover {
-  background-color: #f8f9fa;
+  background-color: #182235;
 }
 
 .action-badge {
@@ -103,11 +106,13 @@
 }
 
 .action-scan {
-  background-color: #cfe2ff;
-  color: #084298;
+  background-color: rgba(60, 214, 255, 0.2);
+  color: #3CD6FF;
+  border: 1px solid rgba(60, 214, 255, 0.3);
 }
 
 .action-consume {
-  background-color: #d1e7dd;
-  color: #0f5132;
+  background-color: rgba(46, 229, 157, 0.2);
+  color: #2EE59D;
+  border: 1px solid rgba(46, 229, 157, 0.3);
 }

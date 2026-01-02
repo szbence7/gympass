@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { asyncHandler } from '../utils/asyncHandler';
 import { getRegistrationSessionByStripeSessionId, getRegistrationSessionById } from '../db/registrationSessions';
 import { getGymBySlug } from '../db/registry';
-import { env } from '../utils/env';
+import { buildTenantUrl } from '../utils/urlBuilder';
 
 const router = Router();
 
@@ -51,7 +51,7 @@ router.get('/success-data', asyncHandler(async (req: Request, res: Response) => 
         id: gym.id,
         name: gym.name,
         slug: gym.slug,
-        url: `${env.TENANT_PROTOCOL}://${gym.slug}.${env.TENANT_BASE_DOMAIN}${env.TENANT_PORT ? ':' + env.TENANT_PORT : ''}`,
+        url: buildTenantUrl(gym.slug),
         staffLoginPath: gym.staff_login_path,
       },
       message: 'Gym created successfully! Check your email for admin credentials.',
@@ -87,7 +87,7 @@ router.get('/success-data', asyncHandler(async (req: Request, res: Response) => 
         id: gym.id,
         name: gym.name,
         slug: gym.slug,
-        url: `${env.TENANT_PROTOCOL}://${gym.slug}.${env.TENANT_BASE_DOMAIN}${env.TENANT_PORT ? ':' + env.TENANT_PORT : ''}`,
+        url: buildTenantUrl(gym.slug),
         staffLoginPath: gym.staff_login_path,
       },
       adminEmail: registrationSession.admin_email,

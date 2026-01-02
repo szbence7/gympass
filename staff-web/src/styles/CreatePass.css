@@ -1,6 +1,6 @@
 .createpass-container {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #0B0F14;
   padding: 20px;
 }
 
@@ -9,15 +9,16 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  background: white;
+  background: #121824;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .createpass-header h1 {
   font-size: 28px;
-  color: #333;
+  color: #EAF0FF;
   margin: 0;
 }
 
@@ -28,8 +29,8 @@
 
 .nav-button {
   padding: 10px 20px;
-  background-color: #667eea;
-  color: white;
+  background-color: #33FF8A;
+  color: #0B0F14;
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -38,21 +39,22 @@
 }
 
 .nav-button:hover {
-  background-color: #5568d3;
+  background-color: #20D86E;
 }
 
 .step-panel {
-  background: white;
+  background: #121824;
   border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   max-width: 800px;
   margin: 0 auto;
 }
 
 .step-panel h2 {
   font-size: 22px;
-  color: #333;
+  color: #EAF0FF;
   margin-bottom: 20px;
 }
 
@@ -69,15 +71,21 @@
 .search-bar input {
   flex: 1;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #243047;
   border-radius: 8px;
   font-size: 16px;
+  background-color: #182235;
+  color: #EAF0FF;
+}
+
+.search-bar input::placeholder {
+  color: #7683A5;
 }
 
 .search-bar button {
   padding: 12px 24px;
-  background-color: #667eea;
-  color: white;
+  background-color: #33FF8A;
+  color: #0B0F14;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -85,18 +93,19 @@
 }
 
 .search-bar button:hover:not(:disabled) {
-  background-color: #5568d3;
+  background-color: #20D86E;
 }
 
 .search-bar button:disabled {
-  background-color: #ccc;
+  background-color: #243047;
+  color: #7683A5;
   cursor: not-allowed;
 }
 
 .new-user-button {
   padding: 10px 20px;
-  background-color: #28a745;
-  color: white;
+  background-color: #2EE59D;
+  color: #0B0F14;
   border: none;
   border-radius: 8px;
   font-size: 14px;
@@ -105,19 +114,21 @@
 }
 
 .new-user-button:hover {
-  background-color: #218838;
+  background-color: #20D86E;
 }
 
 .new-user-form {
-  background-color: #f8f9fa;
+  background-color: #182235;
   padding: 20px;
   border-radius: 8px;
+  border: 1px solid #243047;
   margin-bottom: 20px;
 }
 
 .new-user-form h3 {
   font-size: 18px;
   margin-bottom: 15px;
+  color: #EAF0FF;
 }
 
 .form-group {
@@ -129,15 +140,17 @@
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 5px;
-  color: #333;
+  color: #EAF0FF;
 }
 
 .form-group input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #243047;
   border-radius: 6px;
   font-size: 14px;
+  background-color: #121824;
+  color: #EAF0FF;
 }
 
 .users-list {
@@ -147,7 +160,7 @@
 .users-list h3 {
   font-size: 16px;
   margin-bottom: 15px;
-  color: #666;
+  color: #A8B3CF;
 }
 
 .user-items {
@@ -158,40 +171,41 @@
 
 .user-item {
   padding: 15px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #243047;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  background-color: #182235;
 }
 
 .user-item:hover {
-  border-color: #667eea;
-  background-color: #f8f9fa;
+  border-color: #33FF8A;
+  background-color: #1A2838;
 }
 
 .user-item-name {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #EAF0FF;
   margin-bottom: 4px;
 }
 
 .user-item-email {
   font-size: 14px;
-  color: #666;
+  color: #A8B3CF;
 }
 
 .selected-user-panel {
-  background-color: #e7f3ff;
+  background-color: rgba(51, 255, 138, 0.1);
   padding: 20px;
   border-radius: 8px;
-  border: 2px solid #667eea;
+  border: 2px solid #33FF8A;
 }
 
 .selected-user-panel h3 {
   font-size: 18px;
   margin-bottom: 10px;
-  color: #333;
+  color: #EAF0FF;
 }
 
 .user-info {
@@ -204,8 +218,8 @@
 }
 
 .temp-password-panel {
-  background-color: #fff3cd;
-  border: 2px solid #ffc107;
+  background-color: rgba(255, 176, 32, 0.15);
+  border: 2px solid #FFB020;
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -213,7 +227,7 @@
 
 .temp-password-panel h3 {
   font-size: 18px;
-  color: #856404;
+  color: #FFB020;
   margin-bottom: 10px;
 }
 
@@ -226,19 +240,19 @@
 
 .password-display code {
   flex: 1;
-  background-color: #fff;
+  background-color: #121824;
   padding: 12px;
   border-radius: 6px;
   font-size: 18px;
   font-weight: bold;
-  color: #333;
-  border: 1px solid #ddd;
+  color: #EAF0FF;
+  border: 1px solid #243047;
 }
 
 .copy-button {
   padding: 10px 20px;
-  background-color: #667eea;
-  color: white;
+  background-color: #33FF8A;
+  color: #0B0F14;
   border: none;
   border-radius: 6px;
   font-size: 14px;
@@ -247,20 +261,21 @@
 }
 
 .copy-button:hover {
-  background-color: #5568d3;
+  background-color: #20D86E;
 }
 
 .temp-password-note {
   font-size: 13px;
-  color: #856404;
+  color: #FFB020;
   margin-top: 10px;
   font-weight: 500;
 }
 
 .selected-user-summary {
-  background-color: #f0f0f0;
+  background-color: #182235;
   padding: 15px;
   border-radius: 8px;
+  border: 1px solid #243047;
   margin-bottom: 20px;
 }
 
@@ -273,30 +288,31 @@
 
 .pass-type-item {
   padding: 20px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #243047;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  background-color: #182235;
 }
 
 .pass-type-item:hover {
-  border-color: #667eea;
+  border-color: #33FF8A;
 }
 
 .pass-type-item.selected {
-  border-color: #667eea;
-  background-color: #e7f3ff;
+  border-color: #33FF8A;
+  background-color: rgba(51, 255, 138, 0.1);
 }
 
 .pass-type-item h3 {
   font-size: 18px;
-  color: #333;
+  color: #EAF0FF;
   margin-bottom: 8px;
 }
 
 .pass-type-item p {
   font-size: 14px;
-  color: #666;
+  color: #A8B3CF;
   margin-bottom: 12px;
 }
 
@@ -304,14 +320,14 @@
   display: flex;
   gap: 15px;
   font-size: 14px;
-  color: #444;
+  color: #A8B3CF;
 }
 
 .pass-type-details .price {
   margin-left: auto;
   font-size: 18px;
   font-weight: bold;
-  color: #667eea;
+  color: #33FF8A;
 }
 
 .button-group {
@@ -323,8 +339,8 @@
 .primary-button {
   flex: 1;
   padding: 14px;
-  background-color: #667eea;
-  color: white;
+  background-color: #33FF8A;
+  color: #0B0F14;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -333,19 +349,20 @@
 }
 
 .primary-button:hover:not(:disabled) {
-  background-color: #5568d3;
+  background-color: #20D86E;
 }
 
 .primary-button:disabled {
-  background-color: #ccc;
+  background-color: #243047;
+  color: #7683A5;
   cursor: not-allowed;
 }
 
 .secondary-button {
   flex: 1;
   padding: 14px;
-  background-color: #6c757d;
-  color: white;
+  background-color: #243047;
+  color: #EAF0FF;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -354,27 +371,28 @@
 }
 
 .secondary-button:hover {
-  background-color: #5a6268;
+  background-color: #182235;
 }
 
 .success-panel {
-  background: white;
+  background: #121824;
   border-radius: 12px;
   padding: 40px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   max-width: 600px;
   margin: 0 auto;
 }
 
 .success-panel h2 {
   font-size: 28px;
-  color: #28a745;
+  color: #2EE59D;
   margin-bottom: 15px;
 }
 
 .success-panel p {
   font-size: 16px;
-  color: #666;
+  color: #A8B3CF;
   margin-bottom: 30px;
 }

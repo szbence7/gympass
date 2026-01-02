@@ -22,8 +22,8 @@ const getApiBaseUrl = (): string => {
   // 3. Dev default: detect subdomain and build URL
   const hostname = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
   
-  // If on tenant subdomain (e.g., hanker.gym.local or hanker.gympass.hu)
-  const tenantBaseDomain = import.meta.env.VITE_TENANT_BASE_DOMAIN || 'gym.local';
+  // If on tenant subdomain (e.g., hanker.gym.local or hanker.gymgo.hu)
+  const tenantBaseDomain = import.meta.env.VITE_TENANT_BASE_DOMAIN || 'gympass.local';
   if (hostname.includes(`.${tenantBaseDomain}`)) {
     const protocol = import.meta.env.VITE_API_PROTOCOL || 'http';
     const port = import.meta.env.VITE_API_PORT || '4000';
@@ -55,7 +55,7 @@ const getAdminApiBaseUrl = (): string => {
 export const config = {
   apiBaseUrl: getApiBaseUrl(),
   adminApiBaseUrl: getAdminApiBaseUrl(),
-  tenantBaseDomain: import.meta.env.VITE_TENANT_BASE_DOMAIN || 'gym.local',
+  tenantBaseDomain: import.meta.env.VITE_TENANT_BASE_DOMAIN || 'gympass.local',
   isDev: import.meta.env.DEV,
   isProd: import.meta.env.PROD,
 };

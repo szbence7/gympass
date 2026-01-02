@@ -91,12 +91,8 @@ export async function createNewGym(params: CreateGymParams): Promise<CreateGymRe
   const adminEmail = params.adminEmail;
   await createInitialStaffAdmin(tenantDb, adminEmail, adminPassword, name);
 
-  // Construct gym URL
-  const tenantPort =
-    env.TENANT_PROTOCOL === 'https' || env.TENANT_PORT === '' || env.TENANT_PORT === '443'
-      ? ''
-      : `:${env.TENANT_PORT}`;
-  const gymUrl = `${env.TENANT_PROTOCOL}://${slug}.${env.TENANT_BASE_DOMAIN}${tenantPort}`;
+  // Build gym URL from env config
+  const gymUrl = buildTenantUrl(slug);
   
   // Get the created gym to retrieve staffLoginPath
   const createdGym = getGymBySlug(slug);

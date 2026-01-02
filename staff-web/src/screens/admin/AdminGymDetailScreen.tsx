@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { adminAPI, GymDetail } from '../../api/adminClient';
 import LanguageSelector from '../../components/LanguageSelector';
+import { config } from '../../config';
 import '../../styles/AdminGymDetail.css';
 
 export default function AdminGymDetailScreen() {
@@ -223,8 +224,8 @@ export default function AdminGymDetailScreen() {
           <div className="info-row">
             <span className="label">Staff Portal:</span>
             <span className="value">
-              <a href={`http://${gym.slug}.gym.local:5173`} target="_blank" rel="noopener noreferrer">
-                {gym.slug}.gym.local:5173
+              <a href={`${config.tenantBaseDomain.includes('local') ? 'http' : 'https'}://${gym.slug}.${config.tenantBaseDomain}${config.isDev ? ':5173' : ''}`} target="_blank" rel="noopener noreferrer">
+                {gym.slug}.{config.tenantBaseDomain}{config.isDev ? ':5173' : ''}
               </a>
             </span>
           </div>

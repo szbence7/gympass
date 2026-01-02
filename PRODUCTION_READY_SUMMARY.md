@@ -36,12 +36,12 @@ That's it! No env vars needed. Works exactly like before.
 NODE_ENV=production
 JWT_SECRET=<openssl rand -base64 48>
 
-PUBLIC_BASE_URL=https://gympass.hu
-TENANT_BASE_DOMAIN=gympass.hu
+PUBLIC_BASE_URL=https://gymgo.hu
+TENANT_BASE_DOMAIN=gymgo.hu
 TENANT_PROTOCOL=https
 TENANT_PORT=
 
-CORS_ALLOWED_ORIGINS=https://gympass.hu,https://*.gympass.hu
+CORS_ALLOWED_ORIGINS=https://gymgo.hu,https://*.gymgo.hu
 
 STRIPE_SECRET_KEY=sk_live_xxxxx
 STRIPE_WEBHOOK_SECRET=whsec_xxxxx
@@ -58,8 +58,8 @@ cd mobile && eas build --profile production
 
 ### 3. Done!
 
-- `https://gympass.hu` - Main site + registration
-- `https://{slug}.gympass.hu` - Gym staff portals
+- `https://gymgo.hu` - Main site + registration
+- `https://{slug}.gymgo.hu` - Gym staff portals
 - Mobile app connects to production API
 
 ---

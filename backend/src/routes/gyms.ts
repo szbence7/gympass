@@ -7,6 +7,7 @@ import { BadRequestError } from '../utils/errors';
 import { asyncHandler } from '../utils/asyncHandler';
 import { v4 as uuidv4 } from 'uuid';
 import { env } from '../utils/env';
+import { buildPublicBaseUrl } from '../utils/urlBuilder';
 
 const router = Router();
 
@@ -101,8 +102,8 @@ router.post('/register', asyncHandler(async (req: Request, res: Response) => {
             gymSlug: body.slug,
           },
         },
-        success_url: `${env.PUBLIC_BASE_URL}/registration/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${env.PUBLIC_BASE_URL}/registration/cancel`,
+        success_url: `${buildPublicBaseUrl()}/registration/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${buildPublicBaseUrl()}/registration/cancel`,
       });
       
       checkoutUrl = session.url || '';
@@ -111,7 +112,7 @@ router.post('/register', asyncHandler(async (req: Request, res: Response) => {
       // Development: dev-mode if Stripe not configured
       if (!env.STRIPE_SECRET_KEY || !env.STRIPE_PRICE_ID) {
         console.warn('⚠️ Stripe not configured in development. Using dev-mode.');
-        checkoutUrl = `${env.PUBLIC_BASE_URL}/registration/success?session_id=dev-mode-checkout`;
+        checkoutUrl = `${buildPublicBaseUrl()}/registration/success?session_id=dev-mode-checkout`;
         stripeCheckoutSessionId = 'dev-mode-checkout';
       } else {
         const stripe = require('stripe')(env.STRIPE_SECRET_KEY);

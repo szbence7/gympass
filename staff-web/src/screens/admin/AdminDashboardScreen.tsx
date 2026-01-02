@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { adminAPI, Gym } from '../../api/adminClient';
 import LanguageSelector from '../../components/LanguageSelector';
+import { config } from '../../config';
 import '../../styles/AdminDashboard.css';
 
 export default function AdminDashboardScreen() {
@@ -108,7 +109,7 @@ export default function AdminDashboardScreen() {
             <div key={gym.id} className="gym-card" onClick={() => window.location.href = `/admin/gyms/${gym.id}`}>
               <div className="gym-info">
                 <h3>{gym.name}</h3>
-                <p className="gym-slug">{gym.slug}.gym.local</p>
+                <p className="gym-slug">{gym.slug}.{config.tenantBaseDomain}</p>
               </div>
               <div className="gym-status">
                 <span className={`status-badge status-${gym.status.toLowerCase()}`}>

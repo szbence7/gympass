@@ -29,6 +29,8 @@ export function createApp() {
     'http://localhost:8081',
     'http://localhost:19006',
     /^http:\/\/192\.168\.\d+\.\d+:19006$/,
+    /^http:\/\/[a-z0-9-]+\.gympass\.local:5173$/,
+    /^http:\/\/[a-z0-9-]+\.gympass\.local:4000$/,
     /^http:\/\/[a-z0-9-]+\.gym\.local:5173$/,
     /^http:\/\/[a-z0-9-]+\.gym\.local:4000$/,
   ];
@@ -39,6 +41,14 @@ export function createApp() {
   if (allowedOriginsEnv) {
     const prodOrigins = allowedOriginsEnv.split(',').map(o => o.trim());
     allowedOrigins = [...devOrigins, ...prodOrigins];
+  } else if (env.NODE_ENV === 'production' && env.TENANT_BASE_DOMAIN) {
+    // Auto-add production domains if in production mode
+    const baseDomain = env.TENANT_BASE_DOMAIN;
+    const protocol = env.TENANT_PROTOCOL || 'https';
+    allowedOrigins.push(
+      `${protocol}://${baseDomain}`,
+      new RegExp(`^${protocol}://[a-z0-9-]+\\.${baseDomain.replace('.', '\\.')}$`)
+    );
   }
 
   app.use(cors({

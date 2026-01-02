@@ -2,6 +2,8 @@
   padding: 30px;
   max-width: 1400px;
   margin: 0 auto;
+  background-color: #0B0F14;
+  min-height: 100vh;
 }
 
 .header-title {
@@ -12,20 +14,22 @@
 
 .header-title h1 {
   margin: 0;
+  color: #EAF0FF;
 }
 
 .staff-login-path {
   font-size: 0.8em;
-  color: #666;
+  color: #A8B3CF;
   font-weight: normal;
 }
 
 .staff-login-path code {
-  background: #f8f9fa;
+  background: #182235;
   padding: 4px 8px;
   border-radius: 4px;
   font-family: monospace;
-  color: #333;
+  color: #EAF0FF;
+  border: 1px solid #243047;
 }
 
 .gym-info-grid {
@@ -36,16 +40,17 @@
 }
 
 .info-card {
-  background: white;
+  background: #121824;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .info-card h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: #EAF0FF;
   font-size: 1.2em;
 }
 
@@ -54,7 +59,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #243047;
 }
 
 .info-row:last-child {
@@ -62,24 +67,25 @@
 }
 
 .info-row .label {
-  color: #666;
+  color: #A8B3CF;
   font-weight: 500;
 }
 
 .info-row .value {
-  color: #333;
+  color: #EAF0FF;
 }
 
 .info-row .value.code {
   font-family: monospace;
   font-size: 0.9em;
-  background: #f8f9fa;
+  background: #182235;
   padding: 4px 8px;
   border-radius: 4px;
+  border: 1px solid #243047;
 }
 
 .info-row a {
-  color: #007bff;
+  color: #3CD6FF;
   text-decoration: none;
 }
 
@@ -88,7 +94,7 @@
 }
 
 .no-data {
-  color: #999;
+  color: #7683A5;
   font-style: italic;
 }
 
@@ -102,7 +108,7 @@
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #243047;
 }
 
 .pass-type-row:last-child {
@@ -111,20 +117,21 @@
 
 .pass-type-row .count {
   font-weight: 600;
-  color: #007bff;
+  color: #3CD6FF;
 }
 
 .actions-section {
-  background: white;
+  background: #121824;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .actions-section h3 {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #333;
+  color: #EAF0FF;
 }
 
 .action-buttons {
@@ -135,8 +142,8 @@
 
 .btn-danger {
   padding: 12px 24px;
-  background-color: #dc3545;
-  color: white;
+  background-color: #FF4D4D;
+  color: #EAF0FF;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -145,18 +152,19 @@
 }
 
 .btn-danger:hover {
-  background-color: #c82333;
+  background-color: #E63946;
 }
 
 .btn-danger:disabled {
-  background-color: #e4606d;
+  background-color: #243047;
+  color: #7683A5;
   cursor: not-allowed;
 }
 
 .btn-success {
   padding: 12px 24px;
-  background-color: #28a745;
-  color: white;
+  background-color: #2EE59D;
+  color: #0B0F14;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -165,19 +173,20 @@
 }
 
 .btn-success:hover {
-  background-color: #218838;
+  background-color: #20D86E;
 }
 
 .btn-success:disabled {
-  background-color: #5cb85c;
+  background-color: #243047;
+  color: #7683A5;
   cursor: not-allowed;
 }
 
 .btn-danger-outline {
   padding: 12px 24px;
-  background-color: white;
-  color: #dc3545;
-  border: 2px solid #dc3545;
+  background-color: #121824;
+  color: #FF4D4D;
+  border: 2px solid #FF4D4D;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
@@ -185,8 +194,8 @@
 }
 
 .btn-danger-outline:hover {
-  background-color: #dc3545;
-  color: white;
+  background-color: #FF4D4D;
+  color: #EAF0FF;
 }
 
 .btn-danger-outline:disabled {
@@ -196,8 +205,8 @@
 
 .btn-edit {
   padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
+  background-color: #3CD6FF;
+  color: #0B0F14;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -205,17 +214,19 @@
 }
 
 .btn-edit:hover {
-  background-color: #0056b3;
+  background-color: #24B7E6;
 }
 
 .edit-form input {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #243047;
   border-radius: 4px;
   font-size: 14px;
   box-sizing: border-box;
+  background-color: #182235;
+  color: #EAF0FF;
 }
 
 .status-badge {
@@ -227,23 +238,27 @@
 }
 
 .status-active {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(46, 229, 157, 0.2);
+  color: #2EE59D;
+  border: 1px solid rgba(46, 229, 157, 0.3);
 }
 
 .status-pending {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(255, 176, 32, 0.2);
+  color: #FFB020;
+  border: 1px solid rgba(255, 176, 32, 0.3);
 }
 
 .status-blocked {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 .status-deleted {
-  background: #e2e3e5;
-  color: #383d41;
+  background: #182235;
+  color: #7683A5;
+  border: 1px solid #243047;
 }
 
 .sub-status {
@@ -255,28 +270,33 @@
 }
 
 .sub-active {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(46, 229, 157, 0.2);
+  color: #2EE59D;
+  border: 1px solid rgba(46, 229, 157, 0.3);
 }
 
 .sub-trialing {
-  background: #d1ecf1;
-  color: #0c5460;
+  background: rgba(60, 214, 255, 0.2);
+  color: #3CD6FF;
+  border: 1px solid rgba(60, 214, 255, 0.3);
 }
 
 .sub-past_due {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(255, 176, 32, 0.2);
+  color: #FFB020;
+  border: 1px solid rgba(255, 176, 32, 0.3);
 }
 
 .sub-canceled,
 .sub-cancelled {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 .sub-unpaid {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 

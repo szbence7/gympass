@@ -2,6 +2,7 @@ import { createApp } from './app';
 import { env } from './utils/env';
 import { seedDefaultPlatformAdmin } from './db/seedPlatformAdmin';
 import { listGyms, seedDummyBusinessInfo, backfillStaffLoginPaths } from './db/registry';
+import { buildTenantUrl, buildPublicBaseUrl } from './utils/urlBuilder';
 
 const app = createApp();
 
@@ -24,21 +25,35 @@ app.listen(PORT, () => {
   console.log('🚀 GymPass SaaS - Server Started Successfully');
   console.log('='.repeat(70));
   
+  const publicBaseUrl = buildPublicBaseUrl();
+  const tenantBaseDomain = env.TENANT_BASE_DOMAIN || 'gympass.local';
+  const isDev = env.NODE_ENV !== 'production';
+  
   console.log('\n📡 BACKEND API:');
-  console.log(`   → http://localhost:${PORT}`);
-  console.log(`   → Health: http://localhost:${PORT}/health`);
+  console.log(`   → ${publicBaseUrl}`);
+  console.log(`   → Health: ${publicBaseUrl}/health`);
   
   console.log('\n🏋️  GYM REGISTRATION (Public):');
-  console.log(`   → http://localhost:${PORT}/register`);
+  console.log(`   → ${publicBaseUrl}/register`);
   
   console.log('\n🔐 PLATFORM ADMIN (SaaS Owner):');
-  console.log(`   → Login: http://localhost:5173/admin/login`);
-  console.log(`   → Dashboard: http://localhost:5173/admin`);
-  console.log(`   → Manage Gyms: http://localhost:5173/admin/gyms`);
+  if (isDev) {
+    console.log(`   → Login: http://localhost:5173/admin/login`);
+    console.log(`   → Dashboard: http://localhost:5173/admin`);
+    console.log(`   → Manage Gyms: http://localhost:5173/admin/gyms`);
+  } else {
+    console.log(`   → Login: ${publicBaseUrl}/admin/login`);
+    console.log(`   → Dashboard: ${publicBaseUrl}/admin`);
+    console.log(`   → Manage Gyms: ${publicBaseUrl}/admin/gyms`);
+  }
   console.log(`   → Credentials: admin@gympass.com / admin123`);
   
   console.log('\n👔 GYM STAFF PORTALS:');
-  console.log(`   → Default Gym: http://localhost:5173`);
+  if (isDev) {
+    console.log(`   → Default Gym: http://localhost:5173`);
+  } else {
+    console.log(`   → Default Gym: ${buildTenantUrl('default')}`);
+  }
   
   try {
     const gyms = listGyms(false); // Exclude deleted gyms
@@ -46,12 +61,19 @@ app.listen(PORT, () => {
       console.log(`   → Registered Gyms (${gyms.length}):`);
       gyms.slice(0, 10).forEach(gym => {
         const statusIcon = gym.status === 'ACTIVE' ? '✅' : gym.status === 'BLOCKED' ? '🚫' : '❌';
-        console.log(`      ${statusIcon} ${gym.name}: http://${gym.slug}.gym.local:5173`);
+        const gymUrl = buildTenantUrl(gym.slug);
+        if (isDev) {
+          console.log(`      ${statusIcon} ${gym.name}: ${gymUrl.replace(':4000', ':5173')}`);
+        } else {
+          console.log(`      ${statusIcon} ${gym.name}: ${gymUrl}`);
+        }
       });
       if (gyms.length > 10) {
         console.log(`      ... and ${gyms.length - 10} more gyms`);
       }
-      console.log(`\n   ⚠️  Add to /etc/hosts: 127.0.0.1  <slug>.gym.local`);
+      if (isDev && tenantBaseDomain.includes('local')) {
+        console.log(`\n   ⚠️  Add to /etc/hosts: 127.0.0.1  <slug>.${tenantBaseDomain}`);
+      }
     }
   } catch (e) {
     // Registry DB not ready yet

@@ -1,0 +1,42 @@
+/**
+ * GymPass Color Theme - Graphite + Neon
+ * CSS Variables for static HTML pages
+ * Matches mobile/src/theme/colors.ts exactly
+ */
+:root {
+  /* Backgrounds */
+  --color-background: #0B0F14;
+  --color-surface: #121824;
+  --color-surface-alt: #182235;
+  --color-border: #243047;
+  
+  /* Text */
+  --color-text-primary: #EAF0FF;
+  --color-text-secondary: #A8B3CF;
+  --color-text-muted: #7683A5;
+  
+  /* Primary Actions (Neon Green) */
+  --color-primary: #33FF8A;
+  --color-primary-pressed: #20D86E;
+  --color-primary-text: #0B0F14;
+  
+  /* Secondary Actions (Cyan) */
+  --color-secondary: #3CD6FF;
+  --color-secondary-pressed: #24B7E6;
+  
+  /* Status Colors */
+  --color-danger: #FF4D4D;
+  --color-warning: #FFB020;
+  --color-success: #2EE59D;
+  
+  /* Overlays */
+  --color-overlay: rgba(0, 0, 0, 0.55);
+  
+  /* Selected/Highlighted States */
+  --color-selected-bg: #1A2838;
+  --color-selected-border: #33FF8A;
+  
+  /* Shadow */
+  --color-shadow: #000;
+}
+

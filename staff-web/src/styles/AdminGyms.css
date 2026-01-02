@@ -2,12 +2,14 @@
   padding: 30px;
   max-width: 1600px;
   margin: 0 auto;
+  background-color: #0B0F14;
+  min-height: 100vh;
 }
 
 .btn-secondary {
   padding: 10px 20px;
-  background-color: #6c757d;
-  color: white;
+  background-color: #243047;
+  color: #EAF0FF;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -15,7 +17,7 @@
 }
 
 .btn-secondary:hover {
-  background-color: #5a6268;
+  background-color: #182235;
 }
 
 .filters {
@@ -27,23 +29,32 @@
 .search-input {
   flex: 1;
   padding: 10px 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #243047;
   border-radius: 6px;
   font-size: 14px;
+  background-color: #182235;
+  color: #EAF0FF;
+}
+
+.search-input::placeholder {
+  color: #7683A5;
 }
 
 .status-filter {
   padding: 10px 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #243047;
   border-radius: 6px;
   font-size: 14px;
   min-width: 150px;
+  background-color: #182235;
+  color: #EAF0FF;
 }
 
 .gyms-table-container {
-  background: white;
+  background: #121824;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 
@@ -53,33 +64,34 @@
 }
 
 .gyms-table thead {
-  background-color: #f8f9fa;
+  background-color: #182235;
 }
 
 .gyms-table th {
   padding: 15px;
   text-align: left;
   font-weight: 600;
-  color: #333;
-  border-bottom: 2px solid #dee2e6;
+  color: #EAF0FF;
+  border-bottom: 2px solid #243047;
 }
 
 .gyms-table td {
   padding: 15px;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid #243047;
+  color: #A8B3CF;
 }
 
 .gyms-table tbody tr:hover {
-  background-color: #f8f9fa;
+  background-color: #182235;
 }
 
 .gym-name {
   font-weight: 500;
-  color: #333;
+  color: #EAF0FF;
 }
 
 .gym-slug {
-  color: #666;
+  color: #A8B3CF;
   font-family: monospace;
   font-size: 0.9em;
 }
@@ -92,34 +104,39 @@
 }
 
 .no-sub {
-  background-color: #e2e3e5;
-  color: #6c757d;
+  background-color: #182235;
+  color: #7683A5;
+  border: 1px solid #243047;
 }
 
 .sub-active {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: rgba(46, 229, 157, 0.2);
+  color: #2EE59D;
+  border: 1px solid rgba(46, 229, 157, 0.3);
 }
 
 .sub-trialing {
-  background-color: #d1ecf1;
-  color: #0c5460;
+  background-color: rgba(60, 214, 255, 0.2);
+  color: #3CD6FF;
+  border: 1px solid rgba(60, 214, 255, 0.3);
 }
 
 .sub-past_due {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: rgba(255, 176, 32, 0.2);
+  color: #FFB020;
+  border: 1px solid rgba(255, 176, 32, 0.3);
 }
 
 .sub-canceled {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: rgba(255, 77, 77, 0.2);
+  color: #FF4D4D;
+  border: 1px solid rgba(255, 77, 77, 0.3);
 }
 
 .btn-view {
   padding: 6px 14px;
-  background-color: #007bff;
-  color: white;
+  background-color: #3CD6FF;
+  color: #0B0F14;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -127,26 +144,27 @@
 }
 
 .btn-view:hover {
-  background-color: #0056b3;
+  background-color: #24B7E6;
 }
 
 .no-results {
   padding: 40px;
   text-align: center;
-  color: #666;
+  color: #7683A5;
 }
 
 .loading,
 .error {
   padding: 40px;
   text-align: center;
+  color: #A8B3CF;
 }
 
 .error button {
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: #3CD6FF;
+  color: #0B0F14;
   border: none;
   border-radius: 6px;
   cursor: pointer;

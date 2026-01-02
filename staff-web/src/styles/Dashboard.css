@@ -1,6 +1,6 @@
 .dashboard-container {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #0B0F14;
   padding: 20px;
 }
 
@@ -15,7 +15,7 @@
 
 .dashboard-header h1 {
   font-size: 28px;
-  color: #333;
+  color: #EAF0FF;
   font-weight: 600;
 }
 
@@ -27,40 +27,40 @@
 
 .nav-button {
   padding: 10px 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #121824;
+  border: 1px solid #243047;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: #EAF0FF;
   transition: all 0.2s;
 }
 
 .nav-button:hover {
-  background-color: #f9f9f9;
-  border-color: #bbb;
+  background-color: #182235;
+  border-color: #33FF8A;
 }
 
 .refresh-button {
-  background-color: #4CAF50;
-  color: white;
-  border-color: #4CAF50;
+  background-color: #2EE59D;
+  color: #0B0F14;
+  border-color: #2EE59D;
 }
 
 .refresh-button:hover {
-  background-color: #45a049;
+  background-color: #20D86E;
 }
 
 .logout-button {
-  background-color: #dc3545;
-  color: white;
-  border-color: #dc3545;
+  background-color: #FF4D4D;
+  color: #EAF0FF;
+  border-color: #FF4D4D;
   margin-left: auto;
 }
 
 .logout-button:hover {
-  background-color: #c82333;
-  border-color: #c82333;
+  background-color: #E63946;
+  border-color: #E63946;
 }
 
 .modal-overlay {
@@ -69,7 +69,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.55);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -77,9 +77,10 @@
 }
 
 .modal-content {
-  background: white;
+  background: #121824;
   padding: 30px;
   border-radius: 12px;
+  border: 1px solid #243047;
   max-width: 600px;
   width: 90%;
   max-height: 80vh;
@@ -88,7 +89,7 @@
 
 .modal-content h2 {
   margin-top: 0;
-  color: #333;
+  color: #EAF0FF;
 }
 
 .gym-info-display {
@@ -98,41 +99,44 @@
 .info-section {
   margin-bottom: 20px;
   padding: 15px;
-  background: #f8f9fa;
+  background: #182235;
   border-radius: 8px;
+  border: 1px solid #243047;
 }
 
 .info-section h3 {
   margin-top: 0;
-  color: #007bff;
+  color: #3CD6FF;
   font-size: 1.1em;
 }
 
 .info-section p {
   margin: 8px 0;
-  color: #333;
+  color: #A8B3CF;
 }
 
 .info-note {
-  color: #856404;
-  background: #fff3cd;
+  color: #FFB020;
+  background: rgba(255, 176, 32, 0.15);
   padding: 10px;
   border-radius: 4px;
   margin: 15px 0;
+  border: 1px solid rgba(255, 176, 32, 0.3);
 }
 
 .btn-close {
   padding: 10px 20px;
-  background: #6c757d;
-  color: white;
-  border: none;
+  background: #243047;
+  color: #EAF0FF;
+  border: 1px solid #243047;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
 }
 
 .btn-close:hover {
-  background: #5a6268;
+  background: #182235;
+  border-color: #33FF8A;
 }
 
 .dashboard-loading,
@@ -142,23 +146,23 @@
 }
 
 .dashboard-error {
-  background-color: #fff;
+  background-color: #121824;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
   max-width: 500px;
   margin: 0 auto;
 }
 
 .dashboard-error p {
-  color: #e53e3e;
+  color: #FF4D4D;
   margin-bottom: 20px;
   font-size: 16px;
 }
 
 .retry-button {
   padding: 10px 24px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: #2EE59D;
+  color: #0B0F14;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -166,7 +170,7 @@
 }
 
 .retry-button:hover {
-  background-color: #45a049;
+  background-color: #20D86E;
 }
 
 .dashboard-content {
@@ -182,25 +186,28 @@
 }
 
 .stat-card {
-  background: white;
+  background: #121824;
   border-radius: 8px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(51, 255, 138, 0.2);
+  border-color: #33FF8A;
 }
 
 .stat-card.highlight {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #33FF8A 0%, #20D86E 100%);
+  color: #0B0F14;
+  border-color: #33FF8A;
 }
 
 .stat-card.skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #121824 25%, #182235 50%, #121824 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   min-height: 120px;
@@ -217,34 +224,34 @@
 
 .stat-label {
   font-size: 14px;
-  color: #666;
+  color: #A8B3CF;
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .stat-card.highlight .stat-label {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(11, 15, 20, 0.8);
 }
 
 .stat-value {
   font-size: 36px;
   font-weight: 700;
-  color: #333;
+  color: #EAF0FF;
   margin-bottom: 4px;
 }
 
 .stat-card.highlight .stat-value {
-  color: white;
+  color: #0B0F14;
 }
 
 .stat-caption {
   font-size: 13px;
-  color: #999;
+  color: #7683A5;
 }
 
 .stat-card.highlight .stat-caption {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(11, 15, 20, 0.7);
 }
 
 .panels-grid {
@@ -260,14 +267,15 @@
 }
 
 .panel {
-  background: white;
+  background: #121824;
   border-radius: 8px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #243047;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .panel.skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #121824 25%, #182235 50%, #121824 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   min-height: 400px;
@@ -275,17 +283,17 @@
 
 .panel h2 {
   font-size: 20px;
-  color: #333;
+  color: #EAF0FF;
   margin-bottom: 20px;
   font-weight: 600;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #243047;
   padding-bottom: 10px;
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #999;
+  color: #7683A5;
 }
 
 .empty-state p {
@@ -309,16 +317,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background-color: #f9f9f9;
+  background-color: #182235;
   border-radius: 6px;
-  border-left: 4px solid #4CAF50;
+  border-left: 4px solid #2EE59D;
   transition: background-color 0.2s;
   gap: 12px;
   flex-wrap: wrap;
 }
 
 .checkin-item:hover {
-  background-color: #f0f0f0;
+  background-color: #1A2838;
 }
 
 .checkin-user {
@@ -328,13 +336,13 @@
 
 .user-name {
   font-weight: 600;
-  color: #333;
+  color: #EAF0FF;
   margin-bottom: 4px;
 }
 
 .user-email {
   font-size: 13px;
-  color: #666;
+  color: #A8B3CF;
 }
 
 .checkin-details {
@@ -345,23 +353,23 @@
 
 .pass-type {
   font-weight: 500;
-  color: #555;
+  color: #EAF0FF;
   margin-bottom: 4px;
 }
 
 .checkin-time {
   font-size: 13px;
-  color: #888;
+  color: #7683A5;
 }
 
 .remaining-badge {
   padding: 4px 12px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #121824;
+  border: 1px solid #243047;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
-  color: #666;
+  color: #A8B3CF;
   white-space: nowrap;
 }
 
@@ -373,7 +381,7 @@
 
 .alert-group h3.alert-title {
   font-size: 16px;
-  color: #555;
+  color: #EAF0FF;
   margin-bottom: 12px;
   font-weight: 600;
 }
@@ -386,9 +394,9 @@
 
 .alert-item {
   padding: 14px;
-  background-color: #f9f9f9;
+  background-color: #182235;
   border-radius: 6px;
-  border-left: 4px solid #ff9800;
+  border-left: 4px solid #FFB020;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -396,20 +404,20 @@
 }
 
 .alert-item:hover {
-  background-color: #f0f0f0;
+  background-color: #1A2838;
 }
 
 .alert-item.expiring {
-  border-left-color: #ff9800;
+  border-left-color: #FFB020;
 }
 
 .alert-item.low-entries {
-  border-left-color: #f44336;
+  border-left-color: #FF4D4D;
 }
 
 .alert-user {
   font-weight: 600;
-  color: #333;
+  color: #EAF0FF;
   flex: 1;
 }
 
@@ -418,7 +426,7 @@
   gap: 12px;
   align-items: center;
   font-size: 13px;
-  color: #666;
+  color: #A8B3CF;
 }
 
 .alert-type {
@@ -427,7 +435,7 @@
 
 .alert-date,
 .alert-count {
-  color: #888;
+  color: #7683A5;
 }
 
 @media (max-width: 768px) {
@@ -480,4 +488,3 @@
     gap: 4px;
   }
 }
-

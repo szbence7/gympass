@@ -82,8 +82,8 @@ npm run gym
 ### Test 2: Prod URLs Generated Correctly
 ```bash
 # Set prod env (backend)
-export PUBLIC_BASE_URL="https://gympass.hu"
-export TENANT_BASE_DOMAIN="gympass.hu"
+export PUBLIC_BASE_URL="https://gymgo.hu"
+export TENANT_BASE_DOMAIN="gymgo.hu"
 export TENANT_PROTOCOL="https"
 export TENANT_PORT=""
 
@@ -109,7 +109,7 @@ curl -X POST http://localhost:4000/api/gyms/register \
   }'
 
 # Expected: Response contains:
-# - gym.url: "https://testgym.gympass.hu"
+# - gym.url: "https://testgym.gymgo.hu"
 # NOT localhost!
 ```
 

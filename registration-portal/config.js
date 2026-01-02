@@ -35,8 +35,8 @@ function getApiBaseUrl() {
 
 /**
  * Get public base URL (for displaying gym URLs after registration)
- * Dev default: http://localhost:4000 or http://{slug}.gym.local:4000
- * Prod: https://{slug}.gympass.hu
+ * Dev default: http://localhost:4000 or http://{slug}.gympass.local:4000
+ * Prod: https://{slug}.gymgo.hu
  */
 function getPublicBaseUrl() {
   return ENV.PUBLIC_BASE_URL || 'http://localhost:4000';
@@ -44,8 +44,8 @@ function getPublicBaseUrl() {
 
 /**
  * Get tenant base domain
- * Dev default: gym.local
- * Prod: gympass.hu (or whatever domain)
+ * Dev default: gympass.local
+ * Prod: gymgo.hu (or whatever domain)
  */
 function getTenantBaseDomain() {
   return ENV.TENANT_BASE_DOMAIN || 'gym.local';
@@ -84,8 +84,11 @@ config.buildGymUrl = function(slug) {
 };
 
 config.buildStaffUrl = function(slug, staffPath) {
+  const domain = config.tenantBaseDomain;
+  const protocol = config.protocol;
+  const port = config.port;
   // Staff web is typically on port 5173 in dev, or same domain in prod
-  if (protocol === 'http' && port === '4000') {
+  if (protocol === 'http' && (port === '4000' || port === '5173')) {
     // Dev mode
     return `http://${slug}.${domain}:5173/${staffPath}`;
   }

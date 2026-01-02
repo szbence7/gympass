@@ -17,13 +17,13 @@ export const env = {
   /**
    * Public base URL for the SaaS site (used for Stripe redirects, registration portal, etc.)
    * - Dev default: http://localhost:4000
-   * - Prod example: https://gympass.hu
+   * - Prod example: https://gymgo.hu
    */
   PUBLIC_BASE_URL: process.env.PUBLIC_BASE_URL || 'http://localhost:4000',
   /**
    * Tenant base domain used for gym subdomains.
    * - Dev default: gympass.local (use /etc/hosts for slug.gympass.local)
-   * - Prod example: gympass.hu
+   * - Prod example: gymgo.hu
    */
   TENANT_BASE_DOMAIN: process.env.TENANT_BASE_DOMAIN || 'gympass.local',
   /**

@@ -6,28 +6,29 @@
 }
 
 .language-selector label {
-  color: #666;
+  color: #A8B3CF;
   font-weight: 500;
 }
 
 .lang-dropdown {
   padding: 6px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #243047;
   border-radius: 6px;
-  background: white;
+  background: #182235;
+  color: #EAF0FF;
   cursor: pointer;
   font-size: 14px;
   transition: border-color 0.2s;
 }
 
 .lang-dropdown:hover {
-  border-color: #667eea;
+  border-color: #33FF8A;
 }
 
 .lang-dropdown:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #33FF8A;
+  box-shadow: 0 0 0 3px rgba(51, 255, 138, 0.1);
 }
 
 

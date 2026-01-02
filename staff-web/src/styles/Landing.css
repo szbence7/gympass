@@ -3,26 +3,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #0B0F14;
   padding: 20px;
 }
 
 .landing-content {
   text-align: center;
-  color: white;
+  color: #EAF0FF;
   max-width: 800px;
 }
 
 .landing-content h1 {
   font-size: 3.5em;
   margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #EAF0FF;
 }
 
 .tagline {
   font-size: 1.3em;
   opacity: 0.95;
   margin-bottom: 40px;
+  color: #A8B3CF;
 }
 
 .cta-section {
@@ -32,25 +34,27 @@
 .download-btn {
   padding: 18px 48px;
   font-size: 1.2em;
-  background: white;
-  color: #667eea;
+  background: #33FF8A;
+  color: #0B0F14;
   border: none;
   border-radius: 50px;
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(51, 255, 138, 0.3);
 }
 
 .download-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(51, 255, 138, 0.4);
+  background: #20D86E;
 }
 
 .download-note {
   margin-top: 15px;
   font-size: 0.9em;
   opacity: 0.9;
+  color: #A8B3CF;
 }
 
 .features {
@@ -61,7 +65,8 @@
 }
 
 .feature {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(18, 24, 36, 0.8);
+  border: 1px solid #243047;
   padding: 30px 20px;
   border-radius: 15px;
   backdrop-filter: blur(10px);
@@ -70,23 +75,27 @@
 
 .feature:hover {
   transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(26, 40, 56, 0.9);
+  border-color: #33FF8A;
 }
 
 .feature .icon {
   font-size: 3em;
   display: block;
   margin-bottom: 15px;
+  color: #33FF8A;
 }
 
 .feature h3 {
   margin: 10px 0;
   font-size: 1.3em;
+  color: #EAF0FF;
 }
 
 .feature p {
   opacity: 0.9;
   font-size: 0.95em;
+  color: #A8B3CF;
 }
 
 
