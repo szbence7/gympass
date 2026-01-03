@@ -46,7 +46,7 @@ export default function MyPassesScreen({ navigation }: any) {
     switch (status) {
       case 'ACTIVE': return colors.success;
       case 'EXPIRED': return colors.danger;
-      case 'DEPLETED': return colors.warning;
+      case 'DEPLETED': return colors.danger; // Changed from warning to danger - expired/invalid passes should be red
       case 'REVOKED': return colors.textMuted;
       default: return colors.textSecondary;
     }
@@ -139,7 +139,21 @@ export default function MyPassesScreen({ navigation }: any) {
               {getPurchasedPassDisplayName(pass)}
             </Text>
             <View style={[styles.statusBadge, { backgroundColor: getStatusColor(pass.status) }]}>
-              <Text style={styles.statusText}>{t(`passes.status.${pass.status.toLowerCase()}` as any, { defaultValue: pass.status })}</Text>
+              {console.log('[MyPasses] Badge status:', pass.status, 'Color:', getStatusColor(pass.status))}
+              <Text style={styles.statusText}>
+                {(() => {
+                  const now = new Date();
+                  const isDateExpired = pass.validUntil && new Date(pass.validUntil) < now;
+                  const isUsageExhausted = pass.remainingEntries !== null && pass.remainingEntries <= 0;
+                  
+                  if (isDateExpired || isUsageExhausted || pass.status === 'EXPIRED' || pass.status === 'DEPLETED') {
+                    return t('passes.status.expired');
+                  } else if (pass.status === 'REVOKED') {
+                    return t('passes.status.revoked');
+                  }
+                  return t('passes.status.active');
+                })()}
+              </Text>
             </View>
           </View>
 

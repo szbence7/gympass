@@ -202,7 +202,13 @@ export default function ScannerScreen() {
                 )}
                 <div className="detail-row">
                   <span className="label">{t('scanner.status')}:</span>
-                  <span className="value">{result.pass.status}</span>
+                  <span className="value">
+                    {result.pass.status === 'EXPIRED' || result.pass.status === 'DEPLETED'
+                      ? t('userDetail.passes.status.expired')
+                      : result.pass.status === 'REVOKED'
+                      ? t('userDetail.passes.status.revoked')
+                      : t('userDetail.passes.status.active')}
+                  </span>
                 </div>
 
                 {result.autoConsumed && (

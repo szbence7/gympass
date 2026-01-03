@@ -101,7 +101,7 @@
     "status": {
       "active": "Active",
       "expired": "Expired",
-      "depleted": "Depleted",
+      "depleted": "Expired",
       "revoked": "Revoked"
     },
     "passes": "Passes"

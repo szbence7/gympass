@@ -44,6 +44,24 @@ router.post('/scan', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHand
 
   const result = await validatePassByToken(body.token, true, staffUserId);
 
+  if (!result.valid) {
+    // Return user-friendly Hungarian error messages
+    let message = '';
+    if (result.reason === 'EXPIRED' || result.reason === 'DEPLETED') {
+      message = 'A bérlet lejárt.';
+    } else if (result.reason === 'REVOKED') {
+      message = 'A bérlet visszavonva.';
+    } else {
+      message = 'A bérlet nem található vagy érvénytelen.';
+    }
+    
+    return res.status(400).json({
+      valid: false,
+      reason: result.reason,
+      message,
+    });
+  }
+
   res.json(result);
 }));
 

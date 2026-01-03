@@ -214,7 +214,11 @@ export default function UserDetailScreen() {
                   <div className="pass-item-header">
                     <h3>{pass.passTypeName}</h3>
                     <span className={`pass-status ${pass.status.toLowerCase()}`}>
-                      {pass.status}
+                      {pass.status === 'EXPIRED' || pass.status === 'DEPLETED' 
+                        ? t('userDetail.passes.status.expired')
+                        : pass.status === 'REVOKED'
+                        ? t('userDetail.passes.status.revoked')
+                        : t('userDetail.passes.status.active')}
                     </span>
                   </div>
                   <div className="pass-item-details">

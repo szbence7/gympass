@@ -109,6 +109,12 @@
     "active": "Active",
     "passes": "Passes",
     "noPasses": "This user has no passes",
+    "status": {
+      "active": "Active",
+      "expired": "Expired",
+      "depleted": "Expired",
+      "revoked": "Revoked"
+    },
     "purchased": "Purchased",
     "validFrom": "Valid From",
     "validUntil": "Valid Until",

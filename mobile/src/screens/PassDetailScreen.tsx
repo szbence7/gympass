@@ -102,7 +102,7 @@ export default function PassDetailScreen({ route, navigation }: any) {
     switch (status) {
       case 'ACTIVE': return colors.success;
       case 'EXPIRED': return colors.danger;
-      case 'DEPLETED': return colors.warning;
+      case 'DEPLETED': return colors.danger; // Changed from warning to danger - expired/invalid passes should be red
       case 'REVOKED': return colors.textMuted;
       default: return colors.textSecondary;
     }
@@ -130,6 +130,22 @@ export default function PassDetailScreen({ route, navigation }: any) {
   }
 
   const qrContent = pass.token?.token ? `gympass://scan?token=${pass.token.token}` : '';
+  
+  // Determine if pass is expired by date (not just by status, check validUntil)
+  const now = new Date();
+  const isDateExpired = pass.validUntil && new Date(pass.validUntil) < now;
+  const isUsageExhausted = pass.remainingEntries !== null && pass.remainingEntries <= 0;
+  const isInvalid = isDateExpired || isUsageExhausted || pass.status === 'EXPIRED' || pass.status === 'DEPLETED' || pass.status === 'REVOKED';
+  
+  // Determine correct status text
+  const getStatusText = () => {
+    if (isDateExpired || isUsageExhausted || pass.status === 'EXPIRED' || pass.status === 'DEPLETED') {
+      return t('passes.status.expired');
+    } else if (pass.status === 'REVOKED') {
+      return t('passes.status.revoked');
+    }
+    return t('passes.status.active');
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -138,15 +154,29 @@ export default function PassDetailScreen({ route, navigation }: any) {
           {getPurchasedPassDisplayName(pass)}
         </Text>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(pass.status) }]}>
-          <Text style={styles.statusText}>{t(`passes.status.${pass.status.toLowerCase()}` as any, { defaultValue: pass.status })}</Text>
+          <Text style={styles.statusText}>{getStatusText()}</Text>
         </View>
+        {console.log('[PassDetail] Badge status:', pass.status, 'Color:', getStatusColor(pass.status))}
       </View>
 
       <View style={styles.qrSection}>
         <Text style={styles.sectionTitle}>{t('passes.scanQRCode')}</Text>
         {qrContent ? (
           <View style={styles.qrContainer}>
-            <QRCode value={qrContent} size={250} />
+            {isInvalid ? (
+              <View style={styles.qrWrapper}>
+                <View style={styles.qrGreyed}>
+                  <QRCode value={qrContent} size={250} />
+                </View>
+                <View style={styles.qrOverlay}>
+                  <Text style={styles.qrOverlayText}>
+                    {t('passes.status.expired')}
+                  </Text>
+                </View>
+              </View>
+            ) : (
+              <QRCode value={qrContent} size={250} />
+            )}
           </View>
         ) : (
           <Text style={styles.errorText}>{t('passes.qrCodeNotAvailable')}</Text>
@@ -280,6 +310,36 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  qrWrapper: {
+    position: 'relative',
+  },
+  qrGreyed: {
+    opacity: 0.3,
+  },
+  qrOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 12,
+  },
+  qrOverlayText: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: colors.danger,
+    transform: [{ rotate: '-35deg' }],
+    textShadowColor: 'rgba(0, 0, 0, 0.9)',
+    textShadowOffset: { width: 3, height: 3 },
+    textShadowRadius: 6,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
   },
   errorText: {
     color: colors.danger,

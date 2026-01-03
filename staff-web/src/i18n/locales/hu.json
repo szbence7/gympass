@@ -107,6 +107,12 @@
     "active": "Aktív",
     "passes": "Bérletek",
     "noPasses": "Ennek a felhasználónak nincs bérlete",
+    "status": {
+      "active": "Aktív",
+      "expired": "Lejárt",
+      "depleted": "Lejárt",
+      "revoked": "Visszavonva"
+    },
     "purchased": "Vásárolva",
     "validFrom": "Érvényes",
     "validUntil": "Érvényes",

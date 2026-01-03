@@ -101,7 +101,7 @@
     "status": {
       "active": "Aktív",
       "expired": "Lejárt",
-      "depleted": "Kimerült",
+      "depleted": "Lejárt",
       "revoked": "Visszavonva"
     },
     "passes": "Bérletek"
