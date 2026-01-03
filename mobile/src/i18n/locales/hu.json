@@ -1,0 +1,161 @@
+{
+  "common": {
+    "loading": "Betöltés...",
+    "error": "Hiba",
+    "success": "Siker",
+    "ok": "OK",
+    "cancel": "Mégse",
+    "retry": "Újra",
+    "continue": "Folytatás",
+    "save": "Mentés",
+    "saving": "Mentés...",
+    "delete": "Törlés",
+    "edit": "Szerkesztés",
+    "close": "Bezárás",
+    "back": "Vissza",
+    "next": "Következő",
+    "previous": "Előző",
+    "search": "Keresés",
+    "filter": "Szűrés",
+    "noResults": "Nincs találat",
+    "unknown": "Ismeretlen"
+  },
+  "auth": {
+    "signIn": "Bejelentkezés",
+    "signingIn": "Bejelentkezés...",
+    "signOut": "Kijelentkezés",
+    "email": "E-mail",
+    "password": "Jelszó",
+    "fullName": "Teljes név",
+    "register": "Regisztráció",
+    "registering": "Regisztrálás...",
+    "createAccount": "Fiók létrehozása",
+    "joinGymPass": "Csatlakozz a GymPass-hez ma",
+    "alreadyHaveAccount": "Már van fiókod? Bejelentkezés",
+    "dontHaveAccount": "Nincs fiókod? Regisztráció",
+    "fillAllFields": "Kérjük, töltse ki az összes mezőt",
+    "passwordMinLength": "A jelszónak legalább 6 karakternek kell lennie",
+    "userNotFound": "Nincs ilyen felhasználó",
+    "userNotFoundMessage": "Nincs ilyen felhasználó. Szeretnél regisztrálni?",
+    "invalidPassword": "Hibás jelszó",
+    "invalidPasswordMessage": "Hibás jelszó.",
+    "loginFailed": "Bejelentkezés sikertelen",
+    "registrationFailed": "Regisztráció sikertelen",
+    "selectedGym": "Kiválasztott terem",
+    "changeGym": "Másik gym választása"
+  },
+  "gym": {
+    "chooseGym": "Válassz edzőtermet",
+    "chooseGymSubtitle": "Válaszd ki azt az edzőtermet, amelyet a bérletekhez és tevékenységekhez használni szeretnél",
+    "loadingGyms": "Edzőtermek betöltése...",
+    "noGymsAvailable": "Nincs elérhető edzőterem",
+    "contactSupport": "Kérjük, lépj kapcsolatba az ügyfélszolgálattal",
+    "failedToLoadGyms": "Nem sikerült betölteni az edzőtermeket. Kérjük, próbáld újra.",
+    "failedToSaveSelection": "Nem sikerült menteni a választást. Kérjük, próbáld újra.",
+    "noGymSelected": "Nincs kiválasztott edzőterem",
+    "pleaseSelectGym": "Kérjük, válassz egy edzőtermet a folytatáshoz",
+    "currentGym": "Jelenlegi edzőterem",
+    "name": "Név",
+    "city": "Város",
+    "changeGym": "Edzőterem váltása",
+    "changeGymConfirm": "Az edzőterem váltása kijelentkeztet. Folytatod?",
+    "openingHours": "Nyitvatartás",
+    "openingHoursUnknown": "Nyitvatartás: ismeretlen"
+  },
+  "status": {
+    "open": "Nyitva",
+    "closingSoon": "Nemsoká bezár ({{time}})",
+    "closed": "Zárva",
+    "unknown": "Ismeretlen"
+  },
+  "passes": {
+    "buyPasses": "Bérletek vásárlása",
+    "myPasses": "Bérleteim",
+    "noPassesYet": "Még nincs bérleted",
+    "purchasePassToStart": "Vásárolj egy bérletet a kezdéshez",
+    "browsePasses": "Bérletek böngészése",
+    "purchasing": "Vásárlás...",
+    "buyNow": "Vásárlás most",
+    "purchasedSuccessfully": "A bérlet sikeresen megvásárolva!",
+    "viewMyPasses": "Bérleteim megtekintése",
+    "failedToLoadPassTypes": "Nem sikerült betölteni a bérlettípusokat",
+    "failedToPurchasePass": "Nem sikerült megvásárolni a bérletet",
+    "validForDays": "{{days}} napig érvényes",
+    "totalEntries": "{{count}} belépés összesen",
+    "unlimitedEntries": "Korlátlan belépés",
+    "expires": "Lejárat",
+    "remaining": "Hátralévő",
+    "serial": "Sorszám",
+    "purchased": "Vásárolva",
+    "type": "Típus",
+    "validUntil": "Érvényes",
+    "remainingEntries": "Hátralévő belépések",
+    "serialNumber": "Sorszám",
+    "tapToViewQR": "Érintsd meg a QR kód megtekintéséhez →",
+    "scanQRCode": "Olvasd be ezt a QR kódot az edzőteremben",
+    "passDetails": "Bérlet részletei",
+    "qrCodeNotAvailable": "QR kód nem elérhető",
+    "passNotFound": "Bérlet nem található",
+    "noExpiry": "Nincs lejárat",
+    "status": {
+      "active": "Aktív",
+      "expired": "Lejárt",
+      "depleted": "Kimerült",
+      "revoked": "Visszavonva"
+    },
+    "passes": "Bérletek"
+  },
+  "passTypes": {
+    "WEEKLY": {
+      "name": "Heti bérlet",
+      "description": "Érvényes 7 napig a vásárlástól számítva"
+    },
+    "MONTHLY": {
+      "name": "Havi bérlet",
+      "description": "Érvényes 30 napig a vásárlástól számítva"
+    },
+    "10ENTRY": {
+      "name": "10 alkalmas bérlet",
+      "description": "10 belépés, lejárat nélkül"
+    },
+    "TEN_ENTRY": {
+      "name": "10 alkalmas bérlet",
+      "description": "10 belépés, lejárat nélkül"
+    }
+  },
+  "wallet": {
+    "appleWallet": "Apple Wallet",
+    "addToAppleWallet": "Hozzáadás az Apple Wallet-hez",
+    "downloading": "Letöltés...",
+    "orOpenInBrowser": "vagy nyisd meg a wallet bérletet böngészőben",
+    "comingSoon": "Hamarosan...",
+    "passDownloaded": "A bérlet letöltve. Nyisd meg a Wallet-hez való hozzáadáshoz.",
+    "passFileDownloaded": "Bérlet fájl letöltve az eszközre",
+    "failedToDownload": "Nem sikerült letölteni a wallet bérletet",
+    "passTokenNotAvailable": "Bérlet token nem elérhető",
+    "developmentWarning": "⚠️ A fejlesztési bérletek nem telepíthetők, ha nincsenek aláírva. Éles környezetben biztosítsd, hogy a bérletek megfelelően alá vannak írva Apple tanúsítványokkal."
+  },
+  "settings": {
+    "title": "Beállítások",
+    "account": "Fiók",
+    "logout": "Kijelentkezés",
+    "logoutConfirm": "Biztosan ki akarsz jelentkezni?",
+    "language": "Nyelv",
+    "magyar": "Magyar",
+    "english": "English"
+  },
+  "days": {
+    "mon": "Hétfő",
+    "tue": "Kedd",
+    "wed": "Szerda",
+    "thu": "Csütörtök",
+    "fri": "Péntek",
+    "sat": "Szombat",
+    "sun": "Vasárnap"
+  },
+  "openingHours": {
+    "closed": "Zárva",
+    "format": "{{open}}–{{close}}"
+  }
+}
+

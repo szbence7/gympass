@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { authAPI } from '../api/client';
 import { saveToken, saveUser } from '../auth/storage';
 import { useAuth } from '../auth/AuthContext';
 import { colors } from '../theme/colors';
 
 export default function RegisterScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,12 +16,12 @@ export default function RegisterScreen({ navigation }: any) {
 
   const handleRegister = async () => {
     if (!name || !email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert(t('common.error'), t('auth.fillAllFields'));
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      Alert.alert(t('common.error'), t('auth.passwordMinLength'));
       return;
     }
 
@@ -30,7 +32,7 @@ export default function RegisterScreen({ navigation }: any) {
       await saveUser(response.user);
       await refreshAuth();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Registration failed');
+      Alert.alert(t('common.error'), error.message || t('auth.registrationFailed'));
     } finally {
       setLoading(false);
     }
@@ -42,12 +44,12 @@ export default function RegisterScreen({ navigation }: any) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Join GymPass today</Text>
+        <Text style={styles.title}>{t('auth.createAccount')}</Text>
+        <Text style={styles.subtitle}>{t('auth.joinGymPass')}</Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Full Name"
+          placeholder={t('auth.fullName')}
           placeholderTextColor={colors.textMuted}
           value={name}
           onChangeText={setName}
@@ -56,7 +58,7 @@ export default function RegisterScreen({ navigation }: any) {
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t('auth.email')}
           placeholderTextColor={colors.textMuted}
           value={email}
           onChangeText={setEmail}
@@ -67,7 +69,7 @@ export default function RegisterScreen({ navigation }: any) {
 
         <TextInput
           style={styles.input}
-          placeholder="Password (min 6 characters)"
+          placeholder={t('auth.password') + ' (' + t('auth.passwordMinLength') + ')'}
           placeholderTextColor={colors.textMuted}
           value={password}
           onChangeText={setPassword}
@@ -80,7 +82,7 @@ export default function RegisterScreen({ navigation }: any) {
           onPress={handleRegister}
           disabled={loading}
         >
-          <Text style={styles.buttonText}>{loading ? 'Creating account...' : 'Register'}</Text>
+          <Text style={styles.buttonText}>{loading ? t('auth.registering') : t('auth.register')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -88,7 +90,7 @@ export default function RegisterScreen({ navigation }: any) {
           onPress={() => navigation.navigate('Login')}
           disabled={loading}
         >
-          <Text style={styles.linkText}>Already have an account? Sign in</Text>
+          <Text style={styles.linkText}>{t('auth.alreadyHaveAccount')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

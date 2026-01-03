@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Platform, Linking } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import QRCode from 'react-native-qrcode-svg';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
@@ -7,8 +8,10 @@ import { passAPI, featuresAPI, UserPass, Features } from '../api/client';
 import { getToken } from '../auth/storage';
 import { API_BASE_URL } from '../api/config';
 import { colors } from '../theme/colors';
+import { getPassDisplayName } from '../utils/passLocalization';
 
 export default function PassDetailScreen({ route, navigation }: any) {
+  const { t } = useTranslation();
   const { passId } = route.params;
   const [pass, setPass] = useState<UserPass | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,7 +28,7 @@ export default function PassDetailScreen({ route, navigation }: any) {
       const passData = await passAPI.getPassById(passId);
       setPass(passData);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to load pass');
+      Alert.alert(t('common.error'), error.message || t('passes.failedToLoadPassTypes'));
       navigation.goBack();
     } finally {
       setLoading(false);
@@ -44,7 +47,7 @@ export default function PassDetailScreen({ route, navigation }: any) {
 
   const handleAddToWallet = async () => {
     if (!pass || !pass.token) {
-      Alert.alert('Error', 'Pass token not available');
+      Alert.alert(t('common.error'), t('wallet.passTokenNotAvailable'));
       return;
     }
 
@@ -70,17 +73,17 @@ export default function PassDetailScreen({ route, navigation }: any) {
         if (canShare) {
           await Sharing.shareAsync(downloadResult.uri, {
             mimeType: 'application/vnd.apple.pkpass',
-            dialogTitle: 'Add to Apple Wallet',
+            dialogTitle: t('wallet.addToAppleWallet'),
           });
         } else {
-          Alert.alert('Success', 'Pass downloaded. Open it to add to Wallet.');
+          Alert.alert(t('common.success'), t('wallet.passDownloaded'));
         }
       } else {
-        Alert.alert('Downloaded', 'Pass file downloaded to device');
+        Alert.alert(t('common.success'), t('wallet.passFileDownloaded'));
       }
     } catch (error: any) {
       console.error('Wallet download error:', error);
-      Alert.alert('Error', 'Failed to download wallet pass');
+      Alert.alert(t('common.error'), t('wallet.failedToDownload'));
     } finally {
       setDownloading(false);
     }
@@ -106,7 +109,7 @@ export default function PassDetailScreen({ route, navigation }: any) {
   };
 
   const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return 'No expiry';
+    if (!dateStr) return t('passes.noExpiry');
     return new Date(dateStr).toLocaleDateString();
   };
 
@@ -121,7 +124,7 @@ export default function PassDetailScreen({ route, navigation }: any) {
   if (!pass) {
     return (
       <View style={styles.centerContainer}>
-        <Text>Pass not found</Text>
+        <Text>{t('passes.passNotFound')}</Text>
       </View>
     );
   }
@@ -131,41 +134,43 @@ export default function PassDetailScreen({ route, navigation }: any) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{pass.passType?.name || 'Pass'}</Text>
+        <Text style={styles.title}>
+          {pass.passType ? getPassDisplayName(pass.passType) : t('passes.passes')}
+        </Text>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(pass.status) }]}>
-          <Text style={styles.statusText}>{pass.status}</Text>
+          <Text style={styles.statusText}>{t(`passes.status.${pass.status.toLowerCase()}` as any, { defaultValue: pass.status })}</Text>
         </View>
       </View>
 
       <View style={styles.qrSection}>
-        <Text style={styles.sectionTitle}>Scan this QR code at the gym</Text>
+        <Text style={styles.sectionTitle}>{t('passes.scanQRCode')}</Text>
         {qrContent ? (
           <View style={styles.qrContainer}>
             <QRCode value={qrContent} size={250} />
           </View>
         ) : (
-          <Text style={styles.errorText}>QR code not available</Text>
+          <Text style={styles.errorText}>{t('passes.qrCodeNotAvailable')}</Text>
         )}
       </View>
 
       <View style={styles.detailsSection}>
-        <Text style={styles.sectionTitle}>Pass Details</Text>
+        <Text style={styles.sectionTitle}>{t('passes.passDetails')}</Text>
         
         <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Type:</Text>
+          <Text style={styles.detailLabel}>{t('passes.type')}:</Text>
           <Text style={styles.detailValue}>{pass.passType?.name}</Text>
         </View>
 
         {pass.validUntil && (
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Valid Until:</Text>
+            <Text style={styles.detailLabel}>{t('passes.validUntil')}:</Text>
             <Text style={styles.detailValue}>{formatDate(pass.validUntil)}</Text>
           </View>
         )}
 
         {pass.remainingEntries !== null && (
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Remaining Entries:</Text>
+            <Text style={styles.detailLabel}>{t('passes.remainingEntries')}:</Text>
             <Text style={styles.detailValue}>
               {pass.remainingEntries} / {pass.totalEntries}
             </Text>
@@ -173,25 +178,25 @@ export default function PassDetailScreen({ route, navigation }: any) {
         )}
 
         <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Purchased:</Text>
+          <Text style={styles.detailLabel}>{t('passes.purchased')}:</Text>
           <Text style={styles.detailValue}>{formatDate(pass.purchasedAt)}</Text>
         </View>
 
         <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Serial Number:</Text>
+          <Text style={styles.detailLabel}>{t('passes.serialNumber')}:</Text>
           <Text style={styles.detailValue}>{pass.walletSerialNumber}</Text>
         </View>
       </View>
 
       {Platform.OS === 'ios' && pass.status === 'ACTIVE' && (
         <View style={styles.walletSection}>
-          <Text style={styles.sectionTitle}>Apple Wallet</Text>
+          <Text style={styles.sectionTitle}>{t('wallet.appleWallet')}</Text>
           
           {features.appleWallet ? (
             <>
               <View style={styles.warningBox}>
                 <Text style={styles.warningText}>
-                  ⚠️ Development passes may not install if unsigned. In production, ensure passes are properly signed with Apple certificates.
+                  {t('wallet.developmentWarning')}
                 </Text>
               </View>
               
@@ -201,7 +206,7 @@ export default function PassDetailScreen({ route, navigation }: any) {
                 disabled={downloading}
               >
                 <Text style={styles.walletButtonText}>
-                  {downloading ? 'Downloading...' : 'Add to Apple Wallet'}
+                  {downloading ? t('wallet.downloading') : t('wallet.addToAppleWallet')}
                 </Text>
               </TouchableOpacity>
               
@@ -209,11 +214,11 @@ export default function PassDetailScreen({ route, navigation }: any) {
                 style={styles.linkButton}
                 onPress={handleOpenInSafari}
               >
-                <Text style={styles.linkText}>Or open wallet pass in browser</Text>
+                <Text style={styles.linkText}>{t('wallet.orOpenInBrowser')}</Text>
               </TouchableOpacity>
             </>
           ) : (
-            <Text style={styles.comingSoonText}>Coming soon...</Text>
+            <Text style={styles.comingSoonText}>{t('wallet.comingSoon')}</Text>
           )}
         </View>
       )}

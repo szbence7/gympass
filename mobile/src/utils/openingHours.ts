@@ -3,6 +3,7 @@
  */
 
 import { OpeningHours, DayHours } from '../context/GymContext';
+import i18n from '../i18n/config';
 
 export interface GymStatus {
   status: 'open' | 'closingSoon' | 'closed';
@@ -114,18 +115,18 @@ export function computeGymOpenStatus(openingHours: OpeningHours | null | undefin
 }
 
 /**
- * Get status text in Hungarian
+ * Get status text (translated)
  */
 export function getStatusText(status: GymStatus): string {
   switch (status.status) {
     case 'open':
-      return 'Nyitva';
+      return i18n.t('status.open');
     case 'closingSoon':
-      return `Nemsoká bezár (${status.closesAt})`;
+      return i18n.t('status.closingSoon', { time: status.closesAt });
     case 'closed':
-      return 'Zárva';
+      return i18n.t('status.closed');
     default:
-      return 'Ismeretlen';
+      return i18n.t('status.unknown');
   }
 }
 
@@ -146,28 +147,19 @@ export function getStatusColor(status: GymStatus): string {
 }
 
 /**
- * Get day name in Hungarian
+ * Get day name (translated)
  */
 export function getDayName(day: string): string {
-  const dayNames: { [key: string]: string } = {
-    mon: 'Hétfő',
-    tue: 'Kedd',
-    wed: 'Szerda',
-    thu: 'Csütörtök',
-    fri: 'Péntek',
-    sat: 'Szombat',
-    sun: 'Vasárnap',
-  };
-  return dayNames[day] || day;
+  return i18n.t(`days.${day}`, { defaultValue: day });
 }
 
 /**
- * Format hours for display
+ * Format hours for display (translated)
  */
 export function formatHours(dayHours: DayHours): string {
   if (dayHours.closed) {
-    return 'Zárva';
+    return i18n.t('openingHours.closed');
   }
-  return `${dayHours.open}–${dayHours.close}`;
+  return i18n.t('openingHours.format', { open: dayHours.open, close: dayHours.close });
 }
 

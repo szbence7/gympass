@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { staffAPI, UserDetail } from '../api/client';
 import '../styles/Users.css';
 
 export default function UserDetailScreen() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
@@ -37,9 +39,9 @@ export default function UserDetailScreen() {
     
     const action = userDetail.user.isBlocked ? 'unblock' : 'block';
     const confirmed = window.confirm(
-      `Are you sure you want to ${action} this user?\n\n` +
-      `User: ${userDetail.user.name} (${userDetail.user.email})\n\n` +
-      `${action === 'block' ? 'This will prevent them from logging in and using their passes.' : 'This will allow them to login and use their passes again.'}`
+      userDetail.user.isBlocked 
+        ? t('userDetail.confirmUnblock')
+        : t('userDetail.confirmBlock')
     );
 
     if (!confirmed) return;
@@ -48,13 +50,14 @@ export default function UserDetailScreen() {
     try {
       if (userDetail.user.isBlocked) {
         await staffAPI.unblockUser(id);
+        alert(t('userDetail.userUnblocked'));
       } else {
         await staffAPI.blockUser(id);
+        alert(t('userDetail.userBlocked'));
       }
       await loadUserDetail();
-      alert(`User ${action}ed successfully`);
     } catch (err: any) {
-      alert(err.message || `Failed to ${action} user`);
+      alert(err.message || t('userDetail.failedToBlock'));
     } finally {
       setActionLoading(false);
     }
@@ -65,17 +68,16 @@ export default function UserDetailScreen() {
 
     const email = userDetail.user.email;
     const confirmText = window.prompt(
-      `⚠️ WARNING: This will permanently delete this user and all their passes!\n\n` +
-      `User: ${userDetail.user.name}\n` +
-      `Email: ${email}\n` +
-      `Passes: ${userDetail.passes.length}\n\n` +
-      `This action CANNOT be undone.\n\n` +
-      `Type the user's email to confirm deletion:`
+      `${t('userDetail.confirmDelete')}\n\n` +
+      `${t('scanner.name')}: ${userDetail.user.name}\n` +
+      `${t('scanner.email')}: ${email}\n` +
+      `${t('userDetail.passes')}: ${userDetail.passes.length}\n\n` +
+      `${t('userDetail.typeEmailToConfirm')}`
     );
 
     if (confirmText !== email) {
       if (confirmText !== null) {
-        alert('Deletion cancelled: Email did not match.');
+        alert(t('userDetail.deletionCancelled'));
       }
       return;
     }
@@ -83,17 +85,17 @@ export default function UserDetailScreen() {
     setActionLoading(true);
     try {
       await staffAPI.deleteUser(id);
-      alert('User deleted successfully');
+      alert(t('userDetail.userDeleted'));
       navigate('/users');
     } catch (err: any) {
-      alert(err.message || 'Failed to delete user');
+      alert(err.message || t('userDetail.failedToDelete'));
       setActionLoading(false);
     }
   };
 
   const handlePassAction = async (passId: string, action: 'revoke' | 'restore') => {
     const confirmed = window.confirm(
-      `Are you sure you want to ${action} this pass?`
+      action === 'revoke' ? t('userDetail.confirmRevoke') : t('userDetail.confirmRestore')
     );
 
     if (!confirmed) return;
@@ -102,20 +104,21 @@ export default function UserDetailScreen() {
     try {
       if (action === 'revoke') {
         await staffAPI.revokePass(passId);
+        alert(t('userDetail.passRevoked'));
       } else {
         await staffAPI.restorePass(passId);
+        alert(t('userDetail.passRestored'));
       }
       await loadUserDetail();
-      alert(`Pass ${action}d successfully`);
     } catch (err: any) {
-      alert(err.message || `Failed to ${action} pass`);
+      alert(err.message || t('userDetail.failedToLoad'));
     } finally {
       setActionLoading(false);
     }
   };
 
   const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return 'No expiry';
+    if (!dateStr) return t('passes.noExpiry');
     return new Date(dateStr).toLocaleDateString();
   };
 
@@ -124,15 +127,15 @@ export default function UserDetailScreen() {
   };
 
   if (loading) {
-    return <div className="users-container"><div className="loading-state">Loading...</div></div>;
+    return <div className="users-container"><div className="loading-state">{t('common.loading')}</div></div>;
   }
 
   if (error || !userDetail) {
     return (
       <div className="users-container">
-        <div className="error-message">{error || 'User not found'}</div>
+        <div className="error-message">{error || t('userDetail.failedToLoad')}</div>
         <button onClick={() => navigate('/users')} className="nav-button">
-          Back to Users
+          {t('common.back')} {t('users.title')}
         </button>
       </div>
     );
@@ -143,50 +146,42 @@ export default function UserDetailScreen() {
   return (
     <div className="users-container">
       <div className="users-header">
-        <h1>User Details</h1>
+        <h1>{t('userDetail.title')}</h1>
         <div className="nav-buttons">
           <button onClick={() => navigate('/users')} className="nav-button">
-            ← Back to Users
+            ← {t('common.back')} {t('users.title')}
           </button>
           <button onClick={() => window.location.href = '/dashboard'} className="nav-button">
-            Dashboard
+            {t('dashboard.title')}
           </button>
         </div>
       </div>
 
       <div className="user-detail-content">
         <div className="detail-card">
-          <h2>User Information</h2>
+          <h2>{t('userDetail.userInfo')}</h2>
           <div className="detail-grid">
             <div className="detail-row">
-              <span className="label">Name:</span>
+              <span className="label">{t('scanner.name')}:</span>
               <span className="value">{user.name}</span>
             </div>
             <div className="detail-row">
-              <span className="label">Email:</span>
+              <span className="label">{t('scanner.email')}:</span>
               <span className="value">{user.email}</span>
             </div>
             <div className="detail-row">
-              <span className="label">Role:</span>
-              <span className="value">{user.role}</span>
-            </div>
-            <div className="detail-row">
-              <span className="label">Status:</span>
-              <span className="value">
-                {user.isBlocked ? (
-                  <span className="status-badge blocked">BLOCKED</span>
-                ) : (
-                  <span className="status-badge active">ACTIVE</span>
-                )}
-              </span>
-            </div>
-            <div className="detail-row">
-              <span className="label">Registered:</span>
+              <span className="label">{t('userDetail.registered')}:</span>
               <span className="value">{formatDateTime(user.createdAt)}</span>
             </div>
             <div className="detail-row">
-              <span className="label">User ID:</span>
-              <span className="value code">{user.id}</span>
+              <span className="label">{t('users.status')}:</span>
+              <span className="value">
+                {user.isBlocked ? (
+                  <span className="status-badge blocked">{t('userDetail.blocked')}</span>
+                ) : (
+                  <span className="status-badge active">{t('userDetail.active')}</span>
+                )}
+              </span>
             </div>
           </div>
 
@@ -196,22 +191,22 @@ export default function UserDetailScreen() {
               disabled={actionLoading}
               className={user.isBlocked ? 'action-button success' : 'action-button warning'}
             >
-              {user.isBlocked ? 'Unblock User' : 'Block User'}
+              {user.isBlocked ? t('userDetail.unblockUser') : t('userDetail.blockUser')}
             </button>
             <button
               onClick={handleDeleteUser}
               disabled={actionLoading}
               className="action-button danger"
             >
-              Delete User
+              {t('userDetail.deleteUser')}
             </button>
           </div>
         </div>
 
         <div className="detail-card">
-          <h2>Passes ({passes.length})</h2>
+          <h2>{t('userDetail.passes')} ({passes.length})</h2>
           {passes.length === 0 ? (
-            <div className="empty-state">This user has no passes</div>
+            <div className="empty-state">{t('userDetail.noPasses')}</div>
           ) : (
             <div className="passes-list">
               {passes.map((pass) => (
@@ -224,25 +219,25 @@ export default function UserDetailScreen() {
                   </div>
                   <div className="pass-item-details">
                     <div className="pass-item-row">
-                      <span className="label">Purchased:</span>
+                      <span className="label">{t('userDetail.purchased')}:</span>
                       <span>{formatDateTime(pass.purchasedAt)}</span>
                     </div>
                     <div className="pass-item-row">
-                      <span className="label">Valid From:</span>
+                      <span className="label">{t('userDetail.validFrom')}:</span>
                       <span>{formatDate(pass.validFrom)}</span>
                     </div>
                     <div className="pass-item-row">
-                      <span className="label">Valid Until:</span>
+                      <span className="label">{t('userDetail.validUntil')}:</span>
                       <span>{formatDate(pass.validUntil)}</span>
                     </div>
                     {pass.totalEntries !== null && (
                       <div className="pass-item-row">
-                        <span className="label">Entries:</span>
+                        <span className="label">{t('userDetail.entries')}:</span>
                         <span>{pass.remainingEntries} / {pass.totalEntries}</span>
                       </div>
                     )}
                     <div className="pass-item-row">
-                      <span className="label">Serial:</span>
+                      <span className="label">{t('userDetail.serial')}:</span>
                       <span className="code">{pass.walletSerialNumber}</span>
                     </div>
                   </div>
@@ -252,7 +247,7 @@ export default function UserDetailScreen() {
                       disabled={actionLoading}
                       className="action-button small warning"
                     >
-                      Revoke Pass
+                      {t('userDetail.revoke')}
                     </button>
                   )}
                   {pass.status === 'REVOKED' && (
@@ -261,7 +256,7 @@ export default function UserDetailScreen() {
                       disabled={actionLoading}
                       className="action-button small success"
                     >
-                      Restore Pass
+                      {t('userDetail.restore')}
                     </button>
                   )}
                 </div>

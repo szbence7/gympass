@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { passAPI, PassType } from '../api/client';
 import { colors } from '../theme/colors';
 import { useGym } from '../context/GymContext';
 import { computeGymOpenStatus, getStatusText, getStatusColor } from '../utils/openingHours';
+import { getPassDisplayName, getPassDisplayDescription } from '../utils/passLocalization';
 
 export default function HomeScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [passTypes, setPassTypes] = useState<PassType[]>([]);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
@@ -30,7 +33,7 @@ export default function HomeScreen({ navigation }: any) {
       const types = await passAPI.getPassTypes();
       setPassTypes(types);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to load pass types');
+      Alert.alert(t('common.error'), error.message || t('passes.failedToLoadPassTypes'));
     } finally {
       setLoading(false);
     }
@@ -40,12 +43,12 @@ export default function HomeScreen({ navigation }: any) {
     setPurchasing(passTypeId);
     try {
       await passAPI.purchasePass(passTypeId);
-      Alert.alert('Success', 'Pass purchased successfully!', [
-        { text: 'View My Passes', onPress: () => navigation.navigate('MyPasses') },
-        { text: 'OK' },
+      Alert.alert(t('common.success'), t('passes.purchasedSuccessfully'), [
+        { text: t('passes.viewMyPasses'), onPress: () => navigation.navigate('MyPasses') },
+        { text: t('common.ok') },
       ]);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to purchase pass');
+      Alert.alert(t('common.error'), error.message || t('passes.failedToPurchasePass'));
     } finally {
       setPurchasing(null);
     }
@@ -84,22 +87,22 @@ export default function HomeScreen({ navigation }: any) {
       {passTypes.map((passType) => (
         <View key={passType.id} style={styles.card}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>{passType.name}</Text>
+            <Text style={styles.cardTitle}>{getPassDisplayName(passType)}</Text>
             <Text style={styles.price}>${passType.price.toFixed(2)}</Text>
           </View>
 
-          {passType.description && (
-            <Text style={styles.description}>{passType.description}</Text>
+          {getPassDisplayDescription(passType) && (
+            <Text style={styles.description}>{getPassDisplayDescription(passType)}</Text>
           )}
 
           <View style={styles.details}>
             {passType.durationDays && (
-              <Text style={styles.detailText}>Valid for {passType.durationDays} days</Text>
+              <Text style={styles.detailText}>{t('passes.validForDays', { days: passType.durationDays })}</Text>
             )}
             {passType.totalEntries ? (
-              <Text style={styles.detailText}>{passType.totalEntries} total entries</Text>
+              <Text style={styles.detailText}>{t('passes.totalEntries', { count: passType.totalEntries })}</Text>
             ) : (
-              <Text style={styles.detailText}>Unlimited entries</Text>
+              <Text style={styles.detailText}>{t('passes.unlimitedEntries')}</Text>
             )}
           </View>
 
@@ -109,7 +112,7 @@ export default function HomeScreen({ navigation }: any) {
             disabled={purchasing === passType.id}
           >
             <Text style={styles.buyButtonText}>
-              {purchasing === passType.id ? 'Purchasing...' : 'Buy Now'}
+              {purchasing === passType.id ? t('passes.purchasing') : t('passes.buyNow')}
             </Text>
           </TouchableOpacity>
         </View>

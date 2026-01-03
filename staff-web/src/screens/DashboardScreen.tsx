@@ -104,25 +104,25 @@ export default function DashboardScreen() {
         <LanguageSelector />
         <div className="nav-buttons">
           <button onClick={() => window.location.href = '/scanner'} className="nav-button">
-            Scanner
+            {t('dashboard.scanPass')}
           </button>
           <button onClick={() => window.location.href = '/users'} className="nav-button">
-            Users
+            {t('dashboard.viewUsers')}
           </button>
           <button onClick={() => window.location.href = '/create-pass'} className="nav-button">
-            Create Pass
+            {t('dashboard.createPass')}
           </button>
           <button onClick={() => window.location.href = '/history'} className="nav-button">
-            History
+            {t('dashboard.viewHistory')}
           </button>
           <button onClick={handleShowGymInfo} className="nav-button">
             🏢 {t('dashboard.gymInfo')}
           </button>
           <button onClick={loadDashboard} className="nav-button refresh-button">
-            ↻ Refresh
+            ↻ {t('common.refresh')}
           </button>
           <button onClick={handleLogout} className="nav-button logout-button">
-            🚪 Logout
+            🚪 {t('dashboard.logout')}
           </button>
         </div>
       </div>
@@ -130,54 +130,45 @@ export default function DashboardScreen() {
       {showGymInfo && gymInfo && (
         <div className="modal-overlay" onClick={() => setShowGymInfo(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Gym Business Information (Read-Only)</h2>
+            <h2>{t('gymInfo.title')}</h2>
             <div className="gym-info-display">
               <div className="info-section">
-                <h3>Company</h3>
-                <p><strong>Name:</strong> {gymInfo.company_name || 'N/A'}</p>
-                <p><strong>Tax Number:</strong> {gymInfo.tax_number || 'N/A'}</p>
+                <h3>{t('gymInfo.company')}</h3>
+                <p><strong>{t('scanner.name')}:</strong> {gymInfo.company_name || t('common.nA')}</p>
+                <p><strong>{t('gymInfo.taxNumber')}:</strong> {gymInfo.tax_number || t('common.nA')}</p>
               </div>
               <div className="info-section">
-                <h3>Address</h3>
-                <p>{gymInfo.address_line1 || 'N/A'}</p>
+                <h3>{t('gymInfo.address')}</h3>
+                <p>{gymInfo.address_line1 || t('common.nA')}</p>
                 {gymInfo.address_line2 && <p>{gymInfo.address_line2}</p>}
                 <p>{gymInfo.postal_code} {gymInfo.city}</p>
                 <p>{gymInfo.country}</p>
               </div>
               <div className="info-section">
-                <h3>Contact</h3>
-                <p><strong>Name:</strong> {gymInfo.contact_name || 'N/A'}</p>
-                <p><strong>Email:</strong> {gymInfo.contact_email || 'N/A'}</p>
-                <p><strong>Phone:</strong> {gymInfo.contact_phone || 'N/A'}</p>
+                <h3>{t('gymInfo.contact')}</h3>
+                <p><strong>{t('scanner.name')}:</strong> {gymInfo.contact_name || t('common.nA')}</p>
+                <p><strong>{t('scanner.email')}:</strong> {gymInfo.contact_email || t('common.nA')}</p>
+                <p><strong>{t('gymInfo.phone')}:</strong> {gymInfo.contact_phone || t('common.nA')}</p>
               </div>
             </div>
-            <p className="info-note">⚠️ Only platform administrators can edit this information.</p>
+            <p className="info-note">⚠️ {t('gymInfo.onlyAdminCanEdit')}</p>
             
             <div className="info-section" style={{ marginTop: '30px', borderTop: '2px solid #eee', paddingTop: '20px' }}>
-              <h3>Nyitvatartás</h3>
+              <h3>{t('gymInfo.openingHours')}</h3>
               {openingHours && (
                 <div className="opening-hours-editor">
                   {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((day) => {
-                    const dayNames: { [key: string]: string } = {
-                      mon: 'Hétfő',
-                      tue: 'Kedd',
-                      wed: 'Szerda',
-                      thu: 'Csütörtök',
-                      fri: 'Péntek',
-                      sat: 'Szombat',
-                      sun: 'Vasárnap',
-                    };
                     const dayData = openingHours[day];
                     return (
                       <div key={day} className="opening-hours-row" style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '10px' }}>
-                        <label style={{ width: '100px', fontWeight: '500' }}>{dayNames[day]}:</label>
+                        <label style={{ width: '100px', fontWeight: '500' }}>{t(`days.${day}`)}:</label>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                           <input
                             type="checkbox"
                             checked={dayData.closed}
                             onChange={(e) => handleDayChange(day, 'closed', e.target.checked)}
                           />
-                          Zárva
+                          {t('gymInfo.closed')}
                         </label>
                         {!dayData.closed && (
                           <>
@@ -203,7 +194,7 @@ export default function DashboardScreen() {
                     <div style={{ color: '#d32f2f', marginTop: '10px', fontSize: '14px' }}>⚠️ {hoursError}</div>
                   )}
                   {hoursSuccess && (
-                    <div style={{ color: '#2e7d32', marginTop: '10px', fontSize: '14px' }}>✅ Nyitvatartás sikeresen frissítve!</div>
+                    <div style={{ color: '#2e7d32', marginTop: '10px', fontSize: '14px' }}>✅ {t('gymInfo.openingHoursUpdated')}</div>
                   )}
                   <button
                     onClick={handleSaveOpeningHours}
@@ -219,13 +210,13 @@ export default function DashboardScreen() {
                       opacity: savingHours ? 0.6 : 1,
                     }}
                   >
-                    {savingHours ? 'Mentés...' : 'Mentés'}
+                    {savingHours ? t('common.saving') : t('common.save')}
                   </button>
                 </div>
               )}
             </div>
             
-            <button onClick={() => setShowGymInfo(false)} className="btn-close">Close</button>
+            <button onClick={() => setShowGymInfo(false)} className="btn-close">{t('common.close')}</button>
           </div>
         </div>
       )}
@@ -249,7 +240,7 @@ export default function DashboardScreen() {
         <div className="dashboard-error">
           <p>⚠️ {error}</p>
           <button onClick={loadDashboard} className="retry-button">
-            Try Again
+            {t('common.tryAgain')}
           </button>
         </div>
       )}
@@ -258,19 +249,19 @@ export default function DashboardScreen() {
         <div className="dashboard-content">
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-label">Today</div>
+              <div className="stat-label">{t('dashboard.today')}</div>
               <div className="stat-value">{data.stats.purchases.today}</div>
-              <div className="stat-caption">New passes</div>
+              <div className="stat-caption">{t('dashboard.newPasses')}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label">This Week</div>
+              <div className="stat-label">{t('dashboard.thisWeek')}</div>
               <div className="stat-value">{data.stats.purchases.week}</div>
-              <div className="stat-caption">New passes</div>
+              <div className="stat-caption">{t('dashboard.newPasses')}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label">This Month</div>
+              <div className="stat-label">{t('dashboard.thisMonth')}</div>
               <div className="stat-value">{data.stats.purchases.month}</div>
-              <div className="stat-caption">New passes</div>
+              <div className="stat-caption">{t('dashboard.newPasses')}</div>
             </div>
             <div className="stat-card highlight">
               <div className="stat-label">Active Passes</div>

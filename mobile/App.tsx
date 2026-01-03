@@ -3,6 +3,7 @@ import 'fast-text-encoding';
 
 import * as SplashScreen from 'expo-splash-screen';
 import React from 'react';
+import './src/i18n/config'; // Initialize i18n
 import SplashWrapper from './src/components/SplashWrapper';
 
 // Prevent the splash screen from auto-hiding as early as possible

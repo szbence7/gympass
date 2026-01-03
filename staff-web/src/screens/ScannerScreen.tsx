@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 import { staffAPI, ScanResult } from '../api/client';
 import '../styles/Scanner.css';
 
 export default function ScannerScreen() {
+  const { t } = useTranslation();
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState('');
@@ -28,7 +30,7 @@ export default function ScannerScreen() {
 
       const videoInputDevices = await codeReader.listVideoInputDevices();
       if (videoInputDevices.length === 0) {
-        throw new Error('No camera found');
+        throw new Error(t('scanner.noCamera'));
       }
 
       const selectedDeviceId = videoInputDevices[0].deviceId;
@@ -52,7 +54,7 @@ export default function ScannerScreen() {
         }
       );
     } catch (err: any) {
-      setError(err.message || 'Failed to start camera');
+      setError(err.message || t('scanner.failedToStart'));
       setScanning(false);
     }
   };
@@ -72,14 +74,14 @@ export default function ScannerScreen() {
       const scanResult = await staffAPI.scan(token);
       setResult(scanResult);
     } catch (err: any) {
-      setError(err.message || 'Scan failed');
+      setError(err.message || t('scanner.scanFailed'));
     } finally {
       setProcessing(false);
     }
   };
 
   const handleManualEntry = () => {
-    const token = prompt('Enter pass token:');
+    const token = prompt(t('scanner.enterToken'));
     if (token) {
       handleScan(token);
     }
@@ -92,10 +94,10 @@ export default function ScannerScreen() {
     try {
       const token = new URLSearchParams(window.location.search).get('token') || '';
       await staffAPI.consume(token, 1);
-      alert('Entry consumed successfully!');
+      alert(t('scanner.entryConsumed'));
       setResult(null);
     } catch (err: any) {
-      setError(err.message || 'Failed to consume entry');
+      setError(err.message || t('scanner.failedToConsume'));
     } finally {
       setProcessing(false);
     }
@@ -108,26 +110,26 @@ export default function ScannerScreen() {
 
   const getStatusText = () => {
     if (!result) return '';
-    if (result.valid) return 'VALID';
-    return result.reason || 'INVALID';
+    if (result.valid) return t('scanner.valid');
+    return result.reason || t('scanner.invalid');
   };
 
   return (
     <div className="scanner-container">
       <div className="scanner-header">
-        <h1>Scan Member Pass</h1>
+        <h1>{t('scanner.title')}</h1>
         <div className="nav-buttons">
           <button onClick={() => window.location.href = '/dashboard'} className="nav-button">
-            Dashboard
+            {t('dashboard.title')}
           </button>
           <button onClick={() => window.location.href = '/users'} className="nav-button">
-            Users
+            {t('dashboard.viewUsers')}
           </button>
           <button onClick={() => window.location.href = '/create-pass'} className="nav-button">
-            Create Pass
+            {t('dashboard.createPass')}
           </button>
           <button onClick={() => window.location.href = '/history'} className="nav-button">
-            View History
+            {t('dashboard.viewHistory')}
           </button>
         </div>
       </div>
@@ -137,24 +139,24 @@ export default function ScannerScreen() {
           {!scanning ? (
             <div className="camera-placeholder">
               <button onClick={startScanning} className="start-button">
-                Start Camera
+                {t('scanner.startCamera')}
               </button>
               <button onClick={handleManualEntry} className="manual-button">
-                Manual Entry
+                {t('scanner.manualEntry')}
               </button>
             </div>
           ) : (
             <div className="camera-active">
               <video ref={videoRef} className="camera-video" />
               <button onClick={stopScanning} className="stop-button">
-                Stop Camera
+                {t('scanner.stopCamera')}
               </button>
             </div>
           )}
         </div>
 
         {processing && (
-          <div className="processing">Processing...</div>
+          <div className="processing">{t('common.processing')}</div>
         )}
 
         {error && (
@@ -169,24 +171,24 @@ export default function ScannerScreen() {
 
             {result.valid && result.pass && (
               <div className="pass-details">
-                <h3>Member Information</h3>
+                <h3>{t('scanner.memberInfo')}</h3>
                 <div className="detail-row">
-                  <span className="label">Name:</span>
+                  <span className="label">{t('scanner.name')}:</span>
                   <span className="value">{result.pass.user.name}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="label">Email:</span>
+                  <span className="label">{t('scanner.email')}:</span>
                   <span className="value">{result.pass.user.email}</span>
                 </div>
 
-                <h3>Pass Information</h3>
+                <h3>{t('scanner.passInfo')}</h3>
                 <div className="detail-row">
-                  <span className="label">Type:</span>
+                  <span className="label">{t('scanner.type')}:</span>
                   <span className="value">{result.pass.type.name}</span>
                 </div>
                 {result.pass.validUntil && (
                   <div className="detail-row">
-                    <span className="label">Valid Until:</span>
+                    <span className="label">{t('scanner.validUntil')}:</span>
                     <span className="value">
                       {new Date(result.pass.validUntil).toLocaleDateString()}
                     </span>
@@ -194,33 +196,33 @@ export default function ScannerScreen() {
                 )}
                 {result.pass.remainingEntries !== null && (
                   <div className="detail-row">
-                    <span className="label">Remaining Entries:</span>
+                    <span className="label">{t('scanner.remainingEntries')}:</span>
                     <span className="value">{result.pass.remainingEntries}</span>
                   </div>
                 )}
                 <div className="detail-row">
-                  <span className="label">Status:</span>
+                  <span className="label">{t('scanner.status')}:</span>
                   <span className="value">{result.pass.status}</span>
                 </div>
 
                 {result.autoConsumed && (
                   <div className="auto-consumed-notice">
-                    ✓ Entry automatically consumed
+                    {t('scanner.autoConsumed')}
                   </div>
                 )}
 
                 <button onClick={() => setResult(null)} className="done-button">
-                  Done
+                  {t('common.done')}
                 </button>
               </div>
             )}
 
             {!result.valid && (
               <div className="invalid-reason">
-                <p>This pass cannot be used:</p>
+                <p>{t('scanner.cannotBeUsed')}</p>
                 <p className="reason-text">{result.reason}</p>
                 <button onClick={() => setResult(null)} className="done-button">
-                  Done
+                  {t('common.done')}
                 </button>
               </div>
             )}

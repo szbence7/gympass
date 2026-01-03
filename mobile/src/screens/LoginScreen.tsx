@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { authAPI } from '../api/client';
 import { saveToken, saveUser } from '../auth/storage';
 import { useAuth } from '../auth/AuthContext';
@@ -7,6 +8,7 @@ import { useGym } from '../context/GymContext';
 import { colors } from '../theme/colors';
 
 export default function LoginScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,7 +17,7 @@ export default function LoginScreen({ navigation }: any) {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert(t('common.error'), t('auth.fillAllFields'));
       return;
     }
 
@@ -29,21 +31,21 @@ export default function LoginScreen({ navigation }: any) {
       // Handle specific login error codes
       if (error.code === 'USER_NOT_FOUND') {
         Alert.alert(
-          'Nincs ilyen felhasználó',
-          'Nincs ilyen felhasználó. Szeretnél regisztrálni?',
+          t('auth.userNotFound'),
+          t('auth.userNotFoundMessage'),
           [
-            { text: 'Mégse', style: 'cancel' },
+            { text: t('common.cancel'), style: 'cancel' },
             { 
-              text: 'Regisztráció', 
+              text: t('auth.register'), 
               onPress: () => navigation.navigate('Register')
             }
           ]
         );
       } else if (error.code === 'INVALID_PASSWORD') {
-        Alert.alert('Hibás jelszó', 'Hibás jelszó.');
+        Alert.alert(t('auth.invalidPassword'), t('auth.invalidPasswordMessage'));
       } else {
         // Generic error fallback
-        Alert.alert('Error', error.message || 'Login failed');
+        Alert.alert(t('common.error'), error.message || t('auth.loginFailed'));
       }
     } finally {
       setLoading(false);
@@ -57,17 +59,17 @@ export default function LoginScreen({ navigation }: any) {
     >
       <View style={styles.content}>
         <Text style={styles.title}>GymPass</Text>
-        <Text style={styles.subtitle}>Sign in to continue</Text>
+        <Text style={styles.subtitle}>{t('auth.signIn')}</Text>
 
         {selectedGym && (
           <View style={styles.gymInfo}>
-            <Text style={styles.gymLabel}>Kiválasztott terem: <Text style={styles.gymName}>{selectedGym.name}</Text></Text>
+            <Text style={styles.gymLabel}>{t('auth.selectedGym')}: <Text style={styles.gymName}>{selectedGym.name}</Text></Text>
           </View>
         )}
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t('auth.email')}
           placeholderTextColor={colors.textMuted}
           value={email}
           onChangeText={setEmail}
@@ -78,7 +80,7 @@ export default function LoginScreen({ navigation }: any) {
 
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder={t('auth.password')}
           placeholderTextColor={colors.textMuted}
           value={password}
           onChangeText={setPassword}
@@ -91,7 +93,7 @@ export default function LoginScreen({ navigation }: any) {
           onPress={handleLogin}
           disabled={loading}
         >
-          <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Sign In'}</Text>
+          <Text style={styles.buttonText}>{loading ? t('auth.signingIn') : t('auth.signIn')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -99,7 +101,7 @@ export default function LoginScreen({ navigation }: any) {
           onPress={() => navigation.navigate('Register')}
           disabled={loading}
         >
-          <Text style={styles.linkText}>Don't have an account? Register</Text>
+          <Text style={styles.linkText}>{t('auth.dontHaveAccount')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -109,7 +111,7 @@ export default function LoginScreen({ navigation }: any) {
           }}
           disabled={loading}
         >
-          <Text style={styles.changeGymText}>Másik gym választása</Text>
+          <Text style={styles.changeGymText}>{t('auth.changeGym')}</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

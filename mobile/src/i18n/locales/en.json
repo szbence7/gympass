@@ -1,0 +1,161 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "continue": "Continue",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "noResults": "No results",
+    "unknown": "Unknown"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full Name",
+    "register": "Register",
+    "registering": "Registering...",
+    "createAccount": "Create Account",
+    "joinGymPass": "Join GymPass today",
+    "alreadyHaveAccount": "Already have an account? Sign in",
+    "dontHaveAccount": "Don't have an account? Register",
+    "fillAllFields": "Please fill in all fields",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "userNotFound": "User not found",
+    "userNotFoundMessage": "No such user exists. Would you like to register?",
+    "invalidPassword": "Invalid password",
+    "invalidPasswordMessage": "Invalid password.",
+    "loginFailed": "Login failed",
+    "registrationFailed": "Registration failed",
+    "selectedGym": "Selected gym",
+    "changeGym": "Change gym"
+  },
+  "gym": {
+    "chooseGym": "Choose Your Gym",
+    "chooseGymSubtitle": "Select the gym you want to use for passes and activities",
+    "loadingGyms": "Loading gyms...",
+    "noGymsAvailable": "No gyms available",
+    "contactSupport": "Please contact support",
+    "failedToLoadGyms": "Failed to load gyms. Please try again.",
+    "failedToSaveSelection": "Failed to save your selection. Please try again.",
+    "noGymSelected": "No gym selected",
+    "pleaseSelectGym": "Please select a gym to continue",
+    "currentGym": "Current Gym",
+    "name": "Name",
+    "city": "City",
+    "changeGym": "Change Gym",
+    "changeGymConfirm": "Changing your gym will sign you out. Do you want to continue?",
+    "openingHours": "Opening Hours",
+    "openingHoursUnknown": "Opening hours: unknown"
+  },
+  "status": {
+    "open": "Open",
+    "closingSoon": "Closing soon ({{time}})",
+    "closed": "Closed",
+    "unknown": "Unknown"
+  },
+  "passes": {
+    "buyPasses": "Buy Passes",
+    "myPasses": "My Passes",
+    "noPassesYet": "No passes yet",
+    "purchasePassToStart": "Purchase a pass to get started",
+    "browsePasses": "Browse Passes",
+    "purchasing": "Purchasing...",
+    "buyNow": "Buy Now",
+    "purchasedSuccessfully": "Pass purchased successfully!",
+    "viewMyPasses": "View My Passes",
+    "failedToLoadPassTypes": "Failed to load pass types",
+    "failedToPurchasePass": "Failed to purchase pass",
+    "validForDays": "Valid for {{days}} days",
+    "totalEntries": "{{count}} total entries",
+    "unlimitedEntries": "Unlimited entries",
+    "expires": "Expires",
+    "remaining": "Remaining",
+    "serial": "Serial",
+    "purchased": "Purchased",
+    "type": "Type",
+    "validUntil": "Valid Until",
+    "remainingEntries": "Remaining Entries",
+    "serialNumber": "Serial Number",
+    "tapToViewQR": "Tap to view QR code →",
+    "scanQRCode": "Scan this QR code at the gym",
+    "passDetails": "Pass Details",
+    "qrCodeNotAvailable": "QR code not available",
+    "passNotFound": "Pass not found",
+    "noExpiry": "No expiry",
+    "status": {
+      "active": "Active",
+      "expired": "Expired",
+      "depleted": "Depleted",
+      "revoked": "Revoked"
+    },
+    "passes": "Passes"
+  },
+  "passTypes": {
+    "WEEKLY": {
+      "name": "Weekly Pass",
+      "description": "Valid for 7 days from purchase"
+    },
+    "MONTHLY": {
+      "name": "Monthly Pass",
+      "description": "Valid for 30 days from purchase"
+    },
+    "10ENTRY": {
+      "name": "10-Entry Pass",
+      "description": "10 gym visits, no expiration"
+    },
+    "TEN_ENTRY": {
+      "name": "10-Entry Pass",
+      "description": "10 gym visits, no expiration"
+    }
+  },
+  "wallet": {
+    "appleWallet": "Apple Wallet",
+    "addToAppleWallet": "Add to Apple Wallet",
+    "downloading": "Downloading...",
+    "orOpenInBrowser": "Or open wallet pass in browser",
+    "comingSoon": "Coming soon...",
+    "passDownloaded": "Pass downloaded. Open it to add to Wallet.",
+    "passFileDownloaded": "Pass file downloaded to device",
+    "failedToDownload": "Failed to download wallet pass",
+    "passTokenNotAvailable": "Pass token not available",
+    "developmentWarning": "⚠️ Development passes may not install if unsigned. In production, ensure passes are properly signed with Apple certificates."
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "logout": "Logout",
+    "logoutConfirm": "Are you sure you want to logout?",
+    "language": "Language",
+    "magyar": "Magyar",
+    "english": "English"
+  },
+  "days": {
+    "mon": "Monday",
+    "tue": "Tuesday",
+    "wed": "Wednesday",
+    "thu": "Thursday",
+    "fri": "Friday",
+    "sat": "Saturday",
+    "sun": "Sunday"
+  },
+  "openingHours": {
+    "closed": "Closed",
+    "format": "{{open}}–{{close}}"
+  }
+}
+

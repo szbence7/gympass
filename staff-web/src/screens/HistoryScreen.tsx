@@ -3,6 +3,7 @@ import { staffAPI } from '../api/client';
 import '../styles/History.css';
 
 export default function HistoryScreen() {
+  const { t } = useTranslation();
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -18,7 +19,7 @@ export default function HistoryScreen() {
       const data = await staffAPI.getHistory(50);
       setHistory(data);
     } catch (err: any) {
-      setError(err.message || 'Failed to load history');
+      setError(err.message || t('history.failedToLoad'));
     } finally {
       setLoading(false);
     }
@@ -32,36 +33,36 @@ export default function HistoryScreen() {
   return (
     <div className="history-container">
       <div className="history-header">
-        <h1>Scan History</h1>
+        <h1>{t('history.title')}</h1>
         <div className="nav-buttons">
           <button onClick={() => window.location.href = '/dashboard'} className="nav-button">
-            Dashboard
+            {t('dashboard.title')}
           </button>
           <button onClick={() => window.location.href = '/scanner'} className="nav-button">
-            Scanner
+            {t('dashboard.scanPass')}
           </button>
           <button onClick={() => window.location.href = '/users'} className="nav-button">
-            Users
+            {t('dashboard.viewUsers')}
           </button>
         </div>
       </div>
 
-      {loading && <div className="loading">Loading...</div>}
+      {loading && <div className="loading">{t('common.loading')}</div>}
       {error && <div className="error-box">{error}</div>}
 
       {!loading && !error && (
         <div className="history-content">
           {history.length === 0 ? (
-            <div className="empty-state">No scan history yet</div>
+            <div className="empty-state">{t('history.noHistory')}</div>
           ) : (
             <table className="history-table">
               <thead>
                 <tr>
-                  <th>Time</th>
-                  <th>Action</th>
-                  <th>Member</th>
-                  <th>Pass Type</th>
-                  <th>Entries Consumed</th>
+                  <th>{t('history.time')}</th>
+                  <th>{t('history.action')}</th>
+                  <th>{t('history.member')}</th>
+                  <th>{t('history.passType')}</th>
+                  <th>{t('history.entriesConsumed')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -73,8 +74,8 @@ export default function HistoryScreen() {
                         {log.log.action}
                       </span>
                     </td>
-                    <td>{log.user?.name || 'N/A'}</td>
-                    <td>{log.passType?.name || 'N/A'}</td>
+                    <td>{log.user?.name || t('common.nA')}</td>
+                    <td>{log.passType?.name || t('common.nA')}</td>
                     <td>{log.log.consumedEntries || 0}</td>
                   </tr>
                 ))}

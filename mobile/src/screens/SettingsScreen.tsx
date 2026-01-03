@@ -1,13 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { logout, getUser } from '../auth/storage';
 import { useAuth } from '../auth/AuthContext';
 import { useGym } from '../context/GymContext';
 import { colors } from '../theme/colors';
 import { getDayName, formatHours } from '../utils/openingHours';
+import { changeLanguage } from '../i18n/config';
 
 export default function SettingsScreen({ navigation }: any) {
+  const { t, i18n } = useTranslation();
   const [user, setUser] = React.useState<any>(null);
   const { refreshAuth } = useAuth();
   const { selectedGym, clearSelectedGym, refreshGymData } = useGym();
@@ -32,12 +35,12 @@ export default function SettingsScreen({ navigation }: any) {
 
   const handleLogout = () => {
     Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
+      t('settings.logout'),
+      t('settings.logoutConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Logout',
+          text: t('settings.logout'),
           style: 'destructive',
           onPress: async () => {
             await logout();
@@ -50,12 +53,12 @@ export default function SettingsScreen({ navigation }: any) {
 
   const handleChangeGym = () => {
     Alert.alert(
-      'Change Gym',
-      'Changing your gym will sign you out. Do you want to continue?',
+      t('gym.changeGym'),
+      t('gym.changeGymConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Change Gym',
+          text: t('gym.changeGym'),
           style: 'default',
           onPress: async () => {
             await logout();
@@ -68,32 +71,36 @@ export default function SettingsScreen({ navigation }: any) {
     );
   };
 
+  const handleLanguageChange = async (lang: 'hu' | 'en') => {
+    await changeLanguage(lang);
+  };
+
   return (
     <ScrollView style={styles.container}>
       {selectedGym && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Current Gym</Text>
+          <Text style={styles.sectionTitle}>{t('gym.currentGym')}</Text>
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Name:</Text>
+              <Text style={styles.label}>{t('gym.name')}:</Text>
               <Text style={styles.value}>{selectedGym.name}</Text>
             </View>
             {selectedGym.city && (
               <View style={styles.infoRow}>
-                <Text style={styles.label}>City:</Text>
+                <Text style={styles.label}>{t('gym.city')}:</Text>
                 <Text style={styles.value}>{selectedGym.city}</Text>
               </View>
             )}
           </View>
           <TouchableOpacity style={styles.changeGymButton} onPress={handleChangeGym}>
-            <Text style={styles.changeGymButtonText}>Change Gym</Text>
+            <Text style={styles.changeGymButtonText}>{t('gym.changeGym')}</Text>
           </TouchableOpacity>
         </View>
       )}
 
       {selectedGym && selectedGym.openingHours && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Nyitvatartás</Text>
+          <Text style={styles.sectionTitle}>{t('gym.openingHours')}</Text>
           <View style={styles.infoCard}>
             {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((day) => {
               const dayHours = selectedGym.openingHours![day as keyof typeof selectedGym.openingHours];
@@ -110,23 +117,23 @@ export default function SettingsScreen({ navigation }: any) {
 
       {selectedGym && !selectedGym.openingHours && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Nyitvatartás</Text>
+          <Text style={styles.sectionTitle}>{t('gym.openingHours')}</Text>
           <View style={styles.infoCard}>
-            <Text style={styles.unknownText}>Nyitvatartás: ismeretlen</Text>
+            <Text style={styles.unknownText}>{t('gym.openingHoursUnknown')}</Text>
           </View>
         </View>
       )}
 
       {user && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account</Text>
+          <Text style={styles.sectionTitle}>{t('settings.account')}</Text>
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Name:</Text>
+              <Text style={styles.label}>{t('gym.name')}:</Text>
               <Text style={styles.value}>{user.name}</Text>
             </View>
             <View style={styles.infoRow}>
-              <Text style={styles.label}>Email:</Text>
+              <Text style={styles.label}>{t('auth.email')}:</Text>
               <Text style={styles.value}>{user.email}</Text>
             </View>
           </View>
@@ -134,8 +141,32 @@ export default function SettingsScreen({ navigation }: any) {
       )}
 
       <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('settings.language')}</Text>
+        <View style={styles.infoCard}>
+          <TouchableOpacity
+            style={[styles.languageOption, i18n.language === 'hu' && styles.languageOptionSelected]}
+            onPress={() => handleLanguageChange('hu')}
+          >
+            <Text style={[styles.languageText, i18n.language === 'hu' && styles.languageTextSelected]}>
+              {t('settings.magyar')}
+            </Text>
+            {i18n.language === 'hu' && <Text style={styles.checkmark}>✓</Text>}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.languageOption, i18n.language === 'en' && styles.languageOptionSelected]}
+            onPress={() => handleLanguageChange('en')}
+          >
+            <Text style={[styles.languageText, i18n.language === 'en' && styles.languageTextSelected]}>
+              {t('settings.english')}
+            </Text>
+            {i18n.language === 'en' && <Text style={styles.checkmark}>✓</Text>}
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.section}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+          <Text style={styles.logoutButtonText}>{t('settings.logout')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -225,5 +256,34 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     textAlign: 'center',
     paddingVertical: 10,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  languageOptionSelected: {
+    backgroundColor: colors.primary + '20',
+    borderColor: colors.primary,
+  },
+  languageText: {
+    fontSize: 16,
+    color: colors.textPrimary,
+  },
+  languageTextSelected: {
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  checkmark: {
+    fontSize: 18,
+    color: colors.primary,
+    fontWeight: 'bold',
   },
 });

@@ -8,11 +8,13 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Gym, useGym } from '../context/GymContext';
 import apiClient from '../api/client';
 import { colors } from '../theme/colors';
 
 export default function SelectGymScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const { setSelectedGym } = useGym();
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,7 @@ export default function SelectGymScreen({ navigation }: any) {
       setGyms(response.data);
     } catch (err: any) {
       console.error('Failed to load gyms:', err);
-      setError(err.message || 'Failed to load gyms. Please try again.');
+      setError(err.message || t('gym.failedToLoadGyms'));
     } finally {
       setLoading(false);
     }
@@ -40,7 +42,7 @@ export default function SelectGymScreen({ navigation }: any) {
   const handleContinue = async () => {
     const selectedGym = gyms.find(g => g.id === selectedId);
     if (!selectedGym) {
-      Alert.alert('No gym selected', 'Please select a gym to continue');
+      Alert.alert(t('gym.noGymSelected'), t('gym.pleaseSelectGym'));
       return;
     }
 
@@ -49,7 +51,7 @@ export default function SelectGymScreen({ navigation }: any) {
       // Navigation will be handled automatically by AppNavigator
       // which watches the selectedGym context
     } catch (err: any) {
-      Alert.alert('Error', 'Failed to save your selection. Please try again.');
+      Alert.alert(t('common.error'), t('gym.failedToSaveSelection'));
     }
   };
 
@@ -83,7 +85,7 @@ export default function SelectGymScreen({ navigation }: any) {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Loading gyms...</Text>
+        <Text style={styles.loadingText}>{t('gym.loadingGyms')}</Text>
       </View>
     );
   }
@@ -93,7 +95,7 @@ export default function SelectGymScreen({ navigation }: any) {
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>{error}</Text>
         <TouchableOpacity style={styles.retryButton} onPress={loadGyms}>
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -102,8 +104,8 @@ export default function SelectGymScreen({ navigation }: any) {
   if (gyms.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>No gyms available</Text>
-        <Text style={styles.errorSubtext}>Please contact support</Text>
+        <Text style={styles.errorText}>{t('gym.noGymsAvailable')}</Text>
+        <Text style={styles.errorSubtext}>{t('gym.contactSupport')}</Text>
       </View>
     );
   }
@@ -111,9 +113,9 @@ export default function SelectGymScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Choose Your Gym</Text>
+        <Text style={styles.title}>{t('gym.chooseGym')}</Text>
         <Text style={styles.subtitle}>
-          Select the gym you want to use for passes and activities
+          {t('gym.chooseGymSubtitle')}
         </Text>
       </View>
 
@@ -130,7 +132,7 @@ export default function SelectGymScreen({ navigation }: any) {
           onPress={handleContinue}
           disabled={!selectedId}
         >
-          <Text style={styles.continueButtonText}>Continue</Text>
+          <Text style={styles.continueButtonText}>{t('common.continue')}</Text>
         </TouchableOpacity>
       </View>
     </View>

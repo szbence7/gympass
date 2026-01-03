@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { passAPI, UserPass } from '../api/client';
 import { colors } from '../theme/colors';
 import { useGym } from '../context/GymContext';
 import { computeGymOpenStatus, getStatusText, getStatusColor as getGymStatusColor } from '../utils/openingHours';
+import { getPassDisplayName } from '../utils/passLocalization';
 
 export default function MyPassesScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [passes, setPasses] = useState<UserPass[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -50,7 +53,7 @@ export default function MyPassesScreen({ navigation }: any) {
   };
 
   const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return 'No expiry';
+    if (!dateStr) return t('passes.noExpiry');
     return new Date(dateStr).toLocaleDateString();
   };
 
@@ -65,13 +68,13 @@ export default function MyPassesScreen({ navigation }: any) {
   if (passes.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.emptyText}>No passes yet</Text>
-        <Text style={styles.emptySubtext}>Purchase a pass to get started</Text>
+        <Text style={styles.emptyText}>{t('passes.noPassesYet')}</Text>
+        <Text style={styles.emptySubtext}>{t('passes.purchasePassToStart')}</Text>
         <TouchableOpacity
           style={styles.emptyButton}
           onPress={() => navigation.navigate('Home')}
         >
-          <Text style={styles.emptyButtonText}>Browse Passes</Text>
+          <Text style={styles.emptyButtonText}>{t('passes.browsePasses')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -111,25 +114,27 @@ export default function MyPassesScreen({ navigation }: any) {
           onPress={() => navigation.navigate('PassDetail', { passId: pass.id })}
         >
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>{pass.passType?.name || 'Pass'}</Text>
+            <Text style={styles.cardTitle}>
+              {pass.passType ? getPassDisplayName(pass.passType) : t('passes.passes')}
+            </Text>
             <View style={[styles.statusBadge, { backgroundColor: getStatusColor(pass.status) }]}>
-              <Text style={styles.statusText}>{pass.status}</Text>
+              <Text style={styles.statusText}>{t(`passes.status.${pass.status.toLowerCase()}` as any, { defaultValue: pass.status })}</Text>
             </View>
           </View>
 
           <View style={styles.details}>
             {pass.validUntil && (
-              <Text style={styles.detailText}>Expires: {formatDate(pass.validUntil)}</Text>
+              <Text style={styles.detailText}>{t('passes.expires')}: {formatDate(pass.validUntil)}</Text>
             )}
             {pass.remainingEntries !== null && (
               <Text style={styles.detailText}>
-                Remaining: {pass.remainingEntries} / {pass.totalEntries}
+                {t('passes.remaining')}: {pass.remainingEntries} / {pass.totalEntries}
               </Text>
             )}
-            <Text style={styles.detailText}>Serial: {pass.walletSerialNumber}</Text>
+            <Text style={styles.detailText}>{t('passes.serial')}: {pass.walletSerialNumber}</Text>
           </View>
 
-          <Text style={styles.viewDetails}>Tap to view QR code →</Text>
+          <Text style={styles.viewDetails}>{t('passes.tapToViewQR')}</Text>
         </TouchableOpacity>
       ))}
     </ScrollView>

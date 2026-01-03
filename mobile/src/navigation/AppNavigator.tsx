@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, View, StatusBar } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { AuthProvider, useAuth } from '../auth/AuthContext';
 import { GymProvider, useGym } from '../context/GymContext';
 import { Ionicons } from '@expo/vector-icons';
@@ -37,13 +38,14 @@ function AuthStack() {
       <Stack.Screen 
         name="Register" 
         component={RegisterScreen}
-        options={{ title: 'Create Account' }}
+        options={{ title: 'Create Account' }} // Will be translated in RegisterScreen
       />
     </Stack.Navigator>
   );
 }
 
 function MainTabs() {
+  const { t } = useTranslation();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -63,7 +65,7 @@ function MainTabs() {
         name="MyPasses" 
         component={MyPassesScreen}
         options={{ 
-          title: 'My Passes',
+          title: t('passes.myPasses'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ticket-outline" size={size} color={color} />
           ),
@@ -73,7 +75,7 @@ function MainTabs() {
         name="Home" 
         component={HomeScreen}
         options={{ 
-          title: 'Buy Passes',
+          title: t('passes.buyPasses'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="card-outline" size={size} color={color} />
           ),
@@ -83,6 +85,7 @@ function MainTabs() {
         name="Settings" 
         component={SettingsScreen}
         options={{
+          title: t('settings.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),
@@ -110,7 +113,7 @@ function MainStack() {
       <Stack.Screen 
         name="PassDetail" 
         component={PassDetailScreen}
-        options={{ title: 'Pass Details' }}
+        options={{ title: 'Pass Details' }} // Will be translated in PassDetailScreen
       />
     </Stack.Navigator>
   );

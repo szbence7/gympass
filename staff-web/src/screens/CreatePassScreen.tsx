@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { staffAPI, User, PassType } from '../api/client';
 import '../styles/CreatePass.css';
 
 export default function CreatePassScreen() {
+  const { t } = useTranslation();
   const [step, setStep] = useState<'user' | 'pass'>('user');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -111,28 +113,28 @@ export default function CreatePassScreen() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert('Copied to clipboard!');
+    alert(t('common.copied'));
   };
 
   if (success) {
     return (
       <div className="createpass-container">
         <div className="createpass-header">
-          <h1>Create Pass</h1>
+          <h1>{t('createPass.title')}</h1>
           <button onClick={() => window.location.href = '/scanner'} className="nav-button">
-            Back to Scanner
+            {t('createPass.backToScanner')}
           </button>
         </div>
 
         <div className="success-panel">
-          <h2>✓ Pass Created Successfully!</h2>
-          <p>The pass has been assigned to {selectedUser?.name} ({selectedUser?.email})</p>
+          <h2>{t('createPass.passCreated')}</h2>
+          <p>{t('createPass.passAssignedTo')} {selectedUser?.name} ({selectedUser?.email})</p>
           <div className="button-group">
             <button onClick={handleReset} className="primary-button">
-              Create Another Pass
+              {t('createPass.createAnother')}
             </button>
             <button onClick={() => window.location.href = '/dashboard'} className="secondary-button">
-              Back to Dashboard
+              {t('createPass.backToDashboard')}
             </button>
           </div>
         </div>
@@ -143,16 +145,16 @@ export default function CreatePassScreen() {
   return (
     <div className="createpass-container">
       <div className="createpass-header">
-        <h1>Create Pass</h1>
+        <h1>{t('createPass.title')}</h1>
         <div className="nav-buttons">
           <button onClick={() => window.location.href = '/dashboard'} className="nav-button">
-            Dashboard
+            {t('dashboard.title')}
           </button>
           <button onClick={() => window.location.href = '/scanner'} className="nav-button">
-            Scanner
+            {t('dashboard.scanPass')}
           </button>
           <button onClick={() => window.location.href = '/users'} className="nav-button">
-            Users
+            {t('dashboard.viewUsers')}
           </button>
         </div>
       </div>
@@ -161,37 +163,37 @@ export default function CreatePassScreen() {
 
       {step === 'user' && (
         <div className="step-panel">
-          <h2>Step 1: Select or Create User</h2>
+          <h2>{t('createPass.step1')}</h2>
 
           {tempPassword && (
             <div className="temp-password-panel">
-              <h3>⚠️ Temporary Password Created</h3>
-              <p>User can login with this password:</p>
+              <h3>{t('createPass.tempPasswordCreated')}</h3>
+              <p>{t('createPass.userCanLogin')}</p>
               <div className="password-display">
                 <code>{tempPassword}</code>
                 <button onClick={() => copyToClipboard(tempPassword)} className="copy-button">
-                  Copy
+                  {t('createPass.copy')}
                 </button>
               </div>
               <p className="temp-password-note">
-                Save this password now - it won't be shown again!
+                {t('createPass.savePasswordNote')}
               </p>
             </div>
           )}
 
           {selectedUser ? (
             <div className="selected-user-panel">
-              <h3>Selected User:</h3>
+              <h3>{t('createPass.selectedUser')}</h3>
               <div className="user-info">
-                <p><strong>Name:</strong> {selectedUser.name}</p>
-                <p><strong>Email:</strong> {selectedUser.email}</p>
+                <p><strong>{t('scanner.name')}:</strong> {selectedUser.name}</p>
+                <p><strong>{t('scanner.email')}:</strong> {selectedUser.email}</p>
               </div>
               <div className="button-group">
                 <button onClick={() => setSelectedUser(null)} className="secondary-button">
-                  Change User
+                  {t('createPass.changeUser')}
                 </button>
                 <button onClick={handleNextToPass} className="primary-button">
-                  Next: Select Pass →
+                  {t('createPass.nextSelectPass')}
                 </button>
               </div>
             </div>
@@ -201,13 +203,13 @@ export default function CreatePassScreen() {
                 <div className="search-bar">
                   <input
                     type="text"
-                    placeholder="Search by name or email..."
+                    placeholder={t('users.searchPlaceholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
                   <button onClick={handleSearch} disabled={loadingUsers}>
-                    {loadingUsers ? 'Searching...' : 'Search'}
+                    {loadingUsers ? t('createPass.searching') : t('common.search')}
                   </button>
                 </div>
 
@@ -215,16 +217,16 @@ export default function CreatePassScreen() {
                   onClick={() => setShowNewUserForm(!showNewUserForm)}
                   className="new-user-button"
                 >
-                  {showNewUserForm ? '− Cancel' : '+ New User'}
+                  {showNewUserForm ? `− ${t('common.cancel')}` : `+ ${t('createPass.newUser')}`}
                 </button>
               </div>
 
               {showNewUserForm && (
                 <div className="new-user-form">
-                  <h3>Create New User</h3>
+                  <h3>{t('createPass.createUser')}</h3>
                   <form onSubmit={handleCreateUser}>
                     <div className="form-group">
-                      <label>Name:</label>
+                      <label>{t('scanner.name')}:</label>
                       <input
                         type="text"
                         value={newUserName}
@@ -234,7 +236,7 @@ export default function CreatePassScreen() {
                       />
                     </div>
                     <div className="form-group">
-                      <label>Email:</label>
+                      <label>{t('scanner.email')}:</label>
                       <input
                         type="email"
                         value={newUserEmail}
@@ -244,7 +246,7 @@ export default function CreatePassScreen() {
                       />
                     </div>
                     <button type="submit" disabled={creatingUser} className="primary-button">
-                      {creatingUser ? 'Creating...' : 'Create User'}
+                      {creatingUser ? t('createPass.creating') : t('createPass.createUser')}
                     </button>
                   </form>
                 </div>
@@ -278,48 +280,55 @@ export default function CreatePassScreen() {
 
       {step === 'pass' && (
         <div className="step-panel">
-          <h2>Step 2: Select Pass Type</h2>
+          <h2>{t('createPass.step2')}</h2>
 
           <div className="selected-user-summary">
-            <p><strong>For user:</strong> {selectedUser?.name} ({selectedUser?.email})</p>
+            <p><strong>{t('createPass.forUser')}</strong> {selectedUser?.name} ({selectedUser?.email})</p>
           </div>
 
           {loadingPassTypes ? (
-            <p>Loading pass types...</p>
+            <p>{t('createPass.loadingPassTypes')}</p>
           ) : (
             <>
               <div className="pass-types-list">
-                {passTypes.map((passType) => (
-                  <div
-                    key={passType.id}
-                    className={`pass-type-item ${selectedPassType === passType.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedPassType(passType.id)}
-                  >
-                    <h3>{passType.name}</h3>
-                    <p>{passType.description}</p>
-                    <div className="pass-type-details">
-                      {passType.durationDays && <span>{passType.durationDays} days</span>}
-                      {passType.totalEntries ? (
-                        <span>{passType.totalEntries} entries</span>
-                      ) : (
-                        <span>Unlimited</span>
-                      )}
-                      <span className="price">${passType.price.toFixed(2)}</span>
+                {passTypes.map((passType) => {
+                  // Get localized name/description if it's a known system pass type
+                  const passTypeKey = passType.code || passType.name.toUpperCase().replace(/\s+/g, '_');
+                  const localizedName = t(`passTypes.${passTypeKey}.name`, { defaultValue: passType.name });
+                  const localizedDesc = t(`passTypes.${passTypeKey}.description`, { defaultValue: passType.description });
+                  
+                  return (
+                    <div
+                      key={passType.id}
+                      className={`pass-type-item ${selectedPassType === passType.id ? 'selected' : ''}`}
+                      onClick={() => setSelectedPassType(passType.id)}
+                    >
+                      <h3>{localizedName}</h3>
+                      <p>{localizedDesc}</p>
+                      <div className="pass-type-details">
+                        {passType.durationDays && <span>{passType.durationDays} {t('createPass.days')}</span>}
+                        {passType.totalEntries ? (
+                          <span>{passType.totalEntries} {t('createPass.entries')}</span>
+                        ) : (
+                          <span>{t('createPass.unlimited')}</span>
+                        )}
+                        <span className="price">${passType.price.toFixed(2)}</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="button-group">
                 <button onClick={() => setStep('user')} className="secondary-button">
-                  ← Back
+                  {t('createPass.back')}
                 </button>
                 <button
                   onClick={handleAssignPass}
                   disabled={!selectedPassType || assigning}
                   className="primary-button"
                 >
-                  {assigning ? 'Assigning...' : 'Assign Pass'}
+                  {assigning ? t('createPass.assigning') : t('createPass.assignPass')}
                 </button>
               </div>
             </>
