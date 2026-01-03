@@ -156,7 +156,6 @@ export default function PassDetailScreen({ route, navigation }: any) {
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(pass.status) }]}>
           <Text style={styles.statusText}>{getStatusText()}</Text>
         </View>
-        {console.log('[PassDetail] Badge status:', pass.status, 'Color:', getStatusColor(pass.status))}
       </View>
 
       <View style={styles.qrSection}>

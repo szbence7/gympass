@@ -27,6 +27,48 @@ export default function MyPassesScreen({ navigation }: any) {
     }
   };
 
+  // Helper to determine if a pass is active (usable)
+  const isPassActive = (pass: UserPass): boolean => {
+    const now = new Date();
+    const isDateExpired = pass.validUntil && new Date(pass.validUntil) < now;
+    const isUsageExhausted = pass.remainingEntries !== null && pass.remainingEntries <= 0;
+    const isInvalidStatus = pass.status === 'EXPIRED' || pass.status === 'DEPLETED' || pass.status === 'REVOKED';
+    
+    return !isDateExpired && !isUsageExhausted && !isInvalidStatus;
+  };
+
+  // Sort passes: active first, then expired, both sorted by purchase date descending
+  const getSortedPasses = (passesList: UserPass[]): UserPass[] => {
+    const activePasses: UserPass[] = [];
+    const expiredPasses: UserPass[] = [];
+
+    // Split into active and expired groups
+    passesList.forEach(pass => {
+      if (isPassActive(pass)) {
+        activePasses.push(pass);
+      } else {
+        expiredPasses.push(pass);
+      }
+    });
+
+    // Sort both groups by purchasedAt descending (newest first)
+    // Handle missing/invalid dates gracefully
+    const sortByPurchaseDate = (a: UserPass, b: UserPass) => {
+      const dateA = a.purchasedAt ? new Date(a.purchasedAt).getTime() : 0;
+      const dateB = b.purchasedAt ? new Date(b.purchasedAt).getTime() : 0;
+      // If date is invalid (NaN), treat as 0 (oldest)
+      const validDateA = isNaN(dateA) ? 0 : dateA;
+      const validDateB = isNaN(dateB) ? 0 : dateB;
+      return validDateB - validDateA; // Descending (newest first)
+    };
+
+    activePasses.sort(sortByPurchaseDate);
+    expiredPasses.sort(sortByPurchaseDate);
+
+    // Return active first, then expired
+    return [...activePasses, ...expiredPasses];
+  };
+
   useFocusEffect(
     useCallback(() => {
       loadPasses();
@@ -128,7 +170,7 @@ export default function MyPassesScreen({ navigation }: any) {
         </View>
       )}
       
-      {passes.map((pass) => (
+      {getSortedPasses(passes).map((pass) => (
         <TouchableOpacity
           key={pass.id}
           style={styles.card}
@@ -139,7 +181,6 @@ export default function MyPassesScreen({ navigation }: any) {
               {getPurchasedPassDisplayName(pass)}
             </Text>
             <View style={[styles.statusBadge, { backgroundColor: getStatusColor(pass.status) }]}>
-              {console.log('[MyPasses] Badge status:', pass.status, 'Color:', getStatusColor(pass.status))}
               <Text style={styles.statusText}>
                 {(() => {
                   const now = new Date();
