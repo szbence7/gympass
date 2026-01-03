@@ -5,6 +5,7 @@ import { createTenantDb, getTenantDbPath } from '../db/tenantDb';
 import { BadRequestError } from '../utils/errors';
 import { generateTempPassword } from '../utils/password';
 import { env } from '../utils/env';
+import { buildTenantUrl } from '../utils/urlBuilder';
 import fs from 'fs';
 import path from 'path';
 

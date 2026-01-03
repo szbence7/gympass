@@ -243,8 +243,9 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session):
  */
 async function createGymFromRegistrationSession(registrationSession: any) {
   const { createNewGym } = require('../services/gymService');
+  const { getGymBySlug, updateGymSubscription } = require('../db/registry');
   
-  return await createNewGym({
+  const result = await createNewGym({
     name: registrationSession.gym_name,
     slug: registrationSession.slug,
     adminEmail: registrationSession.admin_email,
@@ -259,6 +260,24 @@ async function createGymFromRegistrationSession(registrationSession: any) {
     contactEmail: registrationSession.contact_email,
     contactPhone: registrationSession.contact_phone,
   });
+  
+  // Activate gym after creation (for dev mode, no payment needed)
+  const gym = getGymBySlug(registrationSession.slug);
+  if (gym) {
+    updateGymSubscription(gym.id, {
+      status: 'ACTIVE', // Activate gym
+    });
+  }
+  
+  // Log admin credentials for dev/testing (not in production)
+  if (env.NODE_ENV !== 'production') {
+    console.log(`\n🔐 Staff Admin Credentials for ${registrationSession.slug}:`);
+    console.log(`   Email: ${result.adminCredentials.email}`);
+    console.log(`   Password: ${result.adminCredentials.password}`);
+    console.log(`   Staff Login Path: /staff/${result.gym.staffLoginPath}\n`);
+  }
+  
+  return result;
 }
 
 /**

@@ -35,9 +35,20 @@ router.post('/create-checkout-session', asyncHandler(async (req: Request, res: R
  */
 router.post('/webhook', async (req: Request, res: Response) => {
   // Handle dev-mode checkout (simulate webhook)
-  const isDevMode = req.query.dev_mode === 'true' || req.body.dev_mode;
+  const isDevMode = req.query.dev_mode === 'true';
   if (isDevMode && env.NODE_ENV !== 'production') {
-    const { registrationSessionId } = req.body;
+    // In dev mode, body might be raw Buffer, so parse it if needed
+    let bodyData: any = req.body;
+    if (Buffer.isBuffer(req.body)) {
+      try {
+        bodyData = JSON.parse(req.body.toString());
+      } catch (e) {
+        // If parsing fails, try to use it as-is
+        bodyData = { registrationSessionId: req.body.toString() };
+      }
+    }
+    
+    const { registrationSessionId } = bodyData;
     if (registrationSessionId) {
       try {
         // Simulate checkout.session.completed event
@@ -54,6 +65,8 @@ router.post('/webhook', async (req: Request, res: Response) => {
         console.error(`Dev-mode webhook error: ${err.message}`);
         return res.status(500).send(`Webhook handler error: ${err.message}`);
       }
+    } else {
+      return res.status(400).json({ error: 'Missing registrationSessionId in dev-mode webhook' });
     }
   }
   
