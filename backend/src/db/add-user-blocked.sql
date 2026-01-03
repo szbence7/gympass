@@ -6,3 +6,4 @@ ALTER TABLE users ADD COLUMN is_blocked INTEGER NOT NULL DEFAULT 0;
 
 
 
+

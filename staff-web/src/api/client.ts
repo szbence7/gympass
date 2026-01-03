@@ -16,6 +16,18 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Extract gym slug from hostname and send as header for tenant resolution
+    // This is needed because the Vite proxy changes the host header
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      const parts = hostname.split('.');
+      if (parts.length > 0 && parts[0] !== 'localhost' && !parts[0].includes(':')) {
+        const gymSlug = parts[0];
+        config.headers['X-Gym-Slug'] = gymSlug;
+      }
+    }
+    
     return config;
   },
   (error) => {
@@ -28,10 +40,21 @@ apiClient.interceptors.response.use(
   (error) => {
     // Handle auth errors
     if (error.response?.status === 401) {
-      localStorage.removeItem('staff_token');
-      localStorage.removeItem('staff_user');
-      window.location.href = '/';
-      throw new Error('Session expired. Please login again.');
+      const requestUrl = error.config?.url || '';
+      const isLoginRequest = requestUrl.includes('/auth/staff/login');
+      const hasToken = localStorage.getItem('staff_token');
+      
+      // Only redirect if:
+      // 1. It's NOT a login request (we're already authenticated but token expired)
+      // 2. We have a token (session expired scenario)
+      // For login attempts (no token or login endpoint), let the error propagate to LoginScreen
+      if (!isLoginRequest && hasToken) {
+        localStorage.removeItem('staff_token');
+        localStorage.removeItem('staff_user');
+        window.location.href = '/';
+        throw new Error('Session expired. Please login again.');
+      }
+      // For login failures, don't redirect - let LoginScreen handle the error
     }
     
     if (error.response?.status === 403) {

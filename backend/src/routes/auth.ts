@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { generateToken } from '../middleware/auth';
 import { BadRequestError, UnauthorizedError, InvalidCredentialsError, UserNotFoundError, InvalidPasswordError } from '../utils/errors';
 import { asyncHandler } from '../utils/asyncHandler';
+import { getCurrentGymSlug } from '../db/tenantContext';
 
 const router = Router();
 
@@ -90,18 +91,29 @@ router.post('/login', asyncHandler(async (req: Request, res: Response) => {
 }));
 
 router.post('/staff/login', asyncHandler(async (req: Request, res: Response) => {
-  console.log('Staff login request received:', req.body.email);
   const body = loginSchema.parse(req.body);
+  const gymSlug = getCurrentGymSlug();
+  
+  console.log('Staff login request received:', {
+    email: body.email,
+    gymSlug: gymSlug,
+    hostname: req.hostname,
+    'X-Gym-Slug': req.get('X-Gym-Slug')
+  });
 
   const staff = await getDb().select().from(staffUsers).where(eq(staffUsers.email, body.email)).get();
   if (!staff) {
+    console.log('Staff user not found in gym:', gymSlug, 'for email:', body.email);
     throw new InvalidCredentialsError();
   }
 
   const valid = await bcrypt.compare(body.password, staff.password);
   if (!valid) {
+    console.log('Invalid password for staff user:', body.email, 'in gym:', gymSlug);
     throw new InvalidCredentialsError();
   }
+  
+  console.log('Staff login successful:', body.email, 'in gym:', gymSlug);
 
   const token = generateToken({ userId: staff.id, role: staff.role as 'STAFF' });
 

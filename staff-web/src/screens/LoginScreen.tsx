@@ -35,21 +35,38 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
       // Reset failed attempts on successful login
       setFailedAttempts(0);
       onLogin();
+      // Navigate to dashboard after successful login
+      navigate('/dashboard');
     } catch (err: any) {
       console.error('Login error:', err.message, 'Status:', err.response?.status, 'Data:', err.response?.data);
       
       const newAttempts = failedAttempts + 1;
       setFailedAttempts(newAttempts);
       
-      if (newAttempts >= 3) {
-        setError(t('auth.tooManyAttempts'));
-        // Redirect to landing page after 2 seconds
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
+      // Check if error is from backend with specific error code
+      const errorCode = err.response?.data?.error?.code;
+      const errorMessage = err.response?.data?.error?.message || err.message;
+      
+      if (errorCode === 'INVALID_CREDENTIALS' || errorCode === 'INVALID_PASSWORD' || err.response?.status === 401) {
+        if (newAttempts >= 3) {
+          setError(t('auth.tooManyAttempts'));
+          // Redirect to landing page after 2 seconds
+          setTimeout(() => {
+            navigate('/');
+          }, 2000);
+        } else if (newAttempts === 1) {
+          // First attempt: show simple error message
+          setError(t('auth.wrongCredentials'));
+        } else {
+          // Subsequent attempts: show with remaining attempts
+          const remainingAttempts = 3 - newAttempts;
+          setError(t('auth.wrongCredentialsWithRemaining', { remaining: remainingAttempts }));
+        }
+      } else if (errorCode === 'INVALID_STAFF_PATH' || errorCode === 'GYM_NOT_FOUND') {
+        setError(t('auth.invalidStaffPath'));
       } else {
-        const remainingAttempts = 3 - newAttempts;
-        setError(t('auth.wrongCredentials', { remaining: remainingAttempts }));
+        // Generic error
+        setError(errorMessage || t('auth.wrongCredentials'));
       }
     } finally {
       setLoading(false);

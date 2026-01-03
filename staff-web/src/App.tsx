@@ -61,7 +61,8 @@ function StaffLoginGuard({ onLogin }: { onLogin: () => void }) {
 
   if (!isValid) {
     // Invalid path - redirect to landing without revealing the correct path
-    return <Navigate to="/" replace />;
+    // Show error message via URL parameter
+    return <Navigate to="/?error=invalid_staff_path" replace />;
   }
 
   // Valid path - render staff login

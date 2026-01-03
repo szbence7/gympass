@@ -8,9 +8,11 @@
     "signingIn": "Bejelentkezés...",
     "email": "E-mail",
     "password": "Jelszó",
-    "wrongCredentials": "Hibás bejelentkezési adatok. {{remaining}} próbálkozás maradt.",
+    "wrongCredentials": "Hibás email vagy jelszó.",
+    "wrongCredentialsWithRemaining": "Hibás bejelentkezési adatok. {{remaining}} próbálkozás maradt.",
     "tooManyAttempts": "Túl sok sikertelen próbálkozás. Átirányítás...",
-    "fillAllFields": "Kérjük, töltse ki az összes mezőt"
+    "fillAllFields": "Kérjük, töltse ki az összes mezőt",
+    "invalidStaffPath": "Érvénytelen staff belépési link."
   },
   "dashboard": {
     "title": "Irányítópult",
@@ -47,6 +49,7 @@
     "backToGyms": "Vissza az edzőtermekhez"
   }
 }
+
 
 
 

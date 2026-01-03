@@ -8,9 +8,11 @@
     "signingIn": "Signing in...",
     "email": "Email",
     "password": "Password",
-    "wrongCredentials": "Wrong credentials. {{remaining}} attempt(s) remaining.",
+    "wrongCredentials": "Invalid email or password.",
+    "wrongCredentialsWithRemaining": "Wrong credentials. {{remaining}} attempt(s) remaining.",
     "tooManyAttempts": "Too many failed attempts. Redirecting...",
-    "fillAllFields": "Please fill in all fields"
+    "fillAllFields": "Please fill in all fields",
+    "invalidStaffPath": "Invalid staff login link."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -47,6 +49,7 @@
     "backToGyms": "Back to Gyms"
   }
 }
+
 
 
 

@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '../components/LanguageSelector';
 import '../styles/Landing.css';
 
 export default function LandingScreen() {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const [gymName, setGymName] = useState('');
+  const errorParam = searchParams.get('error');
 
   useEffect(() => {
     // Extract gym name from hostname
@@ -23,6 +26,23 @@ export default function LandingScreen() {
         <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
           <LanguageSelector />
         </div>
+        
+        {errorParam === 'invalid_staff_path' && (
+          <div style={{
+            backgroundColor: 'rgba(255, 77, 77, 0.15)',
+            color: '#FF4D4D',
+            padding: '12px 16px',
+            borderRadius: '8px',
+            borderLeft: '4px solid #FF4D4D',
+            marginBottom: '20px',
+            fontSize: '14px',
+            fontWeight: 500,
+            maxWidth: '600px',
+            margin: '0 auto 20px'
+          }}>
+            ⚠️ {t('auth.invalidStaffPath')}
+          </div>
+        )}
         
         <h1>🏋️ {t('landing.title', { gymName: gymName || 'Gym' })}</h1>
         <p className="tagline">{t('landing.tagline')}</p>
