@@ -40,7 +40,7 @@ export default function AdminLoginScreen({ onLogin }: AdminLoginScreenProps) {
         </div>
         
         <h1>🔐 Platform Admin</h1>
-        <p className="subtitle">GymPass SaaS {t('admin.title')}</p>
+        <p className="subtitle">GymGo SaaS {t('admin.title')}</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">

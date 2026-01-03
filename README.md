@@ -1,4 +1,4 @@
-# GymPass - Multi-Tenant SaaS Gym Management System
+# GymGo - Multi-Tenant SaaS Gym Management System
 
 A full-stack **multi-tenant SaaS** gym membership system with React Native mobile app (iOS/Android), Staff web app, Node.js backend, and Apple Wallet integration.
 

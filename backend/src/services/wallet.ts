@@ -34,7 +34,7 @@ export async function generateWalletPass(data: WalletPassData): Promise<Buffer> 
     certificates: certificates as any,
   }, {
     serialNumber: pass.walletSerialNumber,
-    description: `${passType.name} - Gym Pass`,
+    description: `${passType.name} - GymGo Pass`,
     organizationName: env.WALLET_ORG_NAME,
     passTypeIdentifier: env.WALLET_PASS_TYPE_ID,
     teamIdentifier: env.WALLET_TEAM_ID,
@@ -104,7 +104,7 @@ function generateUnsignedPass(data: WalletPassData): Buffer {
     serialNumber: pass.walletSerialNumber,
     teamIdentifier: env.WALLET_TEAM_ID,
     organizationName: env.WALLET_ORG_NAME,
-    description: `${passType.name} - Gym Pass`,
+    description: `${passType.name} - GymGo Pass`,
     logoText: env.WALLET_ORG_NAME,
     foregroundColor: 'rgb(255, 255, 255)',
     backgroundColor: 'rgb(0, 122, 255)',

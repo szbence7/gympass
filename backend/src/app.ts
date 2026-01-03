@@ -98,7 +98,7 @@ export function createApp() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GymPass SaaS</title>
+  <title>GymGo SaaS</title>
   <style>
     body { 
       font-family: Arial, sans-serif; 
@@ -141,7 +141,7 @@ export function createApp() {
 </head>
 <body>
   <div class="container">
-    <h1>🏋️ GymPass SaaS</h1>
+    <h1>🏋️ GymGo SaaS</h1>
     <p>Complete gym management system with multi-tenancy</p>
     <div class="links">
       <a href="/register">Register Your Gym</a>

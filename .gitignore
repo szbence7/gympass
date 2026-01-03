@@ -5,6 +5,8 @@ build/
 .env
 *.db
 *.db-journal
+*.db-wal
+*.db-shm
 *.log
 .DS_Store
 certs/
@@ -13,6 +15,26 @@ certs/
 *.mobileprovision
 *.jks
 *.key
+
+# iOS build artifacts (CocoaPods, Xcode)
+**/ios/Pods/
+**/ios/build/
+**/ios/*.xcworkspace/xcuserdata/
+**/ios/*.xcodeproj/xcuserdata/
+**/ios/*.xcworkspace/xcshareddata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xccheckout
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.xcuserstate
+xcshareddata/
+*.xcscmblueprint
+
 # Ignore all Markdown docs except README
 *.md
 !README.md

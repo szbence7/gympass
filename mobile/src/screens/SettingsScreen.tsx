@@ -176,7 +176,7 @@ export default function SettingsScreen({ navigation }: any) {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>GymPass v1.0.0</Text>
+        <Text style={styles.footerText}>GymGo v1.0.0</Text>
       </View>
       </ScrollView>
     </SafeAreaView>

@@ -58,7 +58,7 @@ export default function LoginScreen({ navigation }: any) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>GymPass</Text>
+        <Text style={styles.title}>GymGo</Text>
         <Text style={styles.subtitle}>{t('auth.signIn')}</Text>
 
         {selectedGym && (

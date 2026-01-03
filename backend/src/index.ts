@@ -22,7 +22,7 @@ backfillStaffLoginPaths();
 
 app.listen(PORT, () => {
   console.log('\n' + '='.repeat(70));
-  console.log('🚀 GymPass SaaS - Server Started Successfully');
+  console.log('🚀 GymGo SaaS - Server Started Successfully');
   console.log('='.repeat(70));
   
   const publicBaseUrl = buildPublicBaseUrl();

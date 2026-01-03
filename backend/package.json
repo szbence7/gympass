@@ -1,7 +1,7 @@
 {
   "name": "gympass-backend",
   "version": "1.0.0",
-  "description": "Gym Pass Backend API",
+  "description": "GymGo Backend API",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

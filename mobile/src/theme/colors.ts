@@ -1,5 +1,5 @@
 /**
- * GymPass Color Theme - Graphite + Neon
+ * GymGo Color Theme - Graphite + Neon
  * Dark gym/fitness vibe with bold neon accents
  */
 

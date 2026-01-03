@@ -1,7 +1,7 @@
 {
   "name": "gympass-monorepo",
   "version": "1.0.0",
-  "description": "Gym Pass System - Monorepo",
+  "description": "GymGo - Multi-Tenant SaaS Gym Management System - Monorepo",
   "private": true,
   "scripts": {
     "gym": "concurrently --names \"BACKEND,MOBILE,STAFF\" --prefix-colors \"blue,green,yellow\" \"npm run dev --prefix backend\" \"npm start --prefix mobile\" \"npm run dev --prefix staff-web\"",

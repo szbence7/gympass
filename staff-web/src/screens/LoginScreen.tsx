@@ -80,7 +80,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
           <LanguageSelector />
         </div>
         
-        <h1 className="login-title">GymPass Staff</h1>
+        <h1 className="login-title">GymGo Staff</h1>
         <p className="login-subtitle">{t('auth.signIn')}</p>
 
         {error && <div className="error-message">⚠️ {error}</div>}
