@@ -65,6 +65,7 @@ function MainTabs() {
         name="MyPasses" 
         component={MyPassesScreen}
         options={{ 
+          headerShown: false, // Hide default header since we have custom header
           title: t('passes.myPasses'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ticket-outline" size={size} color={color} />
@@ -75,6 +76,7 @@ function MainTabs() {
         name="Home" 
         component={HomeScreen}
         options={{ 
+          headerShown: false, // Hide default header since we have custom header
           title: t('passes.buyPasses'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="card-outline" size={size} color={color} />
@@ -85,6 +87,7 @@ function MainTabs() {
         name="Settings" 
         component={SettingsScreen}
         options={{
+          headerShown: false, // Hide default header since we have custom header
           title: t('settings.title'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />

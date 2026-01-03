@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { passAPI, PassType } from '../api/client';
 import { colors } from '../theme/colors';
 import { useGym } from '../context/GymContext';
-import { computeGymOpenStatus, getStatusText, getStatusColor } from '../utils/openingHours';
 import { getPassDisplayName, getPassDisplayDescription } from '../utils/passLocalization';
+import ScreenHeader from '../components/ScreenHeader';
 
 export default function HomeScreen({ navigation }: any) {
   const { t } = useTranslation();
@@ -56,35 +57,20 @@ export default function HomeScreen({ navigation }: any) {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <SafeAreaView style={styles.safeContainer} edges={['top']}>
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {selectedGym && (
-        <View style={styles.gymBranding}>
-          <View style={styles.gymNameRow}>
-            {selectedGym.openingHours ? (() => {
-              const status = computeGymOpenStatus(selectedGym.openingHours);
-              return (
-                <>
-                  <Text style={styles.gymNameWithStatus}>
-                    {selectedGym.name} - {getStatusText(status)}
-                  </Text>
-                  <View style={[styles.statusDot, { backgroundColor: getStatusColor(status) }]} />
-                </>
-              );
-            })() : (
-              <Text style={styles.gymName}>{selectedGym.name}</Text>
-            )}
-          </View>
-        </View>
-      )}
-      
-      {passTypes.length === 0 ? (
+    <SafeAreaView style={styles.safeContainer} edges={['top']}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+        <ScreenHeader title={t('passes.buyPasses')} />
+        
+        {passTypes.length === 0 ? (
         <View style={styles.emptyState}>
           <Text style={styles.emptyStateText}>{t('passes.noPassesAvailable')}</Text>
         </View>
@@ -122,48 +108,29 @@ export default function HomeScreen({ navigation }: any) {
             </TouchableOpacity>
           </View>
         ))
-      )}
-    </ScrollView>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.background,
-  },
-  gymBranding: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 8,
-  },
-  gymNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-  },
-  gymName: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  gymNameWithStatus: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginLeft: 4,
   },
   card: {
     backgroundColor: colors.surface,

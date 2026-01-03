@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { logout, getUser } from '../auth/storage';
@@ -8,6 +9,7 @@ import { useGym } from '../context/GymContext';
 import { colors } from '../theme/colors';
 import { getDayName, formatHours } from '../utils/openingHours';
 import { changeLanguage } from '../i18n/config';
+import ScreenHeader from '../components/ScreenHeader';
 
 export default function SettingsScreen({ navigation }: any) {
   const { t, i18n } = useTranslation();
@@ -76,10 +78,13 @@ export default function SettingsScreen({ navigation }: any) {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {selectedGym && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('gym.currentGym')}</Text>
+    <SafeAreaView style={styles.safeContainer} edges={['top']}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+        <ScreenHeader title={t('settings.title')} />
+        
+        {selectedGym && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('gym.currentGym')}</Text>
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
               <Text style={styles.label}>{t('gym.name')}:</Text>
@@ -173,14 +178,22 @@ export default function SettingsScreen({ navigation }: any) {
       <View style={styles.footer}>
         <Text style={styles.footerText}>GymPass v1.0.0</Text>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   section: {
     marginTop: 20,

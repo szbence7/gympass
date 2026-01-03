@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { passAPI, UserPass } from '../api/client';
 import { colors } from '../theme/colors';
 import { useGym } from '../context/GymContext';
-import { computeGymOpenStatus, getStatusText, getStatusColor as getGymStatusColor } from '../utils/openingHours';
 import { getPurchasedPassDisplayName } from '../utils/passLocalization';
+import ScreenHeader from '../components/ScreenHeader';
 
 export default function MyPassesScreen({ navigation }: any) {
   const { t } = useTranslation();
@@ -101,76 +102,47 @@ export default function MyPassesScreen({ navigation }: any) {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      <SafeAreaView style={styles.safeContainer} edges={['top']}>
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </SafeAreaView>
     );
   }
 
   if (passes.length === 0) {
     return (
-      <ScrollView style={styles.container}>
-        {selectedGym && (
-          <View style={styles.gymBranding}>
-            <View style={styles.gymNameRow}>
-              {selectedGym.openingHours ? (() => {
-                const status = computeGymOpenStatus(selectedGym.openingHours);
-                return (
-                  <>
-                    <Text style={styles.gymNameWithStatus}>
-                      {selectedGym.name} - {getStatusText(status)}
-                    </Text>
-                    <View style={[styles.statusDot, { backgroundColor: getGymStatusColor(status) }]} />
-                  </>
-                );
-              })() : (
-                <Text style={styles.gymName}>{selectedGym.name}</Text>
-              )}
-            </View>
+      <SafeAreaView style={styles.safeContainer} edges={['top']}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+          <ScreenHeader title={t('passes.myPasses')} />
+          
+          <View style={styles.centerContainer}>
+            <Text style={styles.emptyText}>{t('passes.noPassesYet')}</Text>
+            <Text style={styles.emptySubtext}>{t('passes.purchasePassToStart')}</Text>
+            <TouchableOpacity
+              style={styles.emptyButton}
+              onPress={() => navigation.navigate('Home')}
+            >
+              <Text style={styles.emptyButtonText}>{t('passes.browsePasses')}</Text>
+            </TouchableOpacity>
           </View>
-        )}
-        <View style={styles.centerContainer}>
-          <Text style={styles.emptyText}>{t('passes.noPassesYet')}</Text>
-          <Text style={styles.emptySubtext}>{t('passes.purchasePassToStart')}</Text>
-          <TouchableOpacity
-            style={styles.emptyButton}
-            onPress={() => navigation.navigate('Home')}
-          >
-            <Text style={styles.emptyButtonText}>{t('passes.browsePasses')}</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      {selectedGym && (
-        <View style={styles.gymBranding}>
-          <View style={styles.gymNameRow}>
-            {selectedGym.openingHours ? (() => {
-              const status = computeGymOpenStatus(selectedGym.openingHours);
-              return (
-                <>
-                  <Text style={styles.gymNameWithStatus}>
-                    {selectedGym.name} - {getStatusText(status)}
-                  </Text>
-                  <View style={[styles.statusDot, { backgroundColor: getGymStatusColor(status) }]} />
-                </>
-              );
-            })() : (
-              <Text style={styles.gymName}>{selectedGym.name}</Text>
-            )}
-          </View>
-        </View>
-      )}
-      
-      {getSortedPasses(passes).map((pass) => (
+    <SafeAreaView style={styles.safeContainer} edges={['top']}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <ScreenHeader title={t('passes.myPasses')} />
+        
+        {getSortedPasses(passes).map((pass) => (
         <TouchableOpacity
           key={pass.id}
           style={styles.card}
@@ -212,15 +184,23 @@ export default function MyPassesScreen({ navigation }: any) {
 
           <Text style={styles.viewDetails}>{t('passes.tapToViewQR')}</Text>
         </TouchableOpacity>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   centerContainer: {
     flex: 1,
@@ -228,27 +208,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     minHeight: 400,
-  },
-  gymBranding: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 8,
-  },
-  gymNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-  },
-  gymName: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  gymNameWithStatus: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    textAlign: 'center',
   },
   statusDot: {
     width: 8,
