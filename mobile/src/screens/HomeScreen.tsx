@@ -20,12 +20,13 @@ export default function HomeScreen({ navigation }: any) {
     loadPassTypes();
   }, []);
 
-  // Refresh gym data (including openingHours) when screen comes into focus
+  // Refresh gym data (including openingHours) and pass types when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       if (selectedGym) {
         refreshGymData();
       }
+      loadPassTypes();
     }, [selectedGym])
   );
 
