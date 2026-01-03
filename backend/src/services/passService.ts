@@ -43,40 +43,145 @@ export async function purchasePass(params: PurchasePassParams) {
     throw new BadRequestError('Account is blocked. Cannot purchase passes.');
   }
 
-  const passType = await getDb().select().from(passTypes).where(eq(passTypes.id, params.passTypeId)).get();
-  
-  if (!passType) {
-    throw new NotFoundError('Pass type not found');
-  }
-
+  const db = getDb();
   const now = new Date();
-  const validFrom = now;
-  const validUntil = passType.durationDays 
-    ? new Date(now.getTime() + passType.durationDays * 24 * 60 * 60 * 1000)
-    : null;
+  
+  // First try to find in pass_offerings (new system)
+  const offering = await db.select().from(passOfferings)
+    .where(and(eq(passOfferings.id, params.passTypeId), eq(passOfferings.enabled, true)))
+    .get();
+  
+  let validFrom: Date;
+  let validUntil: Date | null;
+  let totalEntries: number | null;
+  let remainingEntries: number | null;
+  let passTypeId: string;
+  let offeringId: string | null = null;
+  let purchasedNameHu: string | null = null;
+  let purchasedNameEn: string | null = null;
+  let purchasedDescHu: string | null = null;
+  let purchasedDescEn: string | null = null;
+
+  if (offering) {
+    // New system: use offering rules
+    offeringId = offering.id;
+    purchasedNameHu = offering.nameHu;
+    purchasedNameEn = offering.nameEn;
+    purchasedDescHu = offering.descHu;
+    purchasedDescEn = offering.descEn;
+    
+    // Ensure a corresponding pass_type exists for FK constraint
+    // Check if pass_type already exists (may have been created earlier)
+    let passType = await db.select().from(passTypes).where(eq(passTypes.id, offering.id)).get();
+    
+    if (!passType) {
+      // Create a minimal pass_type entry for FK constraint
+      // This is a bridge record to satisfy the schema requirement
+      const code = offering.templateId || `CUSTOM_${offering.id}`;
+      await db.insert(passTypes).values({
+        id: offering.id,
+        code: code,
+        name: offering.nameHu, // Use HU name as default
+        description: offering.descHu,
+        durationDays: offering.behavior === 'DURATION' && offering.durationUnit === 'day' ? offering.durationValue : null,
+        totalEntries: offering.behavior === 'VISITS' ? offering.visitsCount : null,
+        price: offering.priceCents / 100,
+        active: offering.enabled,
+        createdAt: now,
+        updatedAt: now,
+      }).run();
+      
+      passType = await db.select().from(passTypes).where(eq(passTypes.id, offering.id)).get();
+    }
+    
+    passTypeId = passType!.id; // Use the pass_type id for FK constraint
+    
+    validFrom = now;
+    
+    // Calculate validUntil based on behavior and expiry rules
+    if (offering.behavior === 'DURATION' && offering.durationValue && offering.durationUnit) {
+      let days = 0;
+      if (offering.durationUnit === 'day') {
+        days = offering.durationValue;
+      } else if (offering.durationUnit === 'week') {
+        days = offering.durationValue * 7;
+      } else if (offering.durationUnit === 'month') {
+        days = offering.durationValue * 30; // Approximate
+      }
+      validUntil = days > 0 ? new Date(now.getTime() + days * 24 * 60 * 60 * 1000) : null;
+    } else {
+      validUntil = null;
+    }
+    
+    // Apply expiry rules (overrides duration-based expiry)
+    if (!offering.neverExpires && offering.expiresInValue && offering.expiresInUnit) {
+      let expiryDays = 0;
+      if (offering.expiresInUnit === 'day') {
+        expiryDays = offering.expiresInValue;
+      } else if (offering.expiresInUnit === 'week') {
+        expiryDays = offering.expiresInValue * 7;
+      } else if (offering.expiresInUnit === 'month') {
+        expiryDays = offering.expiresInValue * 30;
+      } else if (offering.expiresInUnit === 'year') {
+        expiryDays = offering.expiresInValue * 365;
+      }
+      validUntil = expiryDays > 0 ? new Date(now.getTime() + expiryDays * 24 * 60 * 60 * 1000) : null;
+    } else if (offering.neverExpires) {
+      validUntil = null;
+    }
+    
+    // Set entries based on behavior
+    if (offering.behavior === 'VISITS' && offering.visitsCount) {
+      totalEntries = offering.visitsCount;
+      remainingEntries = offering.visitsCount;
+    } else {
+      totalEntries = null;
+      remainingEntries = null;
+    }
+  } else {
+    // Fallback to old passTypes (backward compatibility)
+    const passType = await db.select().from(passTypes).where(eq(passTypes.id, params.passTypeId)).get();
+    
+    if (!passType) {
+      throw new NotFoundError('A kiválasztott bérlet nem található.');
+    }
+    
+    passTypeId = passType.id;
+    validFrom = now;
+    validUntil = passType.durationDays 
+      ? new Date(now.getTime() + passType.durationDays * 24 * 60 * 60 * 1000)
+      : null;
+    totalEntries = passType.totalEntries;
+    remainingEntries = passType.totalEntries;
+  }
 
   const walletSerialNumber = `GYM-${Date.now()}-${uuidv4().substring(0, 8)}`;
   const passId = uuidv4();
   const tokenId = uuidv4();
   const token = crypto.randomBytes(32).toString('base64url');
 
-  await getDb().insert(userPasses).values({
+  await db.insert(userPasses).values({
     id: passId,
     userId: params.userId,
-    passTypeId: params.passTypeId,
+    passTypeId: passTypeId,
+    offeringId: offeringId,
     status: 'ACTIVE',
     purchasedAt: now,
     validFrom,
     validUntil,
-    totalEntries: passType.totalEntries,
-    remainingEntries: passType.totalEntries,
+    totalEntries,
+    remainingEntries,
     walletSerialNumber,
     qrTokenId: tokenId,
+    purchasedNameHu,
+    purchasedNameEn,
+    purchasedDescHu,
+    purchasedDescEn,
     createdAt: now,
     updatedAt: now,
   });
 
-  await getDb().insert(passTokens).values({
+  await db.insert(passTokens).values({
     id: tokenId,
     userPassId: passId,
     token,
@@ -84,8 +189,8 @@ export async function purchasePass(params: PurchasePassParams) {
     createdAt: now,
   });
 
-  const createdPass = await getDb().select().from(userPasses).where(eq(userPasses.id, passId)).get();
-  const createdToken = await getDb().select().from(passTokens).where(eq(passTokens.id, tokenId)).get();
+  const createdPass = await db.select().from(userPasses).where(eq(userPasses.id, passId)).get();
+  const createdToken = await db.select().from(passTokens).where(eq(passTokens.id, tokenId)).get();
 
   return {
     pass: createdPass!,
