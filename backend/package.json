@@ -8,7 +8,9 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "migrate": "tsx src/db/migrate.ts",
-    "seed": "tsx src/db/seed.ts"
+    "seed": "tsx src/db/seed.ts",
+    "script:wipe-purchased-passes": "tsx src/scripts/wipePurchasedPasses.ts",
+    "script:wipe-legacy-offerings": "tsx src/scripts/wipeLegacyOfferings.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

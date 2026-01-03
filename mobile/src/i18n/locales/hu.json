@@ -72,6 +72,7 @@
     "buyPasses": "Bérletek vásárlása",
     "myPasses": "Bérleteim",
     "noPassesYet": "Még nincs bérleted",
+    "noPassesAvailable": "Jelenleg nincs megvásárolható bérlet.",
     "purchasePassToStart": "Vásárolj egy bérletet a kezdéshez",
     "browsePasses": "Bérletek böngészése",
     "purchasing": "Vásárlás...",

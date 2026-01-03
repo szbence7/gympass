@@ -67,16 +67,37 @@ export default function MyPassesScreen({ navigation }: any) {
 
   if (passes.length === 0) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.emptyText}>{t('passes.noPassesYet')}</Text>
-        <Text style={styles.emptySubtext}>{t('passes.purchasePassToStart')}</Text>
-        <TouchableOpacity
-          style={styles.emptyButton}
-          onPress={() => navigation.navigate('Home')}
-        >
-          <Text style={styles.emptyButtonText}>{t('passes.browsePasses')}</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView style={styles.container}>
+        {selectedGym && (
+          <View style={styles.gymBranding}>
+            <View style={styles.gymNameRow}>
+              {selectedGym.openingHours ? (() => {
+                const status = computeGymOpenStatus(selectedGym.openingHours);
+                return (
+                  <>
+                    <Text style={styles.gymNameWithStatus}>
+                      {selectedGym.name} - {getStatusText(status)}
+                    </Text>
+                    <View style={[styles.statusDot, { backgroundColor: getGymStatusColor(status) }]} />
+                  </>
+                );
+              })() : (
+                <Text style={styles.gymName}>{selectedGym.name}</Text>
+              )}
+            </View>
+          </View>
+        )}
+        <View style={styles.centerContainer}>
+          <Text style={styles.emptyText}>{t('passes.noPassesYet')}</Text>
+          <Text style={styles.emptySubtext}>{t('passes.purchasePassToStart')}</Text>
+          <TouchableOpacity
+            style={styles.emptyButton}
+            onPress={() => navigation.navigate('Home')}
+          >
+            <Text style={styles.emptyButtonText}>{t('passes.browsePasses')}</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     );
   }
 
@@ -151,6 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    minHeight: 400,
   },
   gymBranding: {
     paddingHorizontal: 20,

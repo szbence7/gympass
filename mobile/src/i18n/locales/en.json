@@ -72,6 +72,7 @@
     "buyPasses": "Buy Passes",
     "myPasses": "My Passes",
     "noPassesYet": "No passes yet",
+    "noPassesAvailable": "Currently no passes available for purchase.",
     "purchasePassToStart": "Purchase a pass to get started",
     "browsePasses": "Browse Passes",
     "purchasing": "Purchasing...",

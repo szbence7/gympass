@@ -84,39 +84,45 @@ export default function HomeScreen({ navigation }: any) {
         </View>
       )}
       
-      {passTypes.map((passType) => (
-        <View key={passType.id} style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>{getPassDisplayName(passType)}</Text>
-            <Text style={styles.price}>{passType.price.toFixed(0)} HUF</Text>
-          </View>
-
-          {getPassDisplayDescription(passType) && (
-            <Text style={styles.description}>{getPassDisplayDescription(passType)}</Text>
-          )}
-
-          <View style={styles.details}>
-            {passType.durationDays && (
-              <Text style={styles.detailText}>{t('passes.validForDays', { days: passType.durationDays })}</Text>
-            )}
-            {passType.totalEntries ? (
-              <Text style={styles.detailText}>{t('passes.totalEntries', { count: passType.totalEntries })}</Text>
-            ) : (
-              <Text style={styles.detailText}>{t('passes.unlimitedEntries')}</Text>
-            )}
-          </View>
-
-          <TouchableOpacity
-            style={[styles.buyButton, purchasing === passType.id && styles.buyButtonDisabled]}
-            onPress={() => handlePurchase(passType.id)}
-            disabled={purchasing === passType.id}
-          >
-            <Text style={styles.buyButtonText}>
-              {purchasing === passType.id ? t('passes.purchasing') : t('passes.buyNow')}
-            </Text>
-          </TouchableOpacity>
+      {passTypes.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyStateText}>{t('passes.noPassesAvailable')}</Text>
         </View>
-      ))}
+      ) : (
+        passTypes.map((passType) => (
+          <View key={passType.id} style={styles.card}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.cardTitle}>{getPassDisplayName(passType)}</Text>
+              <Text style={styles.price}>{passType.price.toFixed(0)} HUF</Text>
+            </View>
+
+            {getPassDisplayDescription(passType) && (
+              <Text style={styles.description}>{getPassDisplayDescription(passType)}</Text>
+            )}
+
+            <View style={styles.details}>
+              {passType.durationDays && (
+                <Text style={styles.detailText}>{t('passes.validForDays', { days: passType.durationDays })}</Text>
+              )}
+              {passType.totalEntries ? (
+                <Text style={styles.detailText}>{t('passes.totalEntries', { count: passType.totalEntries })}</Text>
+              ) : (
+                <Text style={styles.detailText}>{t('passes.unlimitedEntries')}</Text>
+              )}
+            </View>
+
+            <TouchableOpacity
+              style={[styles.buyButton, purchasing === passType.id && styles.buyButtonDisabled]}
+              onPress={() => handlePurchase(passType.id)}
+              disabled={purchasing === passType.id}
+            >
+              <Text style={styles.buyButtonText}>
+                {purchasing === passType.id ? t('passes.purchasing') : t('passes.buyNow')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      )}
     </ScrollView>
   );
 }
@@ -130,6 +136,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.background,
   },
   gymBranding: {
     paddingHorizontal: 20,
@@ -212,5 +219,16 @@ const styles = StyleSheet.create({
     color: colors.primaryText,
     fontSize: 16,
     fontWeight: '600',
+  },
+  emptyState: {
+    padding: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    textAlign: 'center',
   },
 });

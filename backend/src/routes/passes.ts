@@ -17,44 +17,44 @@ const purchaseSchema = z.object({
 router.get('/pass-types', asyncHandler(async (req, res: Response) => {
   const db = getDb();
   
-  // First try to get enabled offerings (new system)
+  // ONLY return enabled offerings (new system)
+  // No fallback to old pass_types - if no offerings are enabled, return empty array
   const offerings = await db.select().from(passOfferings).where(eq(passOfferings.enabled, true)).all();
   
-  if (offerings.length > 0) {
-    // Return offerings in a format compatible with existing mobile app
-    // Mobile will use the language from Accept-Language header or default to HU
-    const acceptLanguage = req.headers['accept-language'] || 'hu';
-    const preferredLang = acceptLanguage.startsWith('en') ? 'en' : 'hu';
-    
-    const formatted = offerings.map(offering => ({
-      id: offering.id,
-      code: offering.templateId || `CUSTOM_${offering.id}`,
-      name: preferredLang === 'en' ? offering.nameEn : offering.nameHu,
-      description: preferredLang === 'en' ? offering.descEn : offering.descHu,
-      durationDays: offering.behavior === 'DURATION' && offering.durationUnit === 'day' ? offering.durationValue : null,
-      totalEntries: offering.behavior === 'VISITS' ? offering.visitsCount : null,
-      price: offering.priceCents / 100, // Convert cents to HUF
-      active: offering.enabled,
-      // Include both languages for mobile to choose
-      nameHu: offering.nameHu,
-      nameEn: offering.nameEn,
-      descHu: offering.descHu,
-      descEn: offering.descEn,
-      behavior: offering.behavior,
-      durationValue: offering.durationValue,
-      durationUnit: offering.durationUnit,
-      visitsCount: offering.visitsCount,
-      expiresInValue: offering.expiresInValue,
-      expiresInUnit: offering.expiresInUnit,
-      neverExpires: offering.neverExpires,
-    }));
-    
-    return res.json(formatted);
+  if (offerings.length === 0) {
+    // Return empty array if no enabled offerings
+    return res.json([]);
   }
   
-  // Fallback to old pass_types for backward compatibility
-  const types = await db.select().from(passTypes).where(eq(passTypes.active, true)).all();
-  res.json(types);
+  // Return offerings in a format compatible with existing mobile app
+  // Mobile will use the language from Accept-Language header or default to HU
+  const acceptLanguage = req.headers['accept-language'] || 'hu';
+  const preferredLang = acceptLanguage.startsWith('en') ? 'en' : 'hu';
+  
+  const formatted = offerings.map(offering => ({
+    id: offering.id,
+    code: offering.templateId || `CUSTOM_${offering.id}`,
+    name: preferredLang === 'en' ? offering.nameEn : offering.nameHu,
+    description: preferredLang === 'en' ? offering.descEn : offering.descHu,
+    durationDays: offering.behavior === 'DURATION' && offering.durationUnit === 'day' ? offering.durationValue : null,
+    totalEntries: offering.behavior === 'VISITS' ? offering.visitsCount : null,
+    price: offering.priceCents / 100, // Convert cents to HUF
+    active: offering.enabled,
+    // Include both languages for mobile to choose
+    nameHu: offering.nameHu,
+    nameEn: offering.nameEn,
+    descHu: offering.descHu,
+    descEn: offering.descEn,
+    behavior: offering.behavior,
+    durationValue: offering.durationValue,
+    durationUnit: offering.durationUnit,
+    visitsCount: offering.visitsCount,
+    expiresInValue: offering.expiresInValue,
+    expiresInUnit: offering.expiresInUnit,
+    neverExpires: offering.neverExpires,
+  }));
+  
+  res.json(formatted);
 }));
 
 router.post('/passes/purchase', authenticateToken, asyncHandler(async (req: AuthRequest, res: Response) => {
