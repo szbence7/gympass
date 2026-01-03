@@ -269,6 +269,7 @@ export default function PassManagementScreen() {
             setShowCustomForm(false);
           }}
           saving={saving}
+          template={editingOffering?.templateId ? templates.find(t => t.templateId === editingOffering.templateId) : undefined}
         />
       )}
     </div>
@@ -341,8 +342,9 @@ function OfferingFormModal({
       return;
     }
     
-    // For template-based, only send editable fields
-    if (isTemplateBased) {
+    // For template-based, send all required fields for creation, or only editable fields for update
+    if (isTemplateBased && offering?.id) {
+      // Update: only send editable fields
       const editableData: Partial<PassOffering> = {
         priceCents: formData.priceCents,
       };
@@ -360,8 +362,25 @@ function OfferingFormModal({
       
       onSave(editableData);
     } else {
-      // Custom: send all fields
-      onSave(formData);
+      // Create new (template-based or custom): send all required fields
+      // For template-based, formData should already have all fields from handleEnableTemplate
+      // For custom, formData should have all fields from the form
+      const fullData: Partial<PassOffering> = {
+        ...formData,
+        // Ensure required fields are set
+        templateId: formData.templateId || offering?.templateId || null,
+        isCustom: formData.isCustom ?? (formData.templateId ? false : true),
+        enabled: formData.enabled ?? true,
+        behavior: formData.behavior || offering?.behavior || template?.behavior || 'DURATION',
+        neverExpires: formData.neverExpires ?? false,
+        // Ensure name/desc are present (from template defaults if template-based)
+        nameHu: formData.nameHu || offering?.nameHu || template?.defaultName?.hu || '',
+        nameEn: formData.nameEn || offering?.nameEn || template?.defaultName?.en || '',
+        descHu: formData.descHu || offering?.descHu || template?.defaultDescription?.hu || '',
+        descEn: formData.descEn || offering?.descEn || template?.defaultDescription?.en || '',
+      };
+      
+      onSave(fullData);
     }
   };
 

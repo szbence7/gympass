@@ -606,7 +606,16 @@ const createOfferingSchema = z.object({
 });
 
 router.post('/passes/offerings', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
-  const body = createOfferingSchema.parse(req.body);
+  let body;
+  try {
+    body = createOfferingSchema.parse(req.body);
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      const missingFields = error.errors.map(e => e.path.join('.')).join(', ');
+      throw new BadRequestError(`Invalid request data. Missing or invalid fields: ${missingFields}`);
+    }
+    throw new BadRequestError('Invalid request data');
+  }
   const db = getDb();
   
   // Validate behavior-specific fields
