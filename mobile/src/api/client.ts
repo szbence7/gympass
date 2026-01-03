@@ -130,6 +130,47 @@ export const authAPI = {
   },
 };
 
+export interface Features {
+  appleWallet: boolean;
+}
+
+// In-memory cache for features (fetched once per app session)
+let featuresCache: Features | null = null;
+let featuresFetchPromise: Promise<Features> | null = null;
+
+export const featuresAPI = {
+  getFeatures: async (): Promise<Features> => {
+    // Return cached value if available
+    if (featuresCache) {
+      return featuresCache;
+    }
+    
+    // If fetch is already in progress, return that promise
+    if (featuresFetchPromise) {
+      return featuresFetchPromise;
+    }
+    
+    // Fetch features from backend
+    featuresFetchPromise = (async () => {
+      try {
+        // Use axios directly for public endpoint (no auth needed)
+        const response = await axios.get<Features>(`${API_BASE_URL}/api/public/features`);
+        featuresCache = response.data;
+        return featuresCache;
+      } catch (error) {
+        console.error('Failed to fetch features, defaulting to disabled:', error);
+        // Default to false on error
+        featuresCache = { appleWallet: false };
+        return featuresCache;
+      } finally {
+        featuresFetchPromise = null;
+      }
+    })();
+    
+    return featuresFetchPromise;
+  },
+};
+
 export const passAPI = {
   getPassTypes: async (): Promise<PassType[]> => {
     const response = await apiClient.get<PassType[]>('/pass-types');

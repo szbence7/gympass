@@ -47,4 +47,7 @@ export const env = {
   
   // CORS
   CORS_ALLOWED_ORIGINS: process.env.CORS_ALLOWED_ORIGINS || '', // Comma-separated list for prod
+  
+  // Feature Flags
+  APPLE_WALLET: process.env.APPLE_WALLET,
 };
