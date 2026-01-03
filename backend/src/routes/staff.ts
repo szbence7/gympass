@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import { z } from 'zod';
 import { authenticateToken, AuthRequest } from '../middleware/auth';
 import { requireRole } from '../middleware/requireRole';
-import { getGymBySlug } from '../db/registry';
+import { getGymBySlug, updateGymOpeningHours } from '../db/registry';
 import { getCurrentGymSlug } from '../db/tenantContext';
 import { validatePassByToken, consumePassEntry, getUsageHistory, purchasePass } from '../services/passService';
 import { getDb } from '../db';
@@ -13,6 +13,7 @@ import bcrypt from 'bcrypt';
 import { generateTempPassword } from '../utils/password';
 import { BadRequestError } from '../utils/errors';
 import { asyncHandler } from '../utils/asyncHandler';
+import { parseOpeningHours, validateOpeningHours } from '../utils/openingHours';
 
 const router = Router();
 
@@ -477,7 +478,7 @@ router.get('/gym-info', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncH
     throw new BadRequestError('Gym not found');
   }
   
-  // Return only business/contact info (READ-ONLY)
+  // Return only business/contact info (READ-ONLY) + opening hours (editable)
   res.json({
     name: gym.name,
     slug: gym.slug,
@@ -491,7 +492,72 @@ router.get('/gym-info', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncH
     contact_name: gym.contact_name,
     contact_email: gym.contact_email,
     contact_phone: gym.contact_phone,
+    openingHours: parseOpeningHours(gym.opening_hours),
   });
+}));
+
+// Update opening hours (staff can edit their own gym)
+const updateOpeningHoursSchema = z.object({
+  openingHours: z.object({
+    mon: z.object({
+      open: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      close: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      closed: z.boolean(),
+    }),
+    tue: z.object({
+      open: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      close: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      closed: z.boolean(),
+    }),
+    wed: z.object({
+      open: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      close: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      closed: z.boolean(),
+    }),
+    thu: z.object({
+      open: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      close: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      closed: z.boolean(),
+    }),
+    fri: z.object({
+      open: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      close: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      closed: z.boolean(),
+    }),
+    sat: z.object({
+      open: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      close: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      closed: z.boolean(),
+    }),
+    sun: z.object({
+      open: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      close: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+      closed: z.boolean(),
+    }),
+  }),
+});
+
+router.put('/gym/opening-hours', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
+  const gymSlug = getCurrentGymSlug();
+  const gym = getGymBySlug(gymSlug);
+  
+  if (!gym) {
+    throw new BadRequestError('Gym not found');
+  }
+  
+  const body = updateOpeningHoursSchema.parse(req.body);
+  
+  // Additional validation using helper
+  const validation = validateOpeningHours(body.openingHours);
+  if (!validation.valid) {
+    throw new BadRequestError(validation.error || 'Invalid opening hours');
+  }
+  
+  // Save as JSON string
+  const openingHoursJson = JSON.stringify(body.openingHours);
+  updateGymOpeningHours(gym.id, openingHoursJson);
+  
+  res.json({ success: true, message: 'Opening hours updated successfully' });
 }));
 
 export default router;

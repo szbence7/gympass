@@ -60,22 +60,22 @@ function MainTabs() {
       }}
     >
       <Tab.Screen 
-        name="Home" 
-        component={HomeScreen}
-        options={{ 
-          title: 'Buy Passes',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="card-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen 
         name="MyPasses" 
         component={MyPassesScreen}
         options={{ 
           title: 'My Passes',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ticket-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen}
+        options={{ 
+          title: 'Buy Passes',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="card-outline" size={size} color={color} />
           ),
         }}
       />

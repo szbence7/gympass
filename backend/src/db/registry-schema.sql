@@ -31,7 +31,10 @@ CREATE TABLE IF NOT EXISTS gyms (
   contact_phone TEXT,
   
   -- Staff login secret path (per-gym, not globally unique)
-  staff_login_path TEXT
+  staff_login_path TEXT,
+  
+  -- Opening hours (JSON string)
+  opening_hours TEXT
 );
 
 CREATE TABLE IF NOT EXISTS platform_admins (

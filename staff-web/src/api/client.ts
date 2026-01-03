@@ -290,4 +290,8 @@ export const staffAPI = {
     const response = await apiClient.get('/staff/gym-info');
     return response.data;
   },
+
+  updateOpeningHours: async (openingHours: any): Promise<void> => {
+    await apiClient.put('/staff/gym/opening-hours', { openingHours });
+  },
 };

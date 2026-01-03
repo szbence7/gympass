@@ -72,6 +72,26 @@ export function getRegistryDb(): Database.Database {
         registryDb.exec(`ALTER TABLE gyms ADD COLUMN billing_email TEXT;`);
         console.log('✅ Migrated registry.db schema (added billing_email)');
       }
+      
+      const hasOpeningHours = tableInfo.some(col => col.name === 'opening_hours');
+      if (!hasOpeningHours && tableInfo.length > 0) {
+        // Add opening_hours for gym opening hours
+        registryDb.exec(`ALTER TABLE gyms ADD COLUMN opening_hours TEXT;`);
+        console.log('✅ Migrated registry.db schema (added opening_hours)');
+        
+        // Set default opening hours for existing gyms
+        const defaultHours = JSON.stringify({
+          mon: { open: "06:00", close: "22:00", closed: false },
+          tue: { open: "06:00", close: "22:00", closed: false },
+          wed: { open: "06:00", close: "22:00", closed: false },
+          thu: { open: "06:00", close: "22:00", closed: false },
+          fri: { open: "06:00", close: "22:00", closed: false },
+          sat: { open: "08:00", close: "20:00", closed: false },
+          sun: { open: "08:00", close: "20:00", closed: false }
+        });
+        registryDb.prepare('UPDATE gyms SET opening_hours = ? WHERE opening_hours IS NULL').run(defaultHours);
+        console.log('✅ Set default opening hours for existing gyms');
+      }
     } catch (e) {
       // Table doesn't exist yet, will be created by schema.sql
     }
@@ -119,6 +139,8 @@ export interface Gym {
   contact_phone: string | null;
   // Staff login secret path (per-gym, not globally unique)
   staff_login_path: string | null;
+  // Opening hours (JSON string, parsed when needed)
+  opening_hours: string | null;
 }
 
 export interface PlatformAdmin {
@@ -308,6 +330,13 @@ export function setStaffLoginPath(id: string, path: string): void {
   const db = getRegistryDb();
   const now = Date.now();
   db.prepare('UPDATE gyms SET staff_login_path = ?, updated_at = ? WHERE id = ?').run(path, now, id);
+}
+
+// Update opening hours for a gym
+export function updateGymOpeningHours(id: string, openingHours: string): void {
+  const db = getRegistryDb();
+  const now = Date.now();
+  db.prepare('UPDATE gyms SET opening_hours = ?, updated_at = ? WHERE id = ?').run(openingHours, now, id);
 }
 
 // Backfill staff login paths for existing gyms (idempotent)

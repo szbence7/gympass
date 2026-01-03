@@ -1,18 +1,29 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { logout, getUser } from '../auth/storage';
 import { useAuth } from '../auth/AuthContext';
 import { useGym } from '../context/GymContext';
 import { colors } from '../theme/colors';
+import { getDayName, formatHours } from '../utils/openingHours';
 
 export default function SettingsScreen({ navigation }: any) {
   const [user, setUser] = React.useState<any>(null);
   const { refreshAuth } = useAuth();
-  const { selectedGym, clearSelectedGym } = useGym();
+  const { selectedGym, clearSelectedGym, refreshGymData } = useGym();
 
   React.useEffect(() => {
     loadUser();
   }, []);
+
+  // Refresh gym data (including openingHours) when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      if (selectedGym) {
+        refreshGymData();
+      }
+    }, [selectedGym])
+  );
 
   const loadUser = async () => {
     const userData = await getUser();
@@ -58,7 +69,7 @@ export default function SettingsScreen({ navigation }: any) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {selectedGym && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Current Gym</Text>
@@ -77,6 +88,32 @@ export default function SettingsScreen({ navigation }: any) {
           <TouchableOpacity style={styles.changeGymButton} onPress={handleChangeGym}>
             <Text style={styles.changeGymButtonText}>Change Gym</Text>
           </TouchableOpacity>
+        </View>
+      )}
+
+      {selectedGym && selectedGym.openingHours && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Nyitvatartás</Text>
+          <View style={styles.infoCard}>
+            {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((day) => {
+              const dayHours = selectedGym.openingHours![day as keyof typeof selectedGym.openingHours];
+              return (
+                <View key={day} style={styles.infoRow}>
+                  <Text style={styles.label}>{getDayName(day)}:</Text>
+                  <Text style={styles.value}>{formatHours(dayHours)}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      )}
+
+      {selectedGym && !selectedGym.openingHours && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Nyitvatartás</Text>
+          <View style={styles.infoCard}>
+            <Text style={styles.unknownText}>Nyitvatartás: ismeretlen</Text>
+          </View>
         </View>
       )}
 
@@ -105,7 +142,7 @@ export default function SettingsScreen({ navigation }: any) {
       <View style={styles.footer}>
         <Text style={styles.footerText}>GymPass v1.0.0</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -174,14 +211,19 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   footer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
+    padding: 20,
     alignItems: 'center',
+    marginBottom: 20,
   },
   footerText: {
     fontSize: 12,
     color: colors.textMuted,
+  },
+  unknownText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    paddingVertical: 10,
   },
 });

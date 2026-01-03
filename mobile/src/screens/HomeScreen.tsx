@@ -1,18 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { passAPI, PassType } from '../api/client';
 import { colors } from '../theme/colors';
 import { useGym } from '../context/GymContext';
+import { computeGymOpenStatus, getStatusText, getStatusColor } from '../utils/openingHours';
 
 export default function HomeScreen({ navigation }: any) {
   const [passTypes, setPassTypes] = useState<PassType[]>([]);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
-  const { selectedGym } = useGym();
+  const { selectedGym, refreshGymData } = useGym();
 
   useEffect(() => {
     loadPassTypes();
   }, []);
+
+  // Refresh gym data (including openingHours) when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      if (selectedGym) {
+        refreshGymData();
+      }
+    }, [selectedGym])
+  );
 
   const loadPassTypes = async () => {
     try {
@@ -52,7 +63,21 @@ export default function HomeScreen({ navigation }: any) {
     <ScrollView style={styles.container}>
       {selectedGym && (
         <View style={styles.gymBranding}>
-          <Text style={styles.gymName}>{selectedGym.name}</Text>
+          <View style={styles.gymNameRow}>
+            {selectedGym.openingHours ? (() => {
+              const status = computeGymOpenStatus(selectedGym.openingHours);
+              return (
+                <>
+                  <Text style={styles.gymNameWithStatus}>
+                    {selectedGym.name} - {getStatusText(status)}
+                  </Text>
+                  <View style={[styles.statusDot, { backgroundColor: getStatusColor(status) }]} />
+                </>
+              );
+            })() : (
+              <Text style={styles.gymName}>{selectedGym.name}</Text>
+            )}
+          </View>
         </View>
       )}
       
@@ -108,10 +133,27 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 8,
   },
+  gymNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
   gymName: {
     fontSize: 13,
     color: colors.textSecondary,
     textAlign: 'center',
+  },
+  gymNameWithStatus: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    textAlign: 'center',
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginLeft: 4,
   },
   card: {
     backgroundColor: colors.surface,

@@ -11,6 +11,10 @@ export default function DashboardScreen() {
   const [error, setError] = useState('');
   const [showGymInfo, setShowGymInfo] = useState(false);
   const [gymInfo, setGymInfo] = useState<any>(null);
+  const [openingHours, setOpeningHours] = useState<any>(null);
+  const [savingHours, setSavingHours] = useState(false);
+  const [hoursError, setHoursError] = useState('');
+  const [hoursSuccess, setHoursSuccess] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -41,10 +45,46 @@ export default function DashboardScreen() {
     try {
       const info = await staffAPI.getGymInfo();
       setGymInfo(info);
+      setOpeningHours(info.openingHours || {
+        mon: { open: "06:00", close: "22:00", closed: false },
+        tue: { open: "06:00", close: "22:00", closed: false },
+        wed: { open: "06:00", close: "22:00", closed: false },
+        thu: { open: "06:00", close: "22:00", closed: false },
+        fri: { open: "06:00", close: "22:00", closed: false },
+        sat: { open: "08:00", close: "20:00", closed: false },
+        sun: { open: "08:00", close: "20:00", closed: false }
+      });
       setShowGymInfo(true);
+      setHoursError('');
+      setHoursSuccess(false);
     } catch (err: any) {
       alert(err.message || 'Failed to load gym info');
     }
+  };
+
+  const handleSaveOpeningHours = async () => {
+    setSavingHours(true);
+    setHoursError('');
+    setHoursSuccess(false);
+    try {
+      await staffAPI.updateOpeningHours(openingHours);
+      setHoursSuccess(true);
+      setTimeout(() => setHoursSuccess(false), 3000);
+    } catch (err: any) {
+      setHoursError(err.message || 'Failed to save opening hours');
+    } finally {
+      setSavingHours(false);
+    }
+  };
+
+  const handleDayChange = (day: string, field: string, value: any) => {
+    setOpeningHours((prev: any) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [field]: value,
+      },
+    }));
   };
 
   const formatDateTime = (dateStr: string) => {
@@ -112,6 +152,79 @@ export default function DashboardScreen() {
               </div>
             </div>
             <p className="info-note">⚠️ Only platform administrators can edit this information.</p>
+            
+            <div className="info-section" style={{ marginTop: '30px', borderTop: '2px solid #eee', paddingTop: '20px' }}>
+              <h3>Nyitvatartás</h3>
+              {openingHours && (
+                <div className="opening-hours-editor">
+                  {['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].map((day) => {
+                    const dayNames: { [key: string]: string } = {
+                      mon: 'Hétfő',
+                      tue: 'Kedd',
+                      wed: 'Szerda',
+                      thu: 'Csütörtök',
+                      fri: 'Péntek',
+                      sat: 'Szombat',
+                      sun: 'Vasárnap',
+                    };
+                    const dayData = openingHours[day];
+                    return (
+                      <div key={day} className="opening-hours-row" style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '10px' }}>
+                        <label style={{ width: '100px', fontWeight: '500' }}>{dayNames[day]}:</label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <input
+                            type="checkbox"
+                            checked={dayData.closed}
+                            onChange={(e) => handleDayChange(day, 'closed', e.target.checked)}
+                          />
+                          Zárva
+                        </label>
+                        {!dayData.closed && (
+                          <>
+                            <input
+                              type="time"
+                              value={dayData.open}
+                              onChange={(e) => handleDayChange(day, 'open', e.target.value)}
+                              style={{ padding: '5px', border: '1px solid #ddd', borderRadius: '4px' }}
+                            />
+                            <span>-</span>
+                            <input
+                              type="time"
+                              value={dayData.close}
+                              onChange={(e) => handleDayChange(day, 'close', e.target.value)}
+                              style={{ padding: '5px', border: '1px solid #ddd', borderRadius: '4px' }}
+                            />
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {hoursError && (
+                    <div style={{ color: '#d32f2f', marginTop: '10px', fontSize: '14px' }}>⚠️ {hoursError}</div>
+                  )}
+                  {hoursSuccess && (
+                    <div style={{ color: '#2e7d32', marginTop: '10px', fontSize: '14px' }}>✅ Nyitvatartás sikeresen frissítve!</div>
+                  )}
+                  <button
+                    onClick={handleSaveOpeningHours}
+                    disabled={savingHours}
+                    style={{
+                      marginTop: '15px',
+                      padding: '10px 20px',
+                      backgroundColor: '#1976d2',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: savingHours ? 'not-allowed' : 'pointer',
+                      opacity: savingHours ? 0.6 : 1,
+                    }}
+                  >
+                    {savingHours ? 'Mentés...' : 'Mentés'}
+                  </button>
+                </div>
+              )}
+            </div>
+            
             <button onClick={() => setShowGymInfo(false)} className="btn-close">Close</button>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { getGymBySlug, getAllGyms } from '../db/registry';
 import { NotFoundError } from '../utils/errors';
 import { env } from '../utils/env';
+import { parseOpeningHours } from '../utils/openingHours';
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.get('/gyms', asyncHandler(async (req: Request, res: Response) => {
       slug: gym.slug,
       name: gym.name,
       city: gym.city || null,
+      openingHours: parseOpeningHours(gym.opening_hours),
     }));
   
   res.json(publicGyms);
