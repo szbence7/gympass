@@ -117,6 +117,23 @@ export default function UserDetailScreen() {
     }
   };
 
+  const handleDeletePass = async (passId: string) => {
+    const confirmed = window.confirm(t('userDetail.confirmDeletePass'));
+
+    if (!confirmed) return;
+
+    setActionLoading(true);
+    try {
+      await staffAPI.deletePass(passId);
+      alert(t('userDetail.passDeleted'));
+      await loadUserDetail();
+    } catch (err: any) {
+      alert(err.message || t('userDetail.failedToLoad'));
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return t('passes.noExpiry');
     return new Date(dateStr).toLocaleDateString();
@@ -245,24 +262,33 @@ export default function UserDetailScreen() {
                       <span className="code">{pass.walletSerialNumber}</span>
                     </div>
                   </div>
-                  {pass.status === 'ACTIVE' && (
+                  <div className="pass-actions">
+                    {pass.status === 'ACTIVE' && (
+                      <button
+                        onClick={() => handlePassAction(pass.id, 'revoke')}
+                        disabled={actionLoading}
+                        className="action-button small warning"
+                      >
+                        {t('userDetail.revoke')}
+                      </button>
+                    )}
+                    {pass.status === 'REVOKED' && (
+                      <button
+                        onClick={() => handlePassAction(pass.id, 'restore')}
+                        disabled={actionLoading}
+                        className="action-button small success"
+                      >
+                        {t('userDetail.restore')}
+                      </button>
+                    )}
                     <button
-                      onClick={() => handlePassAction(pass.id, 'revoke')}
+                      onClick={() => handleDeletePass(pass.id)}
                       disabled={actionLoading}
-                      className="action-button small warning"
+                      className="action-button small danger"
                     >
-                      {t('userDetail.revoke')}
+                      {t('userDetail.delete')}
                     </button>
-                  )}
-                  {pass.status === 'REVOKED' && (
-                    <button
-                      onClick={() => handlePassAction(pass.id, 'restore')}
-                      disabled={actionLoading}
-                      className="action-button small success"
-                    >
-                      {t('userDetail.restore')}
-                    </button>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>

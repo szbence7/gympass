@@ -478,6 +478,12 @@
   font-weight: 500;
 }
 
+.pass-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
 .pass-item-row .code {
   font-family: monospace;
   font-size: 11px;

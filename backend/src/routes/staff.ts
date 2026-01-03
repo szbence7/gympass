@@ -474,6 +474,24 @@ router.post('/passes/:id/revoke', authenticateToken, requireRole('STAFF', 'ADMIN
   res.json({ success: true, message: 'Pass revoked successfully' });
 }));
 
+router.delete('/passes/:id', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
+  const passId = req.params.id;
+
+  const pass = await getDb().select().from(userPasses).where(eq(userPasses.id, passId)).get();
+  if (!pass) {
+    throw new BadRequestError('Pass not found');
+  }
+
+  // Delete related records first (foreign key cascade)
+  await getDb().delete(passTokens).where(eq(passTokens.userPassId, passId));
+  await getDb().delete(passUsageLogs).where(eq(passUsageLogs.userPassId, passId));
+  
+  // Delete the pass
+  await getDb().delete(userPasses).where(eq(userPasses.id, passId));
+
+  res.json({ success: true, message: 'Pass deleted successfully' });
+}));
+
 router.post('/passes/:id/restore', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
   const passId = req.params.id;
 

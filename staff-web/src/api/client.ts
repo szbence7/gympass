@@ -266,6 +266,10 @@ export const staffAPI = {
     await apiClient.post(`/staff/passes/${passId}/restore`);
   },
 
+  deletePass: async (passId: string): Promise<void> => {
+    await apiClient.delete(`/staff/passes/${passId}`);
+  },
+
   createUser: async (name: string, email: string): Promise<CreateUserResponse> => {
     const response = await apiClient.post<CreateUserResponse>('/staff/users', { name, email });
     return response.data;

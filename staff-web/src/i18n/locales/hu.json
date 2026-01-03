@@ -120,6 +120,7 @@
     "serial": "Sorszám",
     "revoke": "Visszavonás",
     "restore": "Visszaállítás",
+    "delete": "Törlés",
     "blockUser": "Felhasználó blokkolása",
     "unblockUser": "Felhasználó blokkolásának feloldása",
     "deleteUser": "Felhasználó törlése",
@@ -127,6 +128,7 @@
     "confirmUnblock": "Biztosan fel szeretnéd oldani a blokkolást?",
     "confirmRevoke": "Biztosan vissza szeretnéd vonni ezt a bérletet?",
     "confirmRestore": "Biztosan vissza szeretnéd állítani ezt a bérletet?",
+    "confirmDeletePass": "Biztosan törölni szeretnéd ezt a bérletet? Ez a művelet nem vonható vissza.",
     "confirmDelete": "⚠️ FIGYELMEZETÉS: Ez véglegesen törli a felhasználót és az összes bérletét!",
     "typeEmailToConfirm": "Írd be a felhasználó email címét a törlés megerősítéséhez:",
     "deletionCancelled": "Törlés megszakítva: Az email nem egyezett.",
@@ -135,6 +137,7 @@
     "userUnblocked": "Felhasználó blokkolása sikeresen feloldva",
     "passRevoked": "Bérlet sikeresen visszavonva",
     "passRestored": "Bérlet sikeresen visszaállítva",
+    "passDeleted": "Bérlet sikeresen törölve",
     "failedToLoad": "Nem sikerült betölteni a felhasználó részleteit",
     "failedToBlock": "Nem sikerült blokkolni a felhasználót",
     "failedToDelete": "Nem sikerült törölni a felhasználót"
