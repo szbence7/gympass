@@ -8,7 +8,7 @@ import { passAPI, featuresAPI, UserPass, Features } from '../api/client';
 import { getToken } from '../auth/storage';
 import { API_BASE_URL } from '../api/config';
 import { colors } from '../theme/colors';
-import { getPassDisplayName } from '../utils/passLocalization';
+import { getPurchasedPassDisplayName } from '../utils/passLocalization';
 
 export default function PassDetailScreen({ route, navigation }: any) {
   const { t } = useTranslation();
@@ -135,7 +135,7 @@ export default function PassDetailScreen({ route, navigation }: any) {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>
-          {pass.passType ? getPassDisplayName(pass.passType) : t('passes.passes')}
+          {getPurchasedPassDisplayName(pass)}
         </Text>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(pass.status) }]}>
           <Text style={styles.statusText}>{t(`passes.status.${pass.status.toLowerCase()}` as any, { defaultValue: pass.status })}</Text>

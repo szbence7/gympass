@@ -112,6 +112,9 @@ export default function DashboardScreen() {
           <button onClick={() => window.location.href = '/create-pass'} className="nav-button">
             {t('dashboard.createPass')}
           </button>
+          <button onClick={() => window.location.href = '/passes'} className="nav-button">
+            {t('dashboard.passManagement')}
+          </button>
           <button onClick={() => window.location.href = '/history'} className="nav-button">
             {t('dashboard.viewHistory')}
           </button>

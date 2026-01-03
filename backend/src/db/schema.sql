@@ -28,10 +28,34 @@ CREATE TABLE IF NOT EXISTS pass_types (
       created_at INTEGER NOT NULL DEFAULT (unixepoch()),
       updated_at INTEGER NOT NULL DEFAULT (unixepoch())
     );
+
+CREATE TABLE IF NOT EXISTS pass_offerings (
+      id TEXT PRIMARY KEY,
+      template_id TEXT,
+      is_custom INTEGER NOT NULL DEFAULT 0,
+      name_hu TEXT NOT NULL,
+      name_en TEXT NOT NULL,
+      desc_hu TEXT NOT NULL,
+      desc_en TEXT NOT NULL,
+      price_cents INTEGER NOT NULL,
+      enabled INTEGER NOT NULL DEFAULT 1,
+      behavior TEXT NOT NULL,
+      duration_value INTEGER,
+      duration_unit TEXT,
+      visits_count INTEGER,
+      expires_in_value INTEGER,
+      expires_in_unit TEXT,
+      never_expires INTEGER NOT NULL DEFAULT 0,
+      created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+      updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+CREATE INDEX IF NOT EXISTS idx_pass_offerings_enabled ON pass_offerings(enabled);
+CREATE INDEX IF NOT EXISTS idx_pass_offerings_template_id ON pass_offerings(template_id);
 CREATE TABLE IF NOT EXISTS user_passes (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL REFERENCES users(id),
       pass_type_id TEXT NOT NULL REFERENCES pass_types(id),
+      offering_id TEXT,
       status TEXT NOT NULL DEFAULT 'ACTIVE',
       purchased_at INTEGER NOT NULL,
       valid_from INTEGER NOT NULL,
@@ -40,6 +64,10 @@ CREATE TABLE IF NOT EXISTS user_passes (
       remaining_entries INTEGER,
       wallet_serial_number TEXT NOT NULL UNIQUE,
       qr_token_id TEXT,
+      purchased_name_hu TEXT,
+      purchased_name_en TEXT,
+      purchased_desc_hu TEXT,
+      purchased_desc_en TEXT,
       created_at INTEGER NOT NULL DEFAULT (unixepoch()),
       updated_at INTEGER NOT NULL DEFAULT (unixepoch())
     );

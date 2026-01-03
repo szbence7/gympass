@@ -47,6 +47,29 @@ async function runMigrations() {
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
       );
 
+      CREATE TABLE IF NOT EXISTS pass_offerings (
+        id TEXT PRIMARY KEY,
+        template_id TEXT,
+        is_custom BOOLEAN NOT NULL DEFAULT false,
+        name_hu TEXT NOT NULL,
+        name_en TEXT NOT NULL,
+        desc_hu TEXT NOT NULL,
+        desc_en TEXT NOT NULL,
+        price_cents INTEGER NOT NULL,
+        enabled BOOLEAN NOT NULL DEFAULT true,
+        behavior TEXT NOT NULL,
+        duration_value INTEGER,
+        duration_unit TEXT,
+        visits_count INTEGER,
+        expires_in_value INTEGER,
+        expires_in_unit TEXT,
+        never_expires BOOLEAN NOT NULL DEFAULT false,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+      CREATE INDEX IF NOT EXISTS idx_pass_offerings_enabled ON pass_offerings(enabled);
+      CREATE INDEX IF NOT EXISTS idx_pass_offerings_template_id ON pass_offerings(template_id);
+
       CREATE TABLE IF NOT EXISTS user_passes (
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL REFERENCES users(id),

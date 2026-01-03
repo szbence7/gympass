@@ -6,7 +6,7 @@ import { getGymBySlug, updateGymOpeningHours } from '../db/registry';
 import { getCurrentGymSlug } from '../db/tenantContext';
 import { validatePassByToken, consumePassEntry, getUsageHistory, purchasePass } from '../services/passService';
 import { getDb } from '../db';
-import { users, userPasses, passTypes, passUsageLogs, passTokens } from '../db/schema';
+import { users, userPasses, passTypes, passUsageLogs, passTokens, passOfferings } from '../db/schema';
 import { eq, or, like, and, gte, lte, sql, desc } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
@@ -14,6 +14,8 @@ import { generateTempPassword } from '../utils/password';
 import { BadRequestError } from '../utils/errors';
 import { asyncHandler } from '../utils/asyncHandler';
 import { parseOpeningHours, validateOpeningHours } from '../utils/openingHours';
+import { getAllGlobalTemplates, getGlobalTemplate } from '../passes/globalTemplates';
+import { BadRequestError, NotFoundError } from '../utils/errors';
 
 const router = Router();
 
@@ -558,6 +560,240 @@ router.put('/gym/opening-hours', authenticateToken, requireRole('STAFF', 'ADMIN'
   updateGymOpeningHours(gym.id, openingHoursJson);
   
   res.json({ success: true, message: 'Opening hours updated successfully' });
+}));
+
+// Get global pass templates
+router.get('/passes/templates', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
+  const templates = getAllGlobalTemplates();
+  res.json(templates);
+}));
+
+// Get gym pass offerings
+router.get('/passes/offerings', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  try {
+    const offerings = await db.select().from(passOfferings).all();
+    res.json(offerings);
+  } catch (err: any) {
+    // Fallback: if table doesn't exist, return empty array (should not happen after migration)
+    if (err.message && err.message.includes('no such table: pass_offerings')) {
+      console.error('ERROR: pass_offerings table missing. This should be auto-created on DB open.');
+      console.error('Please restart the backend to trigger migration.');
+      res.json([]); // Return empty array instead of crashing
+    } else {
+      throw err;
+    }
+  }
+}));
+
+// Create pass offering
+const createOfferingSchema = z.object({
+  templateId: z.string().nullable().optional(),
+  isCustom: z.boolean(),
+  nameHu: z.string().min(1),
+  nameEn: z.string().min(1),
+  descHu: z.string().min(1),
+  descEn: z.string().min(1),
+  priceCents: z.number().int().positive(),
+  enabled: z.boolean(),
+  behavior: z.enum(['DURATION', 'VISITS']),
+  durationValue: z.number().int().positive().nullable().optional(),
+  durationUnit: z.enum(['day', 'week', 'month']).nullable().optional(),
+  visitsCount: z.number().int().positive().nullable().optional(),
+  expiresInValue: z.number().int().positive().nullable().optional(),
+  expiresInUnit: z.enum(['day', 'week', 'month', 'year']).nullable().optional(),
+  neverExpires: z.boolean(),
+});
+
+router.post('/passes/offerings', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
+  const body = createOfferingSchema.parse(req.body);
+  const db = getDb();
+  
+  // Validate behavior-specific fields
+  if (body.behavior === 'DURATION' && (!body.durationValue || !body.durationUnit)) {
+    throw new BadRequestError('Duration value and unit are required for DURATION behavior');
+  }
+  if (body.behavior === 'VISITS' && !body.visitsCount) {
+    throw new BadRequestError('Visits count is required for VISITS behavior');
+  }
+  if (!body.neverExpires && (!body.expiresInValue || !body.expiresInUnit)) {
+    throw new BadRequestError('Expiry value and unit are required when neverExpires is false');
+  }
+  
+  const offeringId = uuidv4();
+  const now = new Date();
+  
+  await db.insert(passOfferings).values({
+    id: offeringId,
+    templateId: body.templateId || null,
+    isCustom: body.isCustom,
+    nameHu: body.nameHu,
+    nameEn: body.nameEn,
+    descHu: body.descHu,
+    descEn: body.descEn,
+    priceCents: body.priceCents,
+    enabled: body.enabled,
+    behavior: body.behavior,
+    durationValue: body.durationValue || null,
+    durationUnit: body.durationUnit || null,
+    visitsCount: body.visitsCount || null,
+    expiresInValue: body.expiresInValue || null,
+    expiresInUnit: body.expiresInUnit || null,
+    neverExpires: body.neverExpires,
+    createdAt: now,
+    updatedAt: now,
+  }).run();
+  
+  const created = await db.select().from(passOfferings).where(eq(passOfferings.id, offeringId)).get();
+  res.json(created);
+}));
+
+// Update pass offering
+router.put('/passes/offerings/:id', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
+  const offeringId = req.params.id;
+  const body = createOfferingSchema.partial().parse(req.body);
+  const db = getDb();
+  
+  const existing = await db.select().from(passOfferings).where(eq(passOfferings.id, offeringId)).get();
+  if (!existing) {
+    throw new NotFoundError('Pass offering not found');
+  }
+  
+  // Enforce restrictions for global template-based offerings
+  if (existing.templateId) {
+    const template = getGlobalTemplate(existing.templateId);
+    if (template) {
+      // For global templates, only allow editing specific fields based on template type
+      const allowedFields: Partial<typeof body> = {};
+      
+      // Price is always editable for all templates
+      if (body.priceCents !== undefined) {
+        allowedFields.priceCents = body.priceCents;
+      }
+      
+      // Expiry is editable for all templates
+      if (body.neverExpires !== undefined) {
+        allowedFields.neverExpires = body.neverExpires;
+      }
+      if (body.expiresInValue !== undefined) {
+        allowedFields.expiresInValue = body.expiresInValue;
+      }
+      if (body.expiresInUnit !== undefined) {
+        allowedFields.expiresInUnit = body.expiresInUnit;
+      }
+      
+      // Template-specific editable fields
+      if (existing.templateId === 'DURATION_MONTHS') {
+        // Monthly pass: only price editable (duration is fixed to 1 month)
+        if (body.nameHu !== undefined || body.nameEn !== undefined || 
+            body.descHu !== undefined || body.descEn !== undefined ||
+            body.behavior !== undefined || body.durationValue !== undefined || 
+            body.durationUnit !== undefined || body.neverExpires !== undefined ||
+            body.expiresInValue !== undefined || body.expiresInUnit !== undefined) {
+          throw new BadRequestError('For monthly pass template, only price can be modified');
+        }
+      } else if (existing.templateId === 'VISITS_SINGLE' || existing.templateId === 'VISITS_TEN') {
+        // Visits-based: visitsCount + expiry + price editable
+        if (body.visitsCount !== undefined) {
+          allowedFields.visitsCount = body.visitsCount;
+        }
+        // Reject attempts to modify name, desc, behavior
+        if (body.nameHu !== undefined || body.nameEn !== undefined || 
+            body.descHu !== undefined || body.descEn !== undefined ||
+            body.behavior !== undefined) {
+          throw new BadRequestError('For visits-based template, only visits count, expiry, and price can be modified');
+        }
+      } else {
+        // Other templates: default to only price + expiry
+        if (body.nameHu !== undefined || body.nameEn !== undefined || 
+            body.descHu !== undefined || body.descEn !== undefined ||
+            body.behavior !== undefined) {
+          throw new BadRequestError('For global templates, only price and expiry can be modified');
+        }
+      }
+      
+      // Only update allowed fields
+      await db.update(passOfferings)
+        .set({
+          ...allowedFields,
+          updatedAt: new Date(),
+        })
+        .where(eq(passOfferings.id, offeringId))
+        .run();
+    } else {
+      // Template not found, treat as custom (allow all)
+      // Validate behavior-specific fields
+      if (body.behavior === 'DURATION' && (!body.durationValue && !existing.durationValue || !body.durationUnit && !existing.durationUnit)) {
+        throw new BadRequestError('Duration value and unit are required for DURATION behavior');
+      }
+      if (body.behavior === 'VISITS' && (!body.visitsCount && !existing.visitsCount)) {
+        throw new BadRequestError('Visits count is required for VISITS behavior');
+      }
+      const finalBehavior = body.behavior || existing.behavior;
+      const finalNeverExpires = body.neverExpires !== undefined ? body.neverExpires : existing.neverExpires;
+      if (!finalNeverExpires && (!body.expiresInValue && !existing.expiresInValue || !body.expiresInUnit && !existing.expiresInUnit)) {
+        throw new BadRequestError('Expiry value and unit are required when neverExpires is false');
+      }
+      
+      await db.update(passOfferings)
+        .set({
+          ...body,
+          updatedAt: new Date(),
+        })
+        .where(eq(passOfferings.id, offeringId))
+        .run();
+    }
+  } else {
+    // Custom offering: allow full update
+    // Validate behavior-specific fields
+    if (body.behavior === 'DURATION' && (!body.durationValue && !existing.durationValue || !body.durationUnit && !existing.durationUnit)) {
+      throw new BadRequestError('Duration value and unit are required for DURATION behavior');
+    }
+    if (body.behavior === 'VISITS' && (!body.visitsCount && !existing.visitsCount)) {
+      throw new BadRequestError('Visits count is required for VISITS behavior');
+    }
+    const finalBehavior = body.behavior || existing.behavior;
+    const finalNeverExpires = body.neverExpires !== undefined ? body.neverExpires : existing.neverExpires;
+    if (!finalNeverExpires && (!body.expiresInValue && !existing.expiresInValue || !body.expiresInUnit && !existing.expiresInUnit)) {
+      throw new BadRequestError('Expiry value and unit are required when neverExpires is false');
+    }
+    
+    await db.update(passOfferings)
+      .set({
+        ...body,
+        updatedAt: new Date(),
+      })
+      .where(eq(passOfferings.id, offeringId))
+      .run();
+  }
+  
+  const updated = await db.select().from(passOfferings).where(eq(passOfferings.id, offeringId)).get();
+  res.json(updated);
+}));
+
+// Backward compatibility: get pass types (old system + offerings)
+router.get('/pass-types', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHandler(async (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  
+  // Get both old pass_types and new offerings
+  const oldTypes = await db.select().from(passTypes).where(eq(passTypes.active, true)).all();
+  const offerings = await db.select().from(passOfferings).where(eq(passOfferings.enabled, true)).all();
+  
+  // Format offerings to match PassType interface for backward compatibility
+  const formattedOfferings = offerings.map(offering => ({
+    id: offering.id,
+    code: offering.templateId || `CUSTOM_${offering.id}`,
+    name: offering.nameHu, // Default to HU
+    description: offering.descHu,
+    durationDays: offering.behavior === 'DURATION' && offering.durationUnit === 'day' ? offering.durationValue : null,
+    totalEntries: offering.behavior === 'VISITS' ? offering.visitsCount : null,
+    price: offering.priceCents / 100,
+    active: offering.enabled,
+  }));
+  
+  // Combine old types and offerings (offerings take precedence if same ID)
+  const allTypes = [...oldTypes, ...formattedOfferings];
+  res.json(allTypes);
 }));
 
 export default router;

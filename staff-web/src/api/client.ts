@@ -271,6 +271,26 @@ export const staffAPI = {
     return response.data;
   },
 
+  getPassTemplates: async (): Promise<any[]> => {
+    const response = await apiClient.get('/staff/passes/templates');
+    return response.data;
+  },
+
+  getPassOfferings: async (): Promise<any[]> => {
+    const response = await apiClient.get('/staff/passes/offerings');
+    return response.data;
+  },
+
+  createPassOffering: async (offering: any): Promise<any> => {
+    const response = await apiClient.post('/staff/passes/offerings', offering);
+    return response.data;
+  },
+
+  updatePassOffering: async (id: string, offering: any): Promise<any> => {
+    const response = await apiClient.put(`/staff/passes/offerings/${id}`, offering);
+    return response.data;
+  },
+
   getPassTypes: async (): Promise<PassType[]> => {
     const response = await apiClient.get<PassType[]>('/pass-types');
     return response.data;

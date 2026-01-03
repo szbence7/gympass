@@ -6,7 +6,7 @@ import { passAPI, UserPass } from '../api/client';
 import { colors } from '../theme/colors';
 import { useGym } from '../context/GymContext';
 import { computeGymOpenStatus, getStatusText, getStatusColor as getGymStatusColor } from '../utils/openingHours';
-import { getPassDisplayName } from '../utils/passLocalization';
+import { getPurchasedPassDisplayName } from '../utils/passLocalization';
 
 export default function MyPassesScreen({ navigation }: any) {
   const { t } = useTranslation();
@@ -115,7 +115,7 @@ export default function MyPassesScreen({ navigation }: any) {
         >
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>
-              {pass.passType ? getPassDisplayName(pass.passType) : t('passes.passes')}
+              {getPurchasedPassDisplayName(pass)}
             </Text>
             <View style={[styles.statusBadge, { backgroundColor: getStatusColor(pass.status) }]}>
               <Text style={styles.statusText}>{t(`passes.status.${pass.status.toLowerCase()}` as any, { defaultValue: pass.status })}</Text>

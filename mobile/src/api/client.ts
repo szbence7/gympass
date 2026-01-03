@@ -98,12 +98,25 @@ export interface PassType {
   totalEntries: number | null;
   price: number;
   active: boolean;
+  // New system fields (optional for backward compatibility)
+  nameHu?: string;
+  nameEn?: string;
+  descHu?: string;
+  descEn?: string;
+  behavior?: 'DURATION' | 'VISITS';
+  durationValue?: number | null;
+  durationUnit?: 'day' | 'week' | 'month' | null;
+  visitsCount?: number | null;
+  expiresInValue?: number | null;
+  expiresInUnit?: 'day' | 'week' | 'month' | 'year' | null;
+  neverExpires?: boolean;
 }
 
 export interface UserPass {
   id: string;
   userId: string;
   passTypeId: string;
+  offeringId?: string | null;
   status: string;
   purchasedAt: string;
   validFrom: string;
@@ -112,6 +125,10 @@ export interface UserPass {
   remainingEntries: number | null;
   walletSerialNumber: string;
   qrTokenId: string | null;
+  purchasedNameHu?: string | null;
+  purchasedNameEn?: string | null;
+  purchasedDescHu?: string | null;
+  purchasedDescEn?: string | null;
   passType?: PassType;
   token?: {
     token: string;

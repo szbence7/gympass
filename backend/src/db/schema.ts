@@ -35,10 +35,32 @@ export const passTypes = sqliteTable('pass_types', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 });
 
+export const passOfferings = sqliteTable('pass_offerings', {
+  id: text('id').primaryKey(),
+  templateId: text('template_id'),
+  isCustom: integer('is_custom', { mode: 'boolean' }).notNull().default(false),
+  nameHu: text('name_hu').notNull(),
+  nameEn: text('name_en').notNull(),
+  descHu: text('desc_hu').notNull(),
+  descEn: text('desc_en').notNull(),
+  priceCents: integer('price_cents').notNull(),
+  enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
+  behavior: text('behavior').notNull(), // 'DURATION' | 'VISITS'
+  durationValue: integer('duration_value'),
+  durationUnit: text('duration_unit'), // 'day' | 'week' | 'month'
+  visitsCount: integer('visits_count'),
+  expiresInValue: integer('expires_in_value'),
+  expiresInUnit: text('expires_in_unit'), // 'day' | 'week' | 'month' | 'year'
+  neverExpires: integer('never_expires', { mode: 'boolean' }).notNull().default(false),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+});
+
 export const userPasses = sqliteTable('user_passes', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id),
   passTypeId: text('pass_type_id').notNull().references(() => passTypes.id),
+  offeringId: text('offering_id'), // Reference to pass_offerings (nullable for backward compatibility)
   status: text('status').notNull().default('ACTIVE'),
   purchasedAt: integer('purchased_at', { mode: 'timestamp' }).notNull(),
   validFrom: integer('valid_from', { mode: 'timestamp' }).notNull(),
@@ -47,6 +69,11 @@ export const userPasses = sqliteTable('user_passes', {
   remainingEntries: integer('remaining_entries'),
   walletSerialNumber: text('wallet_serial_number').notNull().unique(),
   qrTokenId: text('qr_token_id'),
+  // Store localized names/descriptions at purchase time for display consistency
+  purchasedNameHu: text('purchased_name_hu'),
+  purchasedNameEn: text('purchased_name_en'),
+  purchasedDescHu: text('purchased_desc_hu'),
+  purchasedDescEn: text('purchased_desc_en'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
 });
@@ -75,6 +102,8 @@ export type StaffUser = typeof staffUsers.$inferSelect;
 export type NewStaffUser = typeof staffUsers.$inferInsert;
 export type PassType = typeof passTypes.$inferSelect;
 export type NewPassType = typeof passTypes.$inferInsert;
+export type PassOffering = typeof passOfferings.$inferSelect;
+export type NewPassOffering = typeof passOfferings.$inferInsert;
 export type UserPass = typeof userPasses.$inferSelect;
 export type NewUserPass = typeof userPasses.$inferInsert;
 export type PassToken = typeof passTokens.$inferSelect;

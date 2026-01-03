@@ -133,12 +133,72 @@ export function getTenantDb(gymSlug: string): any {
     `).get();
     
     if (!tablesExist) {
-      // Tables don't exist, run schema initialization
+      // Tables don't exist, run full schema initialization
       const migrationPath = path.join(__dirname, 'schema.sql');
       if (fs.existsSync(migrationPath)) {
         const schema = fs.readFileSync(migrationPath, 'utf-8');
         sqlite.exec(schema);
         console.log(`Initialized schema for tenant DB: ${gymSlug}`);
+      }
+    } else {
+      // Tables exist, but check if pass_offerings table exists (for migration)
+      const passOfferingsExists = sqlite.prepare(`
+        SELECT name FROM sqlite_master 
+        WHERE type='table' AND name='pass_offerings'
+      `).get();
+      
+      if (!passOfferingsExists) {
+        // pass_offerings table is missing, create it
+        console.log(`Migrating tenant DB ${gymSlug}: adding pass_offerings table`);
+        sqlite.exec(`
+          CREATE TABLE IF NOT EXISTS pass_offerings (
+            id TEXT PRIMARY KEY,
+            template_id TEXT,
+            is_custom INTEGER NOT NULL DEFAULT 0,
+            name_hu TEXT NOT NULL,
+            name_en TEXT NOT NULL,
+            desc_hu TEXT NOT NULL,
+            desc_en TEXT NOT NULL,
+            price_cents INTEGER NOT NULL,
+            enabled INTEGER NOT NULL DEFAULT 1,
+            behavior TEXT NOT NULL,
+            duration_value INTEGER,
+            duration_unit TEXT,
+            visits_count INTEGER,
+            expires_in_value INTEGER,
+            expires_in_unit TEXT,
+            never_expires INTEGER NOT NULL DEFAULT 0,
+            created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+            updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+          );
+          CREATE INDEX IF NOT EXISTS idx_pass_offerings_enabled ON pass_offerings(enabled);
+          CREATE INDEX IF NOT EXISTS idx_pass_offerings_template_id ON pass_offerings(template_id);
+        `);
+        
+        // Also check if user_passes needs the new columns
+        const userPassesColumns = sqlite.prepare(`
+          PRAGMA table_info(user_passes)
+        `).all();
+        const hasOfferingId = userPassesColumns.some((col: any) => col.name === 'offering_id');
+        const hasPurchasedNameHu = userPassesColumns.some((col: any) => col.name === 'purchased_name_hu');
+        
+        if (!hasOfferingId || !hasPurchasedNameHu) {
+          console.log(`Migrating tenant DB ${gymSlug}: adding new columns to user_passes`);
+          try {
+            if (!hasOfferingId) {
+              sqlite.exec(`ALTER TABLE user_passes ADD COLUMN offering_id TEXT`);
+            }
+            if (!hasPurchasedNameHu) {
+              sqlite.exec(`ALTER TABLE user_passes ADD COLUMN purchased_name_hu TEXT`);
+              sqlite.exec(`ALTER TABLE user_passes ADD COLUMN purchased_name_en TEXT`);
+              sqlite.exec(`ALTER TABLE user_passes ADD COLUMN purchased_desc_hu TEXT`);
+              sqlite.exec(`ALTER TABLE user_passes ADD COLUMN purchased_desc_en TEXT`);
+            }
+          } catch (err: any) {
+            // Column may already exist, ignore error
+            console.warn(`Warning: Could not add columns to user_passes for ${gymSlug}:`, err.message);
+          }
+        }
       }
     }
 
@@ -198,6 +258,29 @@ async function runPostgresMigrations(connection: any, schemaName: string, schema
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
       );
+      
+      CREATE TABLE IF NOT EXISTS pass_offerings (
+        id TEXT PRIMARY KEY,
+        template_id TEXT,
+        is_custom BOOLEAN NOT NULL DEFAULT false,
+        name_hu TEXT NOT NULL,
+        name_en TEXT NOT NULL,
+        desc_hu TEXT NOT NULL,
+        desc_en TEXT NOT NULL,
+        price_cents INTEGER NOT NULL,
+        enabled BOOLEAN NOT NULL DEFAULT true,
+        behavior TEXT NOT NULL,
+        duration_value INTEGER,
+        duration_unit TEXT,
+        visits_count INTEGER,
+        expires_in_value INTEGER,
+        expires_in_unit TEXT,
+        never_expires BOOLEAN NOT NULL DEFAULT false,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+      CREATE INDEX IF NOT EXISTS idx_pass_offerings_enabled ON pass_offerings(enabled);
+      CREATE INDEX IF NOT EXISTS idx_pass_offerings_template_id ON pass_offerings(template_id);
       
       CREATE TABLE IF NOT EXISTS user_passes (
         id TEXT PRIMARY KEY,

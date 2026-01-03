@@ -88,7 +88,7 @@ export default function HomeScreen({ navigation }: any) {
         <View key={passType.id} style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>{getPassDisplayName(passType)}</Text>
-            <Text style={styles.price}>${passType.price.toFixed(2)}</Text>
+            <Text style={styles.price}>{passType.price.toFixed(0)} HUF</Text>
           </View>
 
           {getPassDisplayDescription(passType) && (

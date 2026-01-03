@@ -1,7 +1,7 @@
-// Polyfill for Intl.PluralRules (required by i18next)
-import '@formatjs/intl-pluralrules/polyfill';
-import '@formatjs/intl-pluralrules/locale-data/hu';
-import '@formatjs/intl-pluralrules/locale-data/en';
+// Intl.PluralRules polyfill check
+// Modern Expo SDK (54+) with Hermes should support Intl.PluralRules natively
+// If not available, i18next will use compatibilityJSON v3 mode (no polyfill needed)
+// This avoids import warnings for non-exported subpaths
 
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';

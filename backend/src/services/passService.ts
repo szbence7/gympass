@@ -1,5 +1,5 @@
 import { getDb } from '../db';
-import { userPasses, passTypes, passTokens, passUsageLogs, users, staffUsers } from '../db/schema';
+import { userPasses, passTypes, passTokens, passUsageLogs, users, staffUsers, passOfferings } from '../db/schema';
 import { eq, and } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import crypto from 'crypto';
@@ -104,10 +104,25 @@ export async function getUserPasses(userId: string) {
     .where(eq(userPasses.userId, userId))
     .all();
 
-  return passes.map(p => ({
-    ...p.pass,
-    passType: p.passType,
-  }));
+  return passes.map(p => {
+    // If pass has purchased localized names, use those; otherwise use passType
+    const passType = p.passType ? {
+      ...p.passType,
+      // Override with purchased names if available (for display consistency)
+      name: p.pass.purchasedNameHu || p.passType.name,
+      description: p.pass.purchasedDescHu || p.passType.description,
+      // Include both languages
+      nameHu: p.pass.purchasedNameHu || p.passType.name,
+      nameEn: p.pass.purchasedNameEn || p.passType.name,
+      descHu: p.pass.purchasedDescHu || p.passType.description || '',
+      descEn: p.pass.purchasedDescEn || p.passType.description || '',
+    } : null;
+    
+    return {
+      ...p.pass,
+      passType,
+    };
+  });
 }
 
 export async function getUserPassById(passId: string, userId: string) {
@@ -127,9 +142,22 @@ export async function getUserPassById(passId: string, userId: string) {
     throw new NotFoundError('Pass not found');
   }
 
+  // If pass has purchased localized names, use those; otherwise use passType
+  const passType = result.passType ? {
+    ...result.passType,
+    // Override with purchased names if available (for display consistency)
+    name: result.pass.purchasedNameHu || result.passType.name,
+    description: result.pass.purchasedDescHu || result.passType.description,
+    // Include both languages
+    nameHu: result.pass.purchasedNameHu || result.passType.name,
+    nameEn: result.pass.purchasedNameEn || result.passType.name,
+    descHu: result.pass.purchasedDescHu || result.passType.description || '',
+    descEn: result.pass.purchasedDescEn || result.passType.description || '',
+  } : null;
+
   return {
     ...result.pass,
-    passType: result.passType,
+    passType,
     token: result.token,
   };
 }

@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { z } from 'zod';
 import { getDb } from '../db';
-import { passTypes, users } from '../db/schema';
+import { passTypes, users, passOfferings } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { authenticateToken, AuthRequest } from '../middleware/auth';
 import { purchasePass, getUserPasses, getUserPassById } from '../services/passService';
@@ -16,6 +16,43 @@ const purchaseSchema = z.object({
 
 router.get('/pass-types', asyncHandler(async (req, res: Response) => {
   const db = getDb();
+  
+  // First try to get enabled offerings (new system)
+  const offerings = await db.select().from(passOfferings).where(eq(passOfferings.enabled, true)).all();
+  
+  if (offerings.length > 0) {
+    // Return offerings in a format compatible with existing mobile app
+    // Mobile will use the language from Accept-Language header or default to HU
+    const acceptLanguage = req.headers['accept-language'] || 'hu';
+    const preferredLang = acceptLanguage.startsWith('en') ? 'en' : 'hu';
+    
+    const formatted = offerings.map(offering => ({
+      id: offering.id,
+      code: offering.templateId || `CUSTOM_${offering.id}`,
+      name: preferredLang === 'en' ? offering.nameEn : offering.nameHu,
+      description: preferredLang === 'en' ? offering.descEn : offering.descHu,
+      durationDays: offering.behavior === 'DURATION' && offering.durationUnit === 'day' ? offering.durationValue : null,
+      totalEntries: offering.behavior === 'VISITS' ? offering.visitsCount : null,
+      price: offering.priceCents / 100, // Convert cents to HUF
+      active: offering.enabled,
+      // Include both languages for mobile to choose
+      nameHu: offering.nameHu,
+      nameEn: offering.nameEn,
+      descHu: offering.descHu,
+      descEn: offering.descEn,
+      behavior: offering.behavior,
+      durationValue: offering.durationValue,
+      durationUnit: offering.durationUnit,
+      visitsCount: offering.visitsCount,
+      expiresInValue: offering.expiresInValue,
+      expiresInUnit: offering.expiresInUnit,
+      neverExpires: offering.neverExpires,
+    }));
+    
+    return res.json(formatted);
+  }
+  
+  // Fallback to old pass_types for backward compatibility
   const types = await db.select().from(passTypes).where(eq(passTypes.active, true)).all();
   res.json(types);
 }));

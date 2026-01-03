@@ -7,6 +7,7 @@ import ScannerScreen from './screens/ScannerScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import CreatePassScreen from './screens/CreatePassScreen';
 import UsersScreen from './screens/UsersScreen';
+import PassManagementScreen from './screens/PassManagementScreen';
 import UserDetailScreen from './screens/UserDetailScreen';
 import AdminLoginScreen from './screens/admin/AdminLoginScreen';
 import AdminDashboardScreen from './screens/admin/AdminDashboardScreen';
@@ -135,6 +136,7 @@ function AppRoutes() {
           <Route path="/create-pass" element={<CreatePassScreen />} />
           <Route path="/users" element={<UsersScreen />} />
           <Route path="/users/:id" element={<UserDetailScreen />} />
+          <Route path="/passes" element={<PassManagementScreen />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/:path" element={<Navigate to="/dashboard" replace />} />
         </>
