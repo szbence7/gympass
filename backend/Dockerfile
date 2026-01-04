@@ -1,15 +1,41 @@
+# Build stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy backend package files
+COPY backend/package*.json ./
+COPY backend/tsconfig.json ./
+
+# Install all dependencies (including dev dependencies for build)
+RUN npm ci
+
+# Copy backend source files
+COPY backend/src ./src
+
+# Build the application
+RUN npm run build
+
+# Production stage
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy backend package files
+COPY backend/package*.json ./
 
-# Install dependencies
+# Install only production dependencies
 RUN npm ci --only=production
 
-# Copy built files (assumes build happens before docker build)
-COPY dist ./dist
+# Copy built files from builder
+COPY --from=builder /app/dist ./dist
+
+# Copy SQL schema files (needed at runtime)
+COPY backend/src/db/*.sql ./dist/db/
+
+# Copy registration portal (served by backend at /register)
+# Backend expects it at ../../registration-portal from dist, so place at root level
+COPY registration-portal /registration-portal
 
 # Expose port
 EXPOSE 4000

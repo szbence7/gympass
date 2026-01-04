@@ -11,11 +11,10 @@ import { eq, or, like, and, gte, lte, sql, desc } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import { generateTempPassword } from '../utils/password';
-import { BadRequestError } from '../utils/errors';
+import { BadRequestError, NotFoundError } from '../utils/errors';
 import { asyncHandler } from '../utils/asyncHandler';
 import { parseOpeningHours, validateOpeningHours } from '../utils/openingHours';
 import { getAllGlobalTemplates, getGlobalTemplate } from '../passes/globalTemplates';
-import { BadRequestError, NotFoundError } from '../utils/errors';
 
 const router = Router();
 
@@ -118,7 +117,7 @@ router.get('/users', authenticateToken, requireRole('STAFF', 'ADMIN'), asyncHand
 
   // Get active passes for each user
   const now = new Date();
-  const usersWithPasses = await Promise.all(userList.map(async (user) => {
+  const usersWithPasses = await Promise.all(userList.map(async (user: typeof userList[0]) => {
     const activePasses = await getDb()
       .select({
         id: userPasses.id,
@@ -325,7 +324,7 @@ router.get('/dashboard', authenticateToken, requireRole('STAFF', 'ADMIN'), async
       },
       activePasses: activeCount.count || 0,
     },
-    recentCheckIns: recentCheckIns.map((log) => ({
+    recentCheckIns: recentCheckIns.map((log: typeof recentCheckIns[0]) => ({
       at: log.createdAt?.toISOString(),
       user: {
         id: log.userId,
@@ -341,14 +340,14 @@ router.get('/dashboard', authenticateToken, requireRole('STAFF', 'ADMIN'), async
       },
     })),
     alerts: {
-      expiringSoon: expiringSoon.map((p) => ({
+      expiringSoon: expiringSoon.map((p: typeof expiringSoon[0]) => ({
         passId: p.passId,
         userId: p.userId,
         userName: p.userName,
         typeName: p.passTypeName,
         validUntil: p.validUntil?.toISOString(),
       })),
-      lowEntries: lowEntries.map((p) => ({
+      lowEntries: lowEntries.map((p: typeof lowEntries[0]) => ({
         passId: p.passId,
         userId: p.userId,
         userName: p.userName,
@@ -825,7 +824,7 @@ router.get('/pass-types', authenticateToken, requireRole('STAFF', 'ADMIN'), asyn
   const offerings = await db.select().from(passOfferings).where(eq(passOfferings.enabled, true)).all();
   
   // Format offerings to match PassType interface for backward compatibility
-  const formattedOfferings = offerings.map(offering => ({
+  const formattedOfferings = offerings.map((offering: typeof offerings[0]) => ({
     id: offering.id,
     code: offering.templateId || `CUSTOM_${offering.id}`,
     name: offering.nameHu, // Default to HU

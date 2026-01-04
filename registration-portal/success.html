@@ -7,9 +7,39 @@
   <link rel="stylesheet" href="theme.css">
   <link rel="stylesheet" href="styles.css">
   <script src="config.js"></script>
+  <script>
+    // Fix CSS/JS paths if served by backend (/registration/success)
+    if (window.location.pathname.includes('/registration/')) {
+      document.addEventListener('DOMContentLoaded', function() {
+        // Fix CSS links
+        document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+          const href = link.getAttribute('href');
+          if (href && !href.startsWith('http') && !href.startsWith('/register/')) {
+            link.href = '/register/' + href;
+          }
+        });
+        // Fix script src
+        document.querySelectorAll('script[src]').forEach(script => {
+          const src = script.getAttribute('src');
+          if (src && !src.startsWith('http') && !src.startsWith('/register/')) {
+            script.src = '/register/' + src;
+            // Reload the script
+            const newScript = document.createElement('script');
+            newScript.src = script.src;
+            document.head.appendChild(newScript);
+          }
+        });
+      });
+    }
+  </script>
 </head>
 <body>
   <div class="container">
+    <header>
+      <h1>🏋️ GymGo SaaS</h1>
+      <p class="tagline">Complete gym management system with mobile app, staff portal, and Apple Wallet integration</p>
+    </header>
+    
     <div class="card">
       <h1>🎉 Registration Successful!</h1>
       <p class="subtitle">Your gym has been activated and is ready to use</p>
@@ -19,6 +49,25 @@
   </div>
 
   <script>
+    // Wait for config to be available
+    function waitForConfig(callback, maxAttempts = 100) {
+      if (typeof config !== 'undefined' && config.apiBaseUrl) {
+        callback();
+      } else if (maxAttempts > 0) {
+        setTimeout(() => waitForConfig(callback, maxAttempts - 1), 50);
+      } else {
+        console.error('Config failed to load, using defaults');
+        // Use defaults if config doesn't load
+        window.config = window.config || {
+          apiBaseUrl: 'http://localhost:4000',
+          buildGymUrl: (slug) => `https://${slug}.gymgo.hu`,
+          buildStaffUrl: (slug, path) => `https://${slug}.gymgo.hu/${path}`,
+          tenantBaseDomain: 'gymgo.hu'
+        };
+        callback();
+      }
+    }
+
     // Get session ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
@@ -26,85 +75,121 @@
     
     // Fetch gym details from backend
     async function loadGymDetails() {
-      const apiUrl = config.apiBaseUrl || 'http://localhost:4000';
-      let fetchUrl = `${apiUrl}/api/registration/success-data?`;
-      
-      if (sessionId) {
-        fetchUrl += `session_id=${sessionId}`;
-      }
-      if (registrationSessionId) {
-        fetchUrl += registrationSessionId ? `&registration_session_id=${registrationSessionId}` : '';
-      }
-      
-      try {
-        const response = await fetch(fetchUrl);
-        const data = await response.json();
+      waitForConfig(() => {
+        const apiUrl = config.apiBaseUrl || 'http://localhost:4000';
+        let fetchUrl = `${apiUrl}/registration/success-data?`;
         
-        if (response.status === 202) {
-          // Still processing, retry after 2 seconds
-          document.getElementById('gymDetails').innerHTML = `
-            <p>⏳ Creating your gym... Please wait a moment.</p>
-          `;
-          setTimeout(loadGymDetails, 2000);
-          return;
+        if (sessionId) {
+          fetchUrl += `session_id=${sessionId}`;
+        }
+        if (registrationSessionId) {
+          fetchUrl += registrationSessionId ? `&registration_session_id=${registrationSessionId}` : '';
         }
         
-        if (!response.ok) {
-          throw new Error(data.error?.message || 'Failed to load gym details');
-        }
-        
-        if (data.success && data.gym) {
-          const publicUrl = config.buildGymUrl(data.gym.slug);
-          const staffLoginUrl = config.buildStaffUrl(data.gym.slug, data.gym.staffLoginPath);
-          
-          document.getElementById('gymDetails').innerHTML = `
-            <div class="info-box">
-              <h3>Gym Information</h3>
-              <p><strong>Gym Name:</strong> ${data.gym.name}</p>
-              <p><strong>Public URL:</strong> <a href="${publicUrl}" target="_blank">${publicUrl}</a></p>
-            </div>
+        fetch(fetchUrl)
+          .then(response => {
+            if (response.status === 202) {
+              // Still processing, retry after 2 seconds
+              document.getElementById('gymDetails').innerHTML = `
+                <div class="info-box" style="text-align: center;">
+                  <p style="color: #33FF8A; font-size: 18px;">⏳ Creating your gym... Please wait a moment.</p>
+                </div>
+              `;
+              setTimeout(loadGymDetails, 2000);
+              return null;
+            }
+            if (!response.ok) {
+              return response.json().then(data => {
+                throw new Error(data.error?.message || `HTTP ${response.status}`);
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (!data) return;
+            
+            if (data.error) {
+              throw new Error(data.error.message || 'Failed to load gym details');
+            }
+            
+            if (data.success && data.gym) {
+              const publicUrl = config.buildGymUrl ? config.buildGymUrl(data.gym.slug) : `https://${data.gym.slug}.gymgo.hu`;
+              const staffLoginUrl = config.buildStaffUrl ? config.buildStaffUrl(data.gym.slug, data.gym.staffLoginPath) : `https://${data.gym.slug}.gymgo.hu/${data.gym.staffLoginPath}`;
+              
+              document.getElementById('gymDetails').innerHTML = `
+                <div class="info-box">
+                  <h3>Gym Information</h3>
+                  <p><strong>Gym Name:</strong> <span style="color: #33FF8A; font-size: 18px;">${data.gym.name}</span></p>
+                  <p style="margin-top: 10px;"><strong>Public URL:</strong></p>
+                  <p><a href="${publicUrl}" target="_blank" style="color: #3CD6FF; text-decoration: none; word-break: break-all;">${publicUrl}</a></p>
+                </div>
 
-            <div class="credentials">
-              <h3>🔐 Admin Credentials</h3>
-              <p><strong>Email:</strong> <code>${data.adminEmail || 'Check your email'}</code></p>
-              <p class="warning">⚠️ Admin password was sent to your email. Check your inbox!</p>
-              <p><strong>Staff Login URL:</strong> <code>${staffLoginUrl}</code></p>
-            </div>
+                <div class="credentials">
+                  <h3>🔐 Admin Credentials</h3>
+                  <p style="margin-bottom: 15px;"><strong>Email:</strong></p>
+                  <code style="font-size: 16px; padding: 10px 15px; display: block; background: #182235; border: 1px solid #243047; border-radius: 6px; margin-bottom: 20px;">${data.adminEmail || 'Check your email'}</code>
+                  
+                  ${data.adminPassword ? `
+                    <p style="margin-bottom: 10px;"><strong>Password:</strong></p>
+                    <div style="background: #182235; border: 2px solid #33FF8A; border-radius: 8px; padding: 20px; margin: 15px 0; text-align: center; box-shadow: 0 4px 12px rgba(51, 255, 138, 0.3);">
+                      <code style="font-size: 28px; font-weight: bold; color: #33FF8A; letter-spacing: 3px; font-family: 'Courier New', monospace; display: block;">${data.adminPassword}</code>
+                    </div>
+                    <p style="color: #FFB020; font-size: 14px; margin-top: 15px; text-align: center; padding: 10px; background: rgba(255, 176, 32, 0.1); border-radius: 6px;">
+                      ⚠️ <strong>Important:</strong> Save this password! You'll need it to log in to the staff portal.
+                    </p>
+                  ` : '<p class="warning" style="margin-top: 15px;">⚠️ Admin password was sent to your email. Check your inbox!</p>'}
+                  
+                  <p style="margin-top: 20px; margin-bottom: 10px;"><strong>Staff Login URL:</strong></p>
+                  <p><a href="${staffLoginUrl}" target="_blank" style="color: #3CD6FF; text-decoration: none; word-break: break-all; display: block; padding: 10px; background: #182235; border: 1px solid #243047; border-radius: 6px;">${staffLoginUrl}</a></p>
+                </div>
 
-            <div class="next-steps">
-              <h3>Next Steps:</h3>
-              <ol>
-                <li>Check your email for admin credentials</li>
-                ${config.tenantBaseDomain.includes('local') ? `<li>Add to <code>/etc/hosts</code>: <code>127.0.0.1  ${data.gym.slug}.${config.tenantBaseDomain}</code></li>` : ''}
-                <li>Bookmark staff login: <a href="${staffLoginUrl}" target="_blank">${staffLoginUrl}</a></li>
-                <li>Configure mobile app to use: <code>${publicUrl}</code></li>
-              </ol>
-            </div>
+                <div class="next-steps">
+                  <h3>Next Steps:</h3>
+                  <ol>
+                    <li>Save your admin credentials (email and password above)</li>
+                    ${(config.tenantBaseDomain && config.tenantBaseDomain.includes('local')) ? `<li>Add to <code>/etc/hosts</code>: <code>127.0.0.1  ${data.gym.slug}.${config.tenantBaseDomain}</code></li>` : ''}
+                    <li>Bookmark your staff login URL for easy access</li>
+                    <li>Configure your mobile app to use: <code style="background: #182235; padding: 4px 8px; border-radius: 4px; border: 1px solid #243047;">${publicUrl}</code></li>
+                  </ol>
+                </div>
 
-            <div style="margin-top: 30px;">
-              <a href="${staffLoginUrl}" class="btn-primary">Go to Staff Portal</a>
-              <a href="/" class="btn-secondary" style="margin-left: 10px;">Register Another Gym</a>
-            </div>
-          `;
-        }
-      } catch (error) {
-        document.getElementById('gymDetails').innerHTML = `
-          <p class="warning">⚠️ ${error.message}</p>
-          <p>Please check your email for gym details.</p>
-          <a href="/" class="btn-primary">Return to Home</a>
-        `;
-      }
+                <div style="margin-top: 40px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                  <a href="${staffLoginUrl}" class="btn-primary" style="min-width: 200px; text-align: center;">Go to Staff Portal</a>
+                  <a href="/" class="btn-secondary" style="min-width: 200px; text-align: center;">Register Another Gym</a>
+                </div>
+              `;
+            } else {
+              throw new Error('Invalid response from server');
+            }
+          })
+          .catch(error => {
+            console.error('Error loading gym details:', error);
+            document.getElementById('gymDetails').innerHTML = `
+              <div class="info-box warning">
+                <p class="warning" style="font-size: 16px; margin-bottom: 15px;">⚠️ ${error.message}</p>
+                <p style="color: #A8B3CF; margin-bottom: 20px;">Please check your email for gym details.</p>
+                <div style="text-align: center;">
+                  <a href="/" class="btn-primary">Return to Home</a>
+                </div>
+              </div>
+            `;
+          });
+      });
     }
     
     if (sessionId || registrationSessionId) {
       loadGymDetails();
     } else {
       document.getElementById('gymDetails').innerHTML = `
-        <p class="warning">⚠️ No session ID found. Please check your email for gym details.</p>
-        <a href="/" class="btn-primary">Return to Home</a>
+        <div class="info-box warning">
+          <p class="warning" style="font-size: 16px; margin-bottom: 15px;">⚠️ No session ID found</p>
+          <p style="color: #A8B3CF; margin-bottom: 20px;">Please check your email for gym details.</p>
+          <div style="text-align: center;">
+            <a href="/" class="btn-primary">Return to Home</a>
+          </div>
+        </div>
       `;
     }
   </script>
 </body>
 </html>
-

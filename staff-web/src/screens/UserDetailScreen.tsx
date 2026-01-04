@@ -37,7 +37,6 @@ export default function UserDetailScreen() {
   const handleBlockUser = async () => {
     if (!id || !userDetail) return;
     
-    const action = userDetail.user.isBlocked ? 'unblock' : 'block';
     const confirmed = window.confirm(
       userDetail.user.isBlocked 
         ? t('userDetail.confirmUnblock')

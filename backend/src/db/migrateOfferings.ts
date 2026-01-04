@@ -3,7 +3,7 @@
  * Run this once to add the new table to all existing tenant databases
  */
 
-import { env } from './env';
+import { env } from '../utils/env';
 import fs from 'fs';
 import path from 'path';
 

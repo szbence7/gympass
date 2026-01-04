@@ -31,7 +31,7 @@ router.get('/pass-types', asyncHandler(async (req, res: Response) => {
   const acceptLanguage = req.headers['accept-language'] || 'hu';
   const preferredLang = acceptLanguage.startsWith('en') ? 'en' : 'hu';
   
-  const formatted = offerings.map(offering => ({
+  const formatted = offerings.map((offering: typeof offerings[0]) => ({
     id: offering.id,
     code: offering.templateId || `CUSTOM_${offering.id}`,
     name: preferredLang === 'en' ? offering.nameEn : offering.nameHu,

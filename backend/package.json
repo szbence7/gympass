@@ -21,6 +21,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "passkit-generator": "^3.5.7",
+    "postgres": "^3.4.3",
     "stripe": "^20.1.0",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"

@@ -4,12 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Cancelled - GymGo</title>
-  <link rel="stylesheet" href="theme.css">
-  <link rel="stylesheet" href="styles.css">
-  <script src="config.js"></script>
+  <link rel="stylesheet" href="/register/theme.css">
+  <link rel="stylesheet" href="/register/styles.css">
+  <script src="/register/config.js"></script>
 </head>
 <body>
   <div class="container">
+    <header>
+      <h1>🏋️ GymGo SaaS</h1>
+      <p class="tagline">Complete gym management system with mobile app, staff portal, and Apple Wallet integration</p>
+    </header>
+    
     <div class="card">
       <h1>⚠️ Payment Cancelled</h1>
       <p class="subtitle">Your gym registration was not completed</p>
@@ -48,7 +53,7 @@
         btn.textContent = 'Creating checkout session...';
 
         try {
-          const apiUrl = `${config.apiBaseUrl}/api/stripe/create-checkout-session`;
+          const apiUrl = `${config.apiBaseUrl}/stripe/create-checkout-session`;
           const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

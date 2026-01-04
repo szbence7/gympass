@@ -30,10 +30,10 @@ async function apiRequest(method: string, url: string, data?: any, headers?: Rec
       body: data ? JSON.stringify(data) : undefined,
     });
     
-    const responseData = await response.json().catch(() => ({}));
+    const responseData: any = await response.json().catch(() => ({}));
     
     if (!response.ok) {
-      const error: any = new Error(responseData.error?.message || `HTTP ${response.status}`);
+      const error: any = new Error(responseData?.error?.message || `HTTP ${response.status}`);
       error.response = {
         status: response.status,
         data: responseData,
@@ -86,13 +86,13 @@ async function testPlatformAdminFlow(): Promise<boolean> {
       password: 'admin123',
     });
     
-    if (!loginRes.data.token) {
+    if (!loginRes.data?.token) {
       logResult('A1: Platform admin login', false, 'No token received');
       return false;
     }
     
-    const adminToken = loginRes.data.token;
-    logResult('A1: Platform admin login', true, undefined, { email: loginRes.data.user.email });
+    const adminToken = loginRes.data.token as string;
+    logResult('A1: Platform admin login', true, undefined, { email: (loginRes.data as any)?.user?.email });
     
     // 2. Get gyms list
     const gymsRes = await apiRequest('GET', `${API_BASE}/admin/gyms`, undefined, {
@@ -157,12 +157,12 @@ async function testGymRegistrationFlow(): Promise<{ registrationSessionId?: stri
     
     const registerRes = await apiRequest('POST', `${API_BASE}/gyms/register`, registrationData);
     
-    if (!registerRes.data.sessionId) {
+    if (!registerRes.data?.sessionId) {
       logResult('B1: Create registration session', false, 'No sessionId received');
       return {};
     }
     
-    const registrationSessionId = registerRes.data.sessionId;
+    const registrationSessionId = registerRes.data.sessionId as string;
     logResult('B1: Create registration session', true, undefined, { sessionId: registrationSessionId });
     
     // 2. Verify gym NOT created yet (should be PENDING_PAYMENT)
@@ -330,13 +330,13 @@ async function testUserFlow(): Promise<{ userId?: string; token?: string }> {
       'X-Gym-Slug': testGymSlug,
     });
     
-    if (!registerRes.data.token) {
+    if (!registerRes.data?.token) {
       logResult('D1: Register new user', false, 'No token received');
       return {};
     }
     
-    const userToken = registerRes.data.token;
-    const userId = registerRes.data.user.id;
+    const userToken = registerRes.data.token as string;
+    const userId = (registerRes.data as any)?.user?.id as string;
     logResult('D1: Register new user', true, undefined, { email: testUserEmail, userId });
     
     // 2. Logout (just clear token client-side, no API call needed)
@@ -350,7 +350,7 @@ async function testUserFlow(): Promise<{ userId?: string; token?: string }> {
       'X-Gym-Slug': testGymSlug,
     });
     
-    if (!loginRes.data.token) {
+    if (!loginRes.data?.token) {
       logResult('D3: Login with correct credentials', false, 'No token received');
       return {};
     }

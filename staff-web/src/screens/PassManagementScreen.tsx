@@ -297,13 +297,7 @@ function OfferingFormModal({
   const isCustom = !offering?.templateId || offering.isCustom;
   
   // Determine which fields are editable based on template type
-  const canEditName = isCustom;
-  const canEditDesc = isCustom;
-  const canEditBehavior = isCustom;
-  const canEditDuration = isCustom && formData.behavior === 'DURATION';
-  const canEditVisits = isCustom && formData.behavior === 'VISITS';
   const canEditExpiry = isCustom || (isTemplateBased && offering?.templateId !== 'DURATION_MONTHS');
-  const canEditPrice = true; // Always editable
 
   useEffect(() => {
     if (offering) {

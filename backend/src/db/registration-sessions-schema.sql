@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS registration_sessions (
   contact_phone TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'PENDING_PAYMENT', -- PENDING_PAYMENT, COMPLETED, EXPIRED
   stripe_checkout_session_id TEXT,
+  admin_password TEXT, -- Temporary password for staff admin (stored after gym creation)
   created_at INTEGER NOT NULL,
   expires_at INTEGER NOT NULL
 );

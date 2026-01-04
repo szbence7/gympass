@@ -104,6 +104,18 @@ export function getRegistryDb(): Database.Database {
     if (fs.existsSync(registrationSessionsSchemaPath)) {
       const registrationSessionsSchema = fs.readFileSync(registrationSessionsSchemaPath, 'utf-8');
       registryDb.exec(registrationSessionsSchema);
+      
+      // Migration: Add admin_password column if it doesn't exist
+      try {
+        const registrationSessionsTableInfo = registryDb.pragma('table_info(registration_sessions)') as Array<{ name: string }>;
+        const hasAdminPassword = registrationSessionsTableInfo.some(col => col.name === 'admin_password');
+        if (!hasAdminPassword && registrationSessionsTableInfo.length > 0) {
+          registryDb.exec(`ALTER TABLE registration_sessions ADD COLUMN admin_password TEXT;`);
+          console.log('✅ Migrated registration_sessions schema (added admin_password)');
+        }
+      } catch (e) {
+        // Table doesn't exist yet, will be created by schema.sql
+      }
     }
 
     console.log('Registry DB initialized:', REGISTRY_DB_PATH);
@@ -197,6 +209,7 @@ export function createGym(id: string, slug: string, name: string, status: string
     billing_email: null,
     company_name: null,
     tax_number: null,
+    opening_hours: null,
     address_line1: null,
     address_line2: null,
     city: null,

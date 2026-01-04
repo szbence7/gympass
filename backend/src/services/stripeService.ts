@@ -43,14 +43,14 @@ export async function createCheckoutSession(params: CreateCheckoutSessionParams)
       // This simulates the payment success
       setTimeout(async () => {
         try {
-          const mockSession = {
+          const mockSession: Partial<Stripe.Checkout.Session> = {
             id: 'dev-mode-checkout',
             metadata: { registrationSessionId: params.registrationSessionId },
             subscription: null,
             customer: null,
             customer_email: params.adminEmail,
           };
-          await handleCheckoutSessionCompleted(mockSession);
+          await handleCheckoutSessionCompleted(mockSession as Stripe.Checkout.Session);
         } catch (err) {
           console.error('Dev-mode webhook simulation failed:', err);
         }
@@ -268,6 +268,10 @@ async function createGymFromRegistrationSession(registrationSession: any) {
       status: 'ACTIVE', // Activate gym
     });
   }
+  
+  // Store admin password in registration session for display on success page
+  const { updateRegistrationSessionAdminPassword } = require('../db/registrationSessions');
+  updateRegistrationSessionAdminPassword(registrationSession.id, result.adminCredentials.password);
   
   // Log admin credentials for dev/testing (not in production)
   if (env.NODE_ENV !== 'production') {

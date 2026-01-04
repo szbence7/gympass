@@ -119,7 +119,7 @@ form.addEventListener('submit', async (e) => {
 
   try {
     // Step 1: Create registration session (NOT the gym yet)
-    const response = await fetch(`${API_BASE_URL}/api/gyms/register`, {
+    const response = await fetch(`${API_BASE_URL}/gyms/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

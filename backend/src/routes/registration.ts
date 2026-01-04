@@ -43,8 +43,6 @@ router.get('/success-data', asyncHandler(async (req: Request, res: Response) => 
       });
     }
     
-    // Return gym details (credentials are in the gym creation, but we need to get them from the session)
-    // For now, return basic info - credentials should be shown via a different mechanism
     return res.json({
       success: true,
       gym: {
@@ -54,6 +52,8 @@ router.get('/success-data', asyncHandler(async (req: Request, res: Response) => 
         url: buildTenantUrl(gym.slug),
         staffLoginPath: gym.staff_login_path,
       },
+      adminEmail: session.admin_email,
+      adminPassword: session.admin_password || null,
       message: 'Gym created successfully! Check your email for admin credentials.',
     });
   }
@@ -91,6 +91,7 @@ router.get('/success-data', asyncHandler(async (req: Request, res: Response) => 
         staffLoginPath: gym.staff_login_path,
       },
       adminEmail: registrationSession.admin_email,
+      adminPassword: registrationSession.admin_password || null,
       message: 'Gym created successfully! Admin credentials were sent to your email.',
     });
 }));

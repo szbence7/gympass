@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ..  # Use repo root to access both backend and registration-portal
+      dockerfile: backend/Dockerfile
+    # Note: Registration portal is served by backend at /register
+    # Backend expects registration-portal folder at runtime (copied during build)
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: ${PORT:-4000}
+      NODE_ENV: ${NODE_ENV:-production}
+      JWT_SECRET: ${JWT_SECRET}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+      TENANT_BASE_DOMAIN: ${TENANT_BASE_DOMAIN}
+      TENANT_PROTOCOL: ${TENANT_PROTOCOL:-https}
+      TENANT_PORT: ${TENANT_PORT:-}
+      API_BASE_URL: ${API_BASE_URL}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      STRIPE_PRICE_ID: ${STRIPE_PRICE_ID}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      WALLET_TEAM_ID: ${WALLET_TEAM_ID:-}
+      WALLET_PASS_TYPE_ID: ${WALLET_PASS_TYPE_ID:-}
+      WALLET_ORG_NAME: ${WALLET_ORG_NAME:-}
+      WALLET_CERT_P12_PATH: ${WALLET_CERT_P12_PATH:-}
+      WALLET_CERT_P12_PASSWORD: ${WALLET_CERT_P12_PASSWORD:-}
+      WALLET_WWDR_CERT_PATH: ${WALLET_WWDR_CERT_PATH:-}
+      WALLET_DEV_UNSIGNED: ${WALLET_DEV_UNSIGNED:-false}
+      APPLE_WALLET: ${APPLE_WALLET:-false}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "127.0.0.1:4000:4000"  # Expose backend on localhost for nginx
+    networks:
+      - app-network
+
+  staff-web:
+    build:
+      context: ..
+      dockerfile: staff-web/Dockerfile
+    networks:
+      - app-network
+    # Staff-web is only accessible via nginx (no public ports)
+
+networks:
+  app-network:
+    name: ${COMPOSE_PROJECT_NAME:-gymgo}_network
+    driver: bridge
+

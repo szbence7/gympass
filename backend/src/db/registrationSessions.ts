@@ -17,6 +17,7 @@ export interface RegistrationSession {
   contact_phone: string;
   status: 'PENDING_PAYMENT' | 'COMPLETED' | 'EXPIRED';
   stripe_checkout_session_id: string | null;
+  admin_password: string | null;
   created_at: number;
   expires_at: number;
 }
@@ -84,6 +85,7 @@ export function createRegistrationSession(params: {
     contact_phone: params.contact_phone,
     status: 'PENDING_PAYMENT',
     stripe_checkout_session_id: null,
+    admin_password: null,
     created_at: now,
     expires_at: expiresAt,
   };
@@ -109,6 +111,11 @@ export function getRegistrationSessionBySlug(slug: string): RegistrationSession 
 export function updateRegistrationSessionStripeSessionId(sessionId: string, stripeCheckoutSessionId: string): void {
   const db = getRegistryDb();
   db.prepare('UPDATE registration_sessions SET stripe_checkout_session_id = ? WHERE id = ?').run(stripeCheckoutSessionId, sessionId);
+}
+
+export function updateRegistrationSessionAdminPassword(sessionId: string, adminPassword: string): void {
+  const db = getRegistryDb();
+  db.prepare('UPDATE registration_sessions SET admin_password = ? WHERE id = ?').run(adminPassword, sessionId);
 }
 
 export function markRegistrationSessionCompleted(sessionId: string): void {

@@ -87,21 +87,6 @@ export default function ScannerScreen() {
     }
   };
 
-  const handleConsume = async () => {
-    if (!result || !result.pass) return;
-
-    setProcessing(true);
-    try {
-      const token = new URLSearchParams(window.location.search).get('token') || '';
-      await staffAPI.consume(token, 1);
-      alert(t('scanner.entryConsumed'));
-      setResult(null);
-    } catch (err: any) {
-      setError(err.message || t('scanner.failedToConsume'));
-    } finally {
-      setProcessing(false);
-    }
-  };
 
   const getStatusClass = () => {
     if (!result) return '';

@@ -209,7 +209,7 @@ export async function getUserPasses(userId: string) {
     .where(eq(userPasses.userId, userId))
     .all();
 
-  return passes.map(p => {
+  return passes.map((p: typeof passes[0]) => {
     // If pass has purchased localized names, use those; otherwise use passType
     const passType = p.passType ? {
       ...p.passType,
